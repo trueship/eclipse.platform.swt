@@ -14,7 +14,7 @@ import org.eclipse.swt.internal.cocoa.NSWindow;
 import org.eclipse.swt.internal.cocoa.id;
 
 /**
- * Popover cocoa widget.
+ * Cocoa popover widget.
  *
  * @author Igor Karpenko, TrueShip LLC
  */
@@ -23,7 +23,7 @@ public class Popover extends Composite {
     protected NSPopover popover;
     protected PopoverBehavior behavior;
     protected PopoverAppearance appearance;
-    protected PopoverPrefferedEdge prefferedEdge;
+    protected PopoverPreferredEdge preferredEdge;
     protected boolean animates;
     protected Composite target;
     protected NSSize size;
@@ -41,20 +41,20 @@ public class Popover extends Composite {
         PopoverAppearanceHUD
     }
 
-    public enum PopoverPrefferedEdge {
+    public enum PopoverPreferredEdge {
         MinXEdge, // Specifies the left edge of the input rectangle.
         MinYEdge, // Specifies the bottom edge of the input rectangle.
         MaxXEdge, // Specifies the right edge of the input rectangle.
         MaxYEdge  // Specifies the top edge of the input rectangle.
     }
 
-    public Popover(Shell parent, Composite target, int style) {
+    public Popover (Shell parent, Composite target, int style) {
         super(parent, style);
         //this.display = target.getDisplay();
       //  createWidget();
         appearance = PopoverAppearance.PopoverAppearanceMinimal;
         behavior = PopoverBehavior.PopoverBehaviorApplicationDefined;
-        prefferedEdge = PopoverPrefferedEdge.MinYEdge;
+        preferredEdge = PopoverPreferredEdge.MinYEdge;
         animates = true;
         this.target = target;
     }
@@ -76,7 +76,7 @@ public class Popover extends Composite {
         popover.setContentViewController(controller);*/
     }
 
-    public void show() {
+    public void show () {
 
         NSViewController controller = (NSViewController) new NSViewController().alloc();
         controller = (NSViewController)controller.init();
@@ -88,14 +88,14 @@ public class Popover extends Composite {
         popover.setAppearance(appearance.ordinal());
         popover.setBehavior(behavior.ordinal());
 
-        popover.showRelativeToRect(target.contentView().frame(), target.getParent().view, prefferedEdge.ordinal());
+        popover.showRelativeToRect(target.contentView().frame(), target.getParent().view, preferredEdge.ordinal());
         layout();
         setVisible(true);
         ((Shell)parent).setWindow(view.window());
         parent.setVisible(true);
     }
 
-    public void setFieldsTabList(Text[] list) {
+    public void setFieldsTabList (Text[] list) {
         this.tabList = list;
         parent.tabList = list;
     }
@@ -106,7 +106,7 @@ public class Popover extends Composite {
     }
 
     @Override
-    boolean isTransparent() {
+    boolean isTransparent () {
         return true;
     }
 
@@ -124,60 +124,60 @@ public class Popover extends Composite {
       //  super.drawWidget(id, context, rect);
     }
 
-    public void setSize(int width, int height) {
+    public void setSize (int width, int height) {
         super.setSize(width, height);
         size.width = width;
         size.height = height;
         popover.setContentSize(size);
     }
 
-    void register() {
+    void register () {
         super.register();
         display.addWidget(popover, this);
     }
 
-    public void close() {
+    public void close () {
         super.dispose();
         popover.close();
     }
 
-    public NSPopover getPopover() {
+    public NSPopover getPopover () {
         return popover;
     }
 
-    public void setPopover(NSPopover popover) {
+    public void setPopover (NSPopover popover) {
         this.popover = popover;
     }
 
-    public PopoverBehavior getBehavior() {
+    public PopoverBehavior getBehavior () {
         return behavior;
     }
 
-    public void setBehavior(PopoverBehavior behavior) {
+    public void setBehavior (PopoverBehavior behavior) {
         this.behavior = behavior;
     }
 
-    public PopoverAppearance getAppearance() {
+    public PopoverAppearance getAppearance () {
         return appearance;
     }
 
-    public void setAppearance(PopoverAppearance appearance) {
+    public void setAppearance (PopoverAppearance appearance) {
         this.appearance = appearance;
     }
 
-    public PopoverPrefferedEdge getPrefferedEdge() {
-        return prefferedEdge;
+    public PopoverPreferredEdge getPreferredEdge () {
+        return preferredEdge;
     }
 
-    public void setPrefferedEdge(PopoverPrefferedEdge prefferedEdge) {
-        this.prefferedEdge = prefferedEdge;
+    public void setPreferredEdge (PopoverPreferredEdge preferredEdge) {
+        this.preferredEdge = preferredEdge;
     }
 
-    public boolean isAnimates() {
+    public boolean isAnimates () {
         return animates;
     }
 
-    public void setAnimates(boolean animates) {
+    public void setAnimates (boolean animates) {
         this.animates = animates;
     }
 }
