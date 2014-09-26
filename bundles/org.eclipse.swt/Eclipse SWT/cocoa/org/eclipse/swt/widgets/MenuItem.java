@@ -936,5 +936,13 @@ boolean updateAccelerator (boolean show) {
 	return key != 0;
 }
 
+public void setAlternate (boolean isAlternate) {
+	nsItem.setAlternate(isAlternate);
+}
+
+public boolean isAlternate() {
+	return nsItem.isAlternate();
+}
+
 }
 

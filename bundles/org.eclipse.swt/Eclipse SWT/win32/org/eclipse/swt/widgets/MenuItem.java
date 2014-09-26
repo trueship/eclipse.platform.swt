@@ -1245,4 +1245,12 @@ LRESULT wmMeasureChild (long /*int*/ wParam, long /*int*/ lParam) {
 	return null;
 }
 
+public void setAlternate (boolean isAlternate) {
+
+}
+
+public boolean isAlternate() {
+
+}
+
 }

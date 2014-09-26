@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2012 IBM Corporation and others.
+ * Copyright (c) 2000, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,6 +43,10 @@ public NSMenuItem initWithTitle(NSString aString, long /*int*/ aSelector, NSStri
 	return result == this.id ? this : (result != 0 ? new NSMenuItem(result) : null);
 }
 
+public boolean isAlternate() {
+	return OS.objc_msgSend_bool(this.id, OS.sel_isAlternate);
+}
+
 public boolean isHidden() {
 	return OS.objc_msgSend_bool(this.id, OS.sel_isHidden);
 }
@@ -67,6 +71,10 @@ public static NSMenuItem separatorItem() {
 
 public void setAction(long /*int*/ aSelector) {
 	OS.objc_msgSend(this.id, OS.sel_setAction_, aSelector);
+}
+
+public void setAlternate(boolean isAlternate) {
+	OS.objc_msgSend(this.id, OS.sel_setAlternate_, isAlternate);
 }
 
 public void setAttributedTitle(NSAttributedString string) {

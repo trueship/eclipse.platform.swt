@@ -1869,6 +1869,9 @@
 			<arg swt_gen="true"></arg>
 			<retval swt_gen="true" swt_java_type="NSMenuItem"></retval>
 		</method>
+		<method selector="isAlternate" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
 		<method selector="isHidden" swt_gen="true">
 			<retval swt_gen="true"></retval>
 		</method>
@@ -1885,6 +1888,10 @@
 			<retval swt_gen="true"></retval>
 		</method>
 		<method selector="setAction:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="setAlternate:" swt_gen="true">
 			<arg swt_gen="true"></arg>
 			<retval swt_gen="true"></retval>
 		</method>

@@ -8732,16 +8732,6 @@ JNIEXPORT jintLong JNICALL OS_NATIVE(_1gtk_1accel_1group_1new)
 }
 #endif
 
-#ifndef NO__1gtk_1accel_1label_1set_1accel_1widget
-JNIEXPORT void JNICALL OS_NATIVE(_1gtk_1accel_1label_1set_1accel_1widget)
-	(JNIEnv *env, jclass that, jintLong arg0, jintLong arg1)
-{
-	OS_NATIVE_ENTER(env, that, _1gtk_1accel_1label_1set_1accel_1widget_FUNC);
-	gtk_accel_label_set_accel_widget((GtkAccelLabel *)arg0, (GtkWidget *)arg1);
-	OS_NATIVE_EXIT(env, that, _1gtk_1accel_1label_1set_1accel_1widget_FUNC);
-}
-#endif
-
 #ifndef NO__1gtk_1accel_1label_1set_1accel
 JNIEXPORT void JNICALL OS_NATIVE(_1gtk_1accel_1label_1set_1accel)
 	(JNIEnv *env, jclass that, jintLong arg0, jint arg1, jint arg2)
@@ -8753,10 +8743,20 @@ JNIEXPORT void JNICALL OS_NATIVE(_1gtk_1accel_1label_1set_1accel)
 	{
 		OS_LOAD_FUNCTION(fp, gtk_accel_label_set_accel)
 		if (fp) {
-			((void (CALLING_CONVENTION*)(GtkAccelLabel *, jint, jint))fp)((GtkAccelLabel *)arg0, arg1, arg2);
+			((void (CALLING_CONVENTION*)(GtkAccelLabel *, guint, GdkModifierType))fp)((GtkAccelLabel *)arg0, (guint)arg1, (GdkModifierType)arg2);
 		}
 	}
 	OS_NATIVE_EXIT(env, that, _1gtk_1accel_1label_1set_1accel_FUNC);
+}
+#endif
+
+#ifndef NO__1gtk_1accel_1label_1set_1accel_1widget
+JNIEXPORT void JNICALL OS_NATIVE(_1gtk_1accel_1label_1set_1accel_1widget)
+	(JNIEnv *env, jclass that, jintLong arg0, jintLong arg1)
+{
+	OS_NATIVE_ENTER(env, that, _1gtk_1accel_1label_1set_1accel_1widget_FUNC);
+	gtk_accel_label_set_accel_widget((GtkAccelLabel *)arg0, (GtkWidget *)arg1);
+	OS_NATIVE_EXIT(env, that, _1gtk_1accel_1label_1set_1accel_1widget_FUNC);
 }
 #endif
 
