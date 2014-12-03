@@ -2,16 +2,24 @@ package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.swt.internal.C;
+import org.eclipse.swt.internal.Callback;
 import org.eclipse.swt.internal.cocoa.NSButton;
 import org.eclipse.swt.internal.cocoa.NSButtonCell;
 import org.eclipse.swt.internal.cocoa.NSGraphicsContext;
+import org.eclipse.swt.internal.cocoa.NSNotification;
 import org.eclipse.swt.internal.cocoa.NSPopover;
 import org.eclipse.swt.internal.cocoa.NSRect;
 import org.eclipse.swt.internal.cocoa.NSSize;
+import org.eclipse.swt.internal.cocoa.NSText;
 import org.eclipse.swt.internal.cocoa.NSView;
 import org.eclipse.swt.internal.cocoa.NSViewController;
 import org.eclipse.swt.internal.cocoa.NSWindow;
+import org.eclipse.swt.internal.cocoa.OS;
+import org.eclipse.swt.internal.cocoa.SWTPopoverDelegate;
+import org.eclipse.swt.internal.cocoa.SWTTokenFieldDelegate;
 import org.eclipse.swt.internal.cocoa.id;
+import org.eclipse.swt.widgets.Text;
 
 /**
  * Cocoa popover widget.
@@ -19,16 +27,20 @@ import org.eclipse.swt.internal.cocoa.id;
  * @author Igor Karpenko, TrueShip LLC
  */
 public class Popover extends Composite {
-
+    static final byte[] SWT_OBJECT = {'S', 'W', 'T', '_', 'O', 'B', 'J', 'E', 'C', 'T', '\0'};
+    static long /*int*/ delegateClass;
+    static Callback Callback3;
+    static Callback Callback4;
     protected NSPopover popover;
     protected PopoverBehavior behavior;
     protected PopoverAppearance appearance;
-    protected PopoverPreferredEdge preferredEdge;
+    protected PopoverPrefferedEdge prefferedEdge;
     protected boolean animates;
     protected Composite target;
     protected NSSize size;
     protected int width;
     protected int height;
+    protected Text firstResponder;
 
     public enum PopoverBehavior {
         PopoverBehaviorApplicationDefined,
@@ -41,26 +53,27 @@ public class Popover extends Composite {
         PopoverAppearanceHUD
     }
 
-    public enum PopoverPreferredEdge {
+    public enum PopoverPrefferedEdge {
         MinXEdge, // Specifies the left edge of the input rectangle.
         MinYEdge, // Specifies the bottom edge of the input rectangle.
         MaxXEdge, // Specifies the right edge of the input rectangle.
         MaxYEdge  // Specifies the top edge of the input rectangle.
     }
 
-    public Popover (Shell parent, Composite target, int style) {
+    public Popover(Shell parent, Composite target, int style) {
         super(parent, style);
         //this.display = target.getDisplay();
       //  createWidget();
         appearance = PopoverAppearance.PopoverAppearanceMinimal;
         behavior = PopoverBehavior.PopoverBehaviorApplicationDefined;
-        preferredEdge = PopoverPreferredEdge.MinYEdge;
+        prefferedEdge = PopoverPrefferedEdge.MinYEdge;
         animates = true;
         this.target = target;
     }
 
     void createHandle () {
         super.createHandle ();
+
 
         popover = (NSPopover) new NSPopover().alloc();
         popover = (NSPopover) popover.init();
@@ -70,13 +83,49 @@ public class Popover extends Composite {
 
         size = new NSSize();
 
+        if (delegateClass == 0) {
+            Class tokenClass = this.getClass();
+            Callback3 = new Callback(tokenClass, "delegateMethod3", 3); //$NON-NLS-1$
+            long /*int*/ proc3 = Callback3.getAddress();
+
+            String className = "SWTPopoverDelegate"; //$NON-NLS-1$
+            byte[] types = {'*','\0'};
+            int size = C.PTR_SIZEOF, align = C.PTR_SIZEOF == 4 ? 2 : 3;
+            delegateClass = OS.objc_allocateClassPair (OS.class_NSObject, className, 0);
+
+            OS.class_addIvar(delegateClass, SWT_OBJECT, size, (byte)align, types);
+            OS.class_addMethod(delegateClass, OS.sel_popoverDidShow_, proc3, "@:@");
+            OS.objc_registerClassPair(delegateClass);
+        }
+
+        SWTPopoverDelegate delegate = (SWTPopoverDelegate)new SWTPopoverDelegate().alloc().init();
+        popover.setDelegate(delegate);
+        this.getDisplay().addWidget(delegate, this);
+
       /*  NSViewController controller = (NSViewController) new NSViewController().alloc();
         controller = (NSViewController)controller.init();
         controller.setView(view);
         popover.setContentViewController(controller);*/
     }
 
-    public void show () {
+    static long /*int*/ delegateMethod3 (long /*int*/ id, long /*int*/ sel, long /*int*/ arg0) {
+        if (sel == OS.sel_popoverDidShow_) {
+            Widget widget = Display.LookupWidget(id, sel);
+            if (widget == null || !(widget instanceof Popover)) {
+                return 0;
+            }
+
+            Popover popover = (Popover) widget;
+            if (popover.getFirstResponder() != null) {
+                popover.getFirstResponder().forceFocus();
+            }
+
+        }
+
+        return 0;
+    }
+
+    public void show() {
 
         NSViewController controller = (NSViewController) new NSViewController().alloc();
         controller = (NSViewController)controller.init();
@@ -88,7 +137,7 @@ public class Popover extends Composite {
         popover.setAppearance(appearance.ordinal());
         popover.setBehavior(behavior.ordinal());
 
-        popover.showRelativeToRect(target.contentView().frame(), target.getParent().view, preferredEdge.ordinal());
+        popover.showRelativeToRect(target.contentView().frame(), target.getParent().view, prefferedEdge.ordinal());
         layout();
         setVisible(true);
         ((Shell)parent).setWindow(view.window());
@@ -106,7 +155,7 @@ public class Popover extends Composite {
     }
 
     @Override
-    boolean isTransparent () {
+    boolean isTransparent() {
         return true;
     }
 
@@ -165,12 +214,12 @@ public class Popover extends Composite {
         this.appearance = appearance;
     }
 
-    public PopoverPreferredEdge getPreferredEdge () {
-        return preferredEdge;
+    public PopoverPrefferedEdge getPrefferedEdge () {
+        return prefferedEdge;
     }
 
-    public void setPreferredEdge (PopoverPreferredEdge preferredEdge) {
-        this.preferredEdge = preferredEdge;
+    public void setPrefferedEdge (PopoverPrefferedEdge prefferedEdge) {
+        this.prefferedEdge = prefferedEdge;
     }
 
     public boolean isAnimates () {
@@ -179,5 +228,13 @@ public class Popover extends Composite {
 
     public void setAnimates (boolean animates) {
         this.animates = animates;
+    }
+
+    public Text getFirstResponder () {
+        return this.firstResponder;
+    }
+
+    public void setFirstResponder (Text field) {
+        this.firstResponder = field;
     }
 }

@@ -2009,6 +2009,10 @@
 			<arg swt_gen="true"></arg>
 			<retval swt_gen="true"></retval>
 		</method>
+		<method selector="detachableWindowForPopover:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
 		<method selector="draggedImage:endedAt:operation:" swt_gen="true" swt_gen_super_msgSend="true">
 			<arg swt_gen="true"></arg>
 			<arg swt_gen="true"></arg>
@@ -2048,6 +2052,26 @@
 			<arg swt_gen="true"></arg>
 			<arg swt_gen="true"></arg>
 			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="popoverDidClose:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="popoverDidShow:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="popoverShouldClose:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="popoverWillClose:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="popoverWillShow:" swt_gen="true">
 			<arg swt_gen="true"></arg>
 			<retval swt_gen="true"></retval>
 		</method>

@@ -1,5 +1,7 @@
 package org.eclipse.swt.widgets;
 
+import org.eclipse.swt.widgets.Text;
+
 public class Popover extends Composite {
 
     protected PopoverBehavior behavior;
@@ -28,59 +30,66 @@ public class Popover extends Composite {
         MaxYEdge  // Specifies the top edge of the input rectangle.
     }
 
-    public Popover(Shell parent, Composite target, int style) {
+    public Popover (Shell parent, Composite target, int style) {
         super(parent, style);
     }
 
-    public void show() {
+    public void show () {
 
     }
 
-    public void close() {
+    public void close () {
 
     }
 
-    public Composite getParent() {
+    public Composite getParent () {
         return this.parent;
     }
 
-    public void setSize(int w, int h) {
+    public void setSize (int w, int h) {
 
     }
 
-    public void setFieldsTabList(Text[] list) {
+    public void setFieldsTabList (Text[] list) {
 
     }
 
-    public PopoverBehavior getBehavior() {
+    public PopoverBehavior getBehavior () {
         return behavior;
     }
 
-    public void setBehavior(PopoverBehavior behavior) {
+    public void setBehavior (PopoverBehavior behavior) {
         this.behavior = behavior;
     }
 
-    public PopoverAppearance getAppearance() {
+    public PopoverAppearance getAppearance () {
         return appearance;
     }
 
-    public void setAppearance(PopoverAppearance appearance) {
+    public void setAppearance (PopoverAppearance appearance) {
         this.appearance = appearance;
     }
 
-    public PopoverPrefferedEdge getPrefferedEdge() {
+    public PopoverPrefferedEdge getPrefferedEdge () {
         return prefferedEdge;
     }
 
-    public void setPrefferedEdge(PopoverPrefferedEdge prefferedEdge) {
+    public void setPrefferedEdge (PopoverPrefferedEdge prefferedEdge) {
         this.prefferedEdge = prefferedEdge;
     }
 
-    public boolean isAnimates() {
+    public boolean isAnimates () {
         return animates;
     }
 
-    public void setAnimates(boolean animates) {
+    public void setAnimates (boolean animates) {
         this.animates = animates;
+    }
+    
+    public Text getFirstResponder () {
+        return null;
+    }
+
+    public void setFirstResponder (Text field) {
     }
 }
