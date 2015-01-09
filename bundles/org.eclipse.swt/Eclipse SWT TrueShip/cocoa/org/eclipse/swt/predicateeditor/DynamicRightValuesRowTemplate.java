@@ -9,7 +9,7 @@ public class DynamicRightValuesRowTemplate {
         swtTemplate = template;
     }
 
-    public void setCriterion(String shipVia) {
-        swtTemplate.setCriterion(shipVia);
+    public void setCriterion(String criterion) {
+        swtTemplate.setCriterion(criterion);
     }
 }
