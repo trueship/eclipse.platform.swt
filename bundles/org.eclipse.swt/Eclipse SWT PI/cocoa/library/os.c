@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2012 IBM Corporation and others.
+ * Copyright (c) 2000, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1050,6 +1050,18 @@ JNIEXPORT jintLong JNICALL OS_NATIVE(CFDictionaryCreateMutable)
 	OS_NATIVE_ENTER(env, that, CFDictionaryCreateMutable_FUNC);
 	rc = (jintLong)CFDictionaryCreateMutable((CFAllocatorRef)arg0, (CFIndex)arg1, (CFDictionaryKeyCallBacks*)arg2, (CFDictionaryValueCallBacks*)arg3);
 	OS_NATIVE_EXIT(env, that, CFDictionaryCreateMutable_FUNC);
+	return rc;
+}
+#endif
+
+#ifndef NO_CFNumberGetType
+JNIEXPORT jintLong JNICALL OS_NATIVE(CFNumberGetType)
+	(JNIEnv *env, jclass that, jintLong arg0)
+{
+	jintLong rc = 0;
+	OS_NATIVE_ENTER(env, that, CFNumberGetType_FUNC);
+	rc = (jintLong)CFNumberGetType((CFNumberRef)arg0);
+	OS_NATIVE_EXIT(env, that, CFNumberGetType_FUNC);
 	return rc;
 }
 #endif
@@ -4776,6 +4788,7 @@ JNIEXPORT jintLong JNICALL OS_NATIVE(NSLocaleLanguageCode)
 }
 #endif
 
+Warning: bad return type. :NSMakeRect
 #ifndef NO_NSModalPanelRunLoopMode
 JNIEXPORT jintLong JNICALL OS_NATIVE(NSModalPanelRunLoopMode)
 	(JNIEnv *env, jclass that)

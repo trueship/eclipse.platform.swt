@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2014 IBM Corporation and others.
+ * Copyright (c) 2000, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,6 +36,10 @@ public id accessibilityAttributeValue(NSString attribute, id parameter) {
 
 public boolean accessibilitySetOverrideValue(id value, NSString attribute) {
 	return OS.objc_msgSend_bool(this.id, OS.sel_accessibilitySetOverrideValue_forAttribute_, value != null ? value.id : 0, attribute != null ? attribute.id : 0);
+}
+
+public void bind(NSString binding, id observable, NSString keyPath, NSDictionary options) {
+	OS.objc_msgSend(this.id, OS.sel_bind_toObject_withKeyPath_options_, binding != null ? binding.id : 0, observable != null ? observable.id : 0, keyPath != null ? keyPath.id : 0, options != null ? options.id : 0);
 }
 
 public void draggedImage(NSImage image, NSPoint screenPoint, long /*int*/ operation) {
@@ -94,6 +98,10 @@ public boolean tableView(NSTableView tableView, NSCell cell, NSTableColumn table
 	return OS.objc_msgSend_bool(this.id, OS.sel_tableView_shouldTrackCell_forTableColumn_row_, tableView != null ? tableView.id : 0, cell != null ? cell.id : 0, tableColumn != null ? tableColumn.id : 0, row);
 }
 
+public void unbind(NSString binding) {
+	OS.objc_msgSend(this.id, OS.sel_unbind_, binding != null ? binding.id : 0);
+}
+
 public boolean writeSelectionToPasteboard(NSPasteboard pboard, NSArray types) {
 	return OS.objc_msgSend_bool(this.id, OS.sel_writeSelectionToPasteboard_types_, pboard != null ? pboard.id : 0, types != null ? types.id : 0);
 }
@@ -118,6 +126,11 @@ public boolean conformsToProtocol(Protocol aProtocol) {
 
 public id copy() {
 	long /*int*/ result = OS.objc_msgSend(this.id, OS.sel_copy);
+	return result != 0 ? new id(result) : null;
+}
+
+public id copyWithZone(long /*int*/ zone) {
+	long /*int*/ result = OS.objc_msgSend(this.id, OS.sel_copyWithZone_, zone);
 	return result != 0 ? new id(result) : null;
 }
 

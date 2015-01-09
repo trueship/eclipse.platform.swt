@@ -58,6 +58,10 @@
 			<arg swt_gen="true"></arg>
 			<retval swt_alloc="true" swt_gen="true" swt_java_type="NSArray"></retval>
 		</method>
+		<method selector="componentsJoinedByString:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
 		<method selector="containsObject:" swt_gen="true">
 			<arg swt_gen="true"></arg>
 			<retval swt_gen="true"></retval>
@@ -224,9 +228,43 @@
 			<retval swt_gen="true"></retval>
 		</method>
 	</class>
-	<class name="NSComparisonPredicate" swt_superclass="NSPredicate">
+	<class name="NSComparisonPredicate" swt_gen="mixed" swt_superclass="NSPredicate">
+		<method selector="comparisonPredicateModifier" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="initWithLeftExpression:rightExpression:modifier:type:options:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="leftExpression" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="options" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="predicateOperatorType" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="rightExpression" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
 	</class>
-	<class name="NSCompoundPredicate" swt_superclass="NSPredicate">
+	<class name="NSCompoundPredicate" swt_gen="mixed" swt_superclass="NSPredicate">
+		<method selector="compoundPredicateType" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="initWithType:subpredicates:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="subpredicates" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
 	</class>
 	<class name="NSCountedSet" swt_superclass="NSMutableSet">
 	</class>
@@ -320,6 +358,28 @@
 			<retval swt_gen="true"></retval>
 		</method>
 		<method selector="userInfo" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+	</class>
+	<class name="NSExpression" swt_gen="mixed">
+		<method selector="collection" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="constantValue" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method class_method="true" selector="expressionForConstantValue:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method class_method="true" selector="expressionForKeyPath:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="keyPath" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="predicate" swt_gen="true">
 			<retval swt_gen="true"></retval>
 		</method>
 	</class>
@@ -510,6 +570,11 @@
 			<arg swt_gen="true"></arg>
 			<retval swt_gen="true"></retval>
 		</method>
+		<method selector="replaceObjectAtIndex:withObject:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
 	</class>
 	<class name="NSMutableAttributedString" swt_gen="mixed" swt_superclass="NSAttributedString">
 		<method selector="addAttribute:value:range:" swt_gen="true">
@@ -680,6 +745,12 @@
 		<method selector="integerValue" swt_gen="true">
 			<retval swt_gen="true"></retval>
 		</method>
+		<method selector="longLongValue" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="longValue" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
 		<method class_method="true" selector="numberWithBool:" swt_gen="true">
 			<arg swt_gen="true"></arg>
 			<retval swt_gen="true"></retval>
@@ -774,6 +845,10 @@
 		<method selector="copy" swt_gen="true">
 			<retval swt_gen="true"></retval>
 		</method>
+		<method selector="copyWithZone:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
 		<method selector="dealloc" swt_gen="true">
 			<retval swt_gen="true"></retval>
 		</method>
@@ -845,6 +920,29 @@
 	<class name="NSOutputStream" swt_superclass="NSStream">
 	</class>
 	<class name="NSPortCoder" swt_superclass="NSCoder">
+	</class>
+	<class name="NSPredicate" swt_gen="mixed">
+		<method selector="evaluateWithObject:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="predicateFormat" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method class_method="true" selector="predicateWithFormat:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method class_method="true" selector="predicateWithFormat:argumentArray:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method class_method="true" selector="predicateWithFormat:arguments:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
 	</class>
 	<class name="NSProtocolChecker" swt_superclass="NSProxy">
 	</class>
@@ -983,6 +1081,10 @@
 		<method class_method="true" selector="stringWithFormat:" swt_gen="true">
 			<arg swt_gen="true"></arg>
 			<retval swt_gen="true" swt_java_type="NSString"></retval>
+		</method>
+		<method class_method="true" selector="stringWithString:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
 		</method>
 		<method class_method="true" selector="stringWithUTF8String:" swt_gen="true">
 			<arg swt_gen="true"></arg>
@@ -1217,6 +1319,13 @@
 		<arg swt_gen="true" swt_java_type="int[]" swt_java_type64="long[]"></arg>
 		<retval swt_gen="true"></retval>
 	</function>
+	<function name="NSMakeRect" swt_gen="true">
+		<arg swt_gen="true"></arg>
+		<arg swt_gen="true"></arg>
+		<arg swt_gen="true"></arg>
+		<arg swt_gen="true"></arg>
+		<retval swt_gen="true"></retval>
+	</function>
 	<function name="NSPointInRect" swt_gen="true">
 		<arg swt_gen="true"></arg>
 		<arg swt_gen="true"></arg>
@@ -1231,6 +1340,17 @@
 	<function name="NSTemporaryDirectory" swt_gen="true">
 		<retval swt_gen="true"></retval>
 	</function>
+	<informal_protocol name="NSKeyValueCoding" swt_gen="mixed">
+		<method selector="setValue:forKey:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="valueForKey:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+	</informal_protocol>
 	<informal_protocol name="NSURLDownloadDelegate" swt_gen="mixed">
 		<method selector="download:decideDestinationWithSuggestedFilename:" swt_gen="true">
 			<arg swt_gen="true"></arg>

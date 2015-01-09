@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2012 IBM Corporation and others.
+ * Copyright (c) 2000, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -73,6 +73,7 @@ typedef enum {
 	CFDataGetLength_FUNC,
 	CFDictionaryAddValue_FUNC,
 	CFDictionaryCreateMutable_FUNC,
+	CFNumberGetType_FUNC,
 	CFRange_1sizeof_FUNC,
 	CFRelease_FUNC,
 	CFRunLoopAddObserver_FUNC,
@@ -369,6 +370,7 @@ typedef enum {
 	NSLigatureAttributeName_FUNC,
 	NSLinkAttributeName_FUNC,
 	NSLocaleLanguageCode_FUNC,
+	NSMakeRect_FUNC,
 	NSModalPanelRunLoopMode_FUNC,
 	NSNumberOfColorComponents_FUNC,
 	NSObliquenessAttributeName_FUNC,

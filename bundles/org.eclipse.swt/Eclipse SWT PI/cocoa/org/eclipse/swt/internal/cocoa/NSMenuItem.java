@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2014 IBM Corporation and others.
+ * Copyright (c) 2000, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -64,6 +64,11 @@ public long /*int*/ keyEquivalentModifierMask() {
 	return OS.objc_msgSend(this.id, OS.sel_keyEquivalentModifierMask);
 }
 
+public id representedObject() {
+	long /*int*/ result = OS.objc_msgSend(this.id, OS.sel_representedObject);
+	return result != 0 ? new id(result) : null;
+}
+
 public static NSMenuItem separatorItem() {
 	long /*int*/ result = OS.objc_msgSend(OS.class_NSMenuItem, OS.sel_separatorItem);
 	return result != 0 ? new NSMenuItem(result) : null;
@@ -123,6 +128,10 @@ public void setTarget(id anObject) {
 
 public void setTitle(NSString aString) {
 	OS.objc_msgSend(this.id, OS.sel_setTitle_, aString != null ? aString.id : 0);
+}
+
+public void setToolTip(NSString toolTip) {
+	OS.objc_msgSend(this.id, OS.sel_setToolTip_, toolTip != null ? toolTip.id : 0);
 }
 
 public long /*int*/ state() {

@@ -2,6 +2,21 @@
 <signatures swt_gen="mixed">
 	<constant name="kCFAllocatorDefault" swt_gen="true"></constant>
 	<constant name="kCFRunLoopCommonModes" swt_gen="true"></constant>
+	<enum name="kCFNumberCGFloatType" swt_gen="true"></enum>
+	<enum name="kCFNumberCharType" swt_gen="true"></enum>
+	<enum name="kCFNumberDoubleType" swt_gen="true"></enum>
+	<enum name="kCFNumberFloat32Type" swt_gen="true"></enum>
+	<enum name="kCFNumberFloat64Type" swt_gen="true"></enum>
+	<enum name="kCFNumberFloatType" swt_gen="true"></enum>
+	<enum name="kCFNumberIntType" swt_gen="true"></enum>
+	<enum name="kCFNumberLongLongType" swt_gen="true"></enum>
+	<enum name="kCFNumberLongType" swt_gen="true"></enum>
+	<enum name="kCFNumberNSIntegerType" swt_gen="true"></enum>
+	<enum name="kCFNumberSInt16Type" swt_gen="true"></enum>
+	<enum name="kCFNumberSInt32Type" swt_gen="true"></enum>
+	<enum name="kCFNumberSInt64Type" swt_gen="true"></enum>
+	<enum name="kCFNumberSInt8Type" swt_gen="true"></enum>
+	<enum name="kCFNumberShortType" swt_gen="true"></enum>
 	<enum name="kCFRunLoopBeforeWaiting" swt_gen="true"></enum>
 	<enum name="kCFStringEncodingUTF8" swt_gen="true"></enum>
 	<function name="CFAttributedStringCreate" swt_gen="true">
@@ -28,6 +43,10 @@
 		<arg swt_gen="true"></arg>
 		<arg swt_gen="true"></arg>
 		<arg swt_gen="true"></arg>
+		<arg swt_gen="true"></arg>
+		<retval swt_gen="true"></retval>
+	</function>
+	<function name="CFNumberGetType" swt_gen="true">
 		<arg swt_gen="true"></arg>
 		<retval swt_gen="true"></retval>
 	</function>
