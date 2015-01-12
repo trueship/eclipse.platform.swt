@@ -21,6 +21,9 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
     static Callback tokenFieldCompletionCallback;
     static long /*int*/ tokenFieldCompletionCallbackAddress;
     
+    static Callback tokenFieldAddObjectsCallback;
+    static long /*int*/ tokenFieldAddObjectsCallbackAddress;
+    
     static Callback predicateWithSubpredicatesCallback;
     static long /*int*/ predicateWithSubpredicatesCallbackAddress;
     
@@ -35,7 +38,7 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
     protected String keyPath;
     protected String title;
     NSTokenField tokenField;
-    protected String tokenFieldValue;
+    protected ArrayList<String> tokens = new ArrayList<String>();
     protected String criterion;
     protected RightValuesCallback rightValuesCallback;
     protected HashMap<Predicate, DynamicRightValuesRowTemplate> predicateToRowMap;
@@ -54,6 +57,10 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         tokenFieldCompletionCallback = new Callback(clazz, "tokenFieldCompletionProc", 6);
         tokenFieldCompletionCallbackAddress = tokenFieldCompletionCallback.getAddress();
         if (tokenFieldCompletionCallbackAddress == 0) SWT.error (SWT.ERROR_NO_MORE_CALLBACKS);
+        
+        tokenFieldAddObjectsCallback = new Callback(clazz, "tokenFieldAddObjectsProc", 5);
+        tokenFieldAddObjectsCallbackAddress = tokenFieldAddObjectsCallback.getAddress();
+        if (tokenFieldAddObjectsCallbackAddress == 0) SWT.error (SWT.ERROR_NO_MORE_CALLBACKS);
         
         predicateWithSubpredicatesCallback = new Callback(clazz, "predicateWithSubpredicatesProc", 3);
         predicateWithSubpredicatesCallbackAddress = predicateWithSubpredicatesCallback.getAddress();
@@ -77,6 +84,7 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         OS.class_addMethod(cls, OS.sel_copyWithZone_, copyWithZoneCallbackAddress, "@:@");
         OS.class_addMethod(cls, OS.sel_predicateWithSubpredicates_, predicateWithSubpredicatesCallbackAddress, "@:@");
         OS.class_addMethod(cls, OS.sel_tokenField_completionsForSubstring_indexOfToken_indexOfSelectedItem_ , tokenFieldCompletionCallbackAddress, "@:@@@@");
+        OS.class_addMethod(cls, OS.sel_tokenField_shouldAddObjects_atIndex_, tokenFieldAddObjectsCallbackAddress, "@:@@@");
         OS.class_addMethod(cls, OS.sel_setPredicate_, setPredicateCallbackAddress, "v@:@");
         OS.class_addMethod(cls, OS.sel_dealloc, deallocCallbackAddress, "@:");
         
@@ -108,10 +116,37 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
     
     public void setCriterion(String criterion) {
         this.criterion = criterion;
+        
+        updateRightValues();
+    }
+    
+    private void updateRightValues() {
+        if (criterion == null || rightValuesCallback == null || tokenField == null) return;
+        
+        NSArray currentTokens = new NSArray(tokenField.objectValue().id); 
+        if (currentTokens.count() == 0) return;
+        
+        List<String> validTokens = rightValuesCallback.getRightValues(criterion);
+        
+        tokens.clear();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < currentTokens.count(); i++) {
+            String token = new NSObject(currentTokens.objectAtIndex(i).id).description().getString();
+            if (validTokens.contains(token)) {
+                tokens.add(token);
+                sb.append(token);
+                sb.append(",");
+            }
+        }
+        
+        String tokenFieldValue = sb.length() > 0 ? sb.substring(0, sb.length() - 1) : "";
+        tokenField.setObjectValue(NSString.stringWith(tokenFieldValue));
     }
     
     public void setTokensCallback(RightValuesCallback callback) {
         rightValuesCallback = callback;
+        
+        updateRightValues();
     }
     
     public void internal_dispose() {
@@ -160,9 +195,15 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         NSView view = new NSView(views.objectAtIndex(2).id);
         if (!view.isKindOfClass(OS.class_NSTokenField))
             views.replaceObjectAtIndex(2, template.shipTypeTokenField());
-            
-        if (template.tokenFieldValue != null)
-            template.tokenField.setObjectValue(NSString.stringWith(template.tokenFieldValue));;
+          
+        if (template.tokens.size() > 0) {
+            StringBuilder sb = new StringBuilder();
+            for (String token : template.tokens) {
+                sb.append(token);
+                sb.append(",");
+            }
+            template.tokenField.setObjectValue(NSString.stringWith(sb.substring(0, sb.length() - 1)));
+        }
         
         NSPopUpButton left = new NSPopUpButton(views.objectAtIndex(0));
         NSArray items = left.itemArray();
@@ -170,7 +211,7 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
             NSMenuItem item = new NSMenuItem(items.objectAtIndex(i).id);
             NSExpression keyPathExpression = new NSExpression(item.representedObject());
             if (keyPathExpression.keyPath().getString().equalsIgnoreCase(template.keyPath))
-                item.setTitle(NSString.stringWith(template.title));;
+                item.setTitle(NSString.stringWith(template.title));
         }
         
         return views.id;
@@ -191,12 +232,32 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         SWTDynamicRightValuesRowTemplate template = getThis(id);
         if (template == null) return 0;
         
-        template.tokenFieldValue = new NSComparisonPredicate(arg0).rightExpression().description().getString().replaceAll("\"", "");
+        String tokenFieldValue = new NSComparisonPredicate(arg0).rightExpression().description().getString().replaceAll("\"", "");
+        
+        template.tokens = new ArrayList<String>(Arrays.asList(tokenFieldValue.split(",")));
         
         return template.superSetPredicateProc(arg0);
     }
     
-    static long /*int*/ tokenFieldCompletionProc(long /*int*/ id, long /*int*/ sel, long /*int*/ arg0, int arg1, int arg2, int arg3) {
+    static long /*int*/ tokenFieldAddObjectsProc(long /*int*/ id, long /*int*/ sel, long /*int*/ arg0, long /*int*/ arg1, long /*int*/ arg2) {
+        SWTDynamicRightValuesRowTemplate template = getThis(id);
+        if (template == null) return 0;
+        
+        NSArray objectsToAdd = new NSArray(arg1);
+        
+        NSMutableArray newTokens = NSMutableArray.arrayWithCapacity(objectsToAdd.count());
+        for (int i = 0; i < objectsToAdd.count(); i++) {
+            String token = new NSObject(objectsToAdd.objectAtIndex(i).id).description().getString();
+            if (!template.tokens.contains(token)) {
+                template.tokens.add(token);
+                newTokens.addObject(objectsToAdd.objectAtIndex(i));
+            }
+        }
+        
+        return newTokens.id;
+    }
+    
+    static long /*int*/ tokenFieldCompletionProc(long /*int*/ id, long /*int*/ sel, long /*int*/ arg0, long /*int*/ arg1, long /*int*/ arg2, long /*int*/ arg3) {
         SWTDynamicRightValuesRowTemplate template = getThis(id);
         if (template == null) return 0;
         

@@ -2484,9 +2484,6 @@
 			<arg swt_gen="true"></arg>
 			<retval swt_gen="true" swt_java_type="NSPrintInfo"></retval>
 		</method>
-		<method selector="isSelectionOnly" swt_gen="true">
-			<retval swt_gen="true"></retval>
-		</method>
 		<method selector="jobDisposition" swt_gen="true">
 			<retval swt_gen="true"></retval>
 		</method>
@@ -2504,10 +2501,6 @@
 			<retval swt_gen="true"></retval>
 		</method>
 		<method selector="setPrinter:" swt_gen="true">
-			<arg swt_gen="true"></arg>
-			<retval swt_gen="true"></retval>
-		</method>
-		<method selector="setSelectionOnly:" swt_gen="true">
 			<arg swt_gen="true"></arg>
 			<retval swt_gen="true"></retval>
 		</method>
@@ -5729,6 +5722,12 @@
 	<informal_protocol name="NSTokenFieldDelegate" swt_gen="mixed">
 		<method selector="tokenField:completionsForSubstring:indexOfToken:indexOfSelectedItem:" swt_gen="true">
 			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="tokenField:shouldAddObjects:atIndex:" swt_gen="true">
 			<arg swt_gen="true"></arg>
 			<arg swt_gen="true"></arg>
 			<arg swt_gen="true"></arg>
