@@ -322,11 +322,11 @@ public class PredicateEditor extends Control implements PredicateVisitable {
     }
     
     private void bind(String binding, SWTKeyValueCodingDecorator toObject, String keyPath) {
-        nsPredicateEditor.bind(NSString.stringWith(binding), toObject, NSString.stringWith(keyPath), null);;
+        nsPredicateEditor.bind(NSString.stringWith(binding), toObject, NSString.stringWith(keyPath), null);
     }
     
     private void unbind(String binding) {
-        nsPredicateEditor.unbind(NSString.stringWith(binding));;
+        nsPredicateEditor.unbind(NSString.stringWith(binding));
     }
     
     private id updatePredicate(NSPredicate predicate, String leftExpr, String rightExpr) {
