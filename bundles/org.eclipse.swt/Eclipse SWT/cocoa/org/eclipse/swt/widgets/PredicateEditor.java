@@ -122,27 +122,28 @@ public class PredicateEditor extends Control implements PredicateVisitable {
     class PredicateEditorNotification implements KeyValueCoding {
         
         public void setValueForKey(Object value, String key) {
-            predicate = new NSPredicate((id)value);
+            currentPredicate = new NSPredicate((id)value);
+            
+            firstTimePredicateUpdate = false;
             
             if (enabledNotifications)               
                 sendSelectionEvent (SWT.Selection);
         }
         
         public Object valueForKey(String key) {
-            return predicate;
+            return currentPredicate;
         }
     }
-      
-    NSPredicate predicate;
-    protected List<NSPredicateEditorRowTemplate> rowTemplates = new ArrayList<NSPredicateEditorRowTemplate>();
-    
-    protected HashMap<Predicate, DynamicRightValuesRowTemplate> predicateToRowTemplateMap = new HashMap<Predicate, DynamicRightValuesRowTemplate>();
-    
     
     private NSPredicateEditor nsPredicateEditor;
-    private boolean enabledNotifications = false;
     
-    PredicateEditorNotification notification = new PredicateEditorNotification();
+    boolean firstTimePredicateUpdate = true;
+    NSPredicate currentPredicate;
+    protected List<NSPredicateEditorRowTemplate> rowTemplates = new ArrayList<NSPredicateEditorRowTemplate>();
+    protected HashSet<DynamicRightValuesRowTemplate> dynamicRowTemplateInstances = new HashSet<DynamicRightValuesRowTemplate>();
+    
+    private boolean enabledNotifications = false;
+    protected PredicateEditorNotification notification = new PredicateEditorNotification();
     SWTKeyValueCodingDecorator kvNotification;
     
     public PredicateEditor(Composite parent, int style) {
@@ -214,12 +215,16 @@ public class PredicateEditor extends Control implements PredicateVisitable {
     }
     
     void setPredicate(NSPredicate predicate) {
-        this.predicate = predicate;
+        this.currentPredicate = predicate;
         nsPredicateEditor.setObjectValue(predicate);
     }
     
     public void acceptPredicateVisitor(PredicateVisitor visitor, Object context) {
-        visitor.visit(new Predicate(this.predicate.id), context);
+        if (firstTimePredicateUpdate) {
+            this.currentPredicate = nsPredicateEditor.predicate();
+            firstTimePredicateUpdate = false;
+        }
+        visitor.visit(new Predicate(this.currentPredicate.id), context);
     }
     
     @Override
@@ -324,8 +329,8 @@ public class PredicateEditor extends Control implements PredicateVisitable {
         return lrExprMap;
     }
     
-    public HashMap<Predicate, DynamicRightValuesRowTemplate> getPredicateToRowTemplateMap() {
-        return predicateToRowTemplateMap;
+    public HashSet<DynamicRightValuesRowTemplate> allDynamicRowTemplateInstances() {
+        return dynamicRowTemplateInstances;
     }
     
     private void bind(String binding, SWTKeyValueCodingDecorator toObject, String keyPath) {
@@ -377,5 +382,20 @@ public class PredicateEditor extends Control implements PredicateVisitable {
                 extractLRExpressionsToMap(new NSCompoundPredicate(predicate.id), lrExprMap);
             }
         }
+    }
+
+    public void addDynamicRowTemplateInstance(DynamicRightValuesRowTemplate newTemplate) {
+        boolean foundTemplate = false;
+        
+        for (DynamicRightValuesRowTemplate t : dynamicRowTemplateInstances) {
+            if (t.equals(newTemplate)) {
+                t.setPredicate(newTemplate.getPredicate());
+                foundTemplate = true;
+                break ;
+            }
+        }
+               
+        if (!foundTemplate)
+            dynamicRowTemplateInstances.add(newTemplate);
     }
 }

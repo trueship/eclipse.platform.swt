@@ -7,6 +7,7 @@ import org.eclipse.swt.internal.*;
 import org.eclipse.swt.internal.cocoa.*;
 import org.eclipse.swt.predicate.*;
 import org.eclipse.swt.predicateeditor.*;
+import org.eclipse.swt.widgets.PredicateEditor;
 import org.eclipse.swt.widgets.PredicateEditor.*;
 
 public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTemplate {
@@ -41,7 +42,7 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
     protected ArrayList<String> tokens = new ArrayList<String>();
     protected String criterion;
     protected RightValuesCallback rightValuesCallback;
-    protected HashMap<Predicate, DynamicRightValuesRowTemplate> predicateToRowMap;
+    protected PredicateEditor predicateEditor;
     
     static {
         Class<SWTDynamicRightValuesRowTemplate> clazz = SWTDynamicRightValuesRowTemplate.class;
@@ -91,14 +92,14 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         OS.objc_registerClassPair(cls);
     }
     
-    public SWTDynamicRightValuesRowTemplate (String keyPath, String title, RightValuesCallback tokensCallback, HashMap<Predicate, DynamicRightValuesRowTemplate> predicateRowMap) {
+    public SWTDynamicRightValuesRowTemplate (String keyPath, String title, RightValuesCallback tokensCallback, PredicateEditor predicateEditor) {
         super(0);
         alloc();
         
         this.keyPath = keyPath;
         this.title = title;
         this.rightValuesCallback = tokensCallback;
-        this.predicateToRowMap = predicateRowMap;
+        this.predicateEditor = predicateEditor;
         
         NSArray keyPaths = NSArray.arrayWithObject(NSExpression.expressionForKeyPath(NSString.stringWith(keyPath)));
         NSArray operators = NSArray.arrayWithObject(NSNumber.numberWithInteger(PredicateOperatorType.NSInPredicateOperatorType.value()));
@@ -221,7 +222,7 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         SWTDynamicRightValuesRowTemplate template = getThis(id);
         if (template == null) return 0;
            
-        SWTDynamicRightValuesRowTemplate newTemplate = new SWTDynamicRightValuesRowTemplate(template.keyPath, template.title, template.rightValuesCallback, template.predicateToRowMap);
+        SWTDynamicRightValuesRowTemplate newTemplate = new SWTDynamicRightValuesRowTemplate(template.keyPath, template.title, template.rightValuesCallback, template.predicateEditor);
         newTemplate.setCriterion(template.criterion);
         newTemplate.setTokensCallback(template.rightValuesCallback);
            
@@ -295,7 +296,10 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         
         Predicate predicate = Predicate.predicateWithFormat(format, Arrays.asList(template.keyPath));
         
-        template.predicateToRowMap.put(predicate, new DynamicRightValuesRowTemplate(template));
+        DynamicRightValuesRowTemplate newTemplate = new DynamicRightValuesRowTemplate(template);
+        newTemplate.setPredicate(predicate);
+        
+        template.predicateEditor.addDynamicRowTemplateInstance(newTemplate);
         
         return predicate.id();
     }
