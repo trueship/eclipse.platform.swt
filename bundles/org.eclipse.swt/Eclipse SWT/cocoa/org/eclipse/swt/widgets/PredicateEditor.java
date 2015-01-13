@@ -227,6 +227,10 @@ public class PredicateEditor extends Control implements PredicateVisitable {
         visitor.visit(new Predicate(this.currentPredicate.id), context);
     }
     
+    public void acceptPredicateVisitor(PredicateVisitor visitor) {
+        acceptPredicateVisitor(visitor, null);
+    }
+    
     @Override
     public void setSize(int width, int height) {
         super.setSize(width, height);
