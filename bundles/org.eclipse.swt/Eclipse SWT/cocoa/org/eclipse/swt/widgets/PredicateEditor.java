@@ -218,8 +218,8 @@ public class PredicateEditor extends Control implements PredicateVisitable {
         nsPredicateEditor.setObjectValue(predicate);
     }
     
-    public void acceptPredicateVisitor(PredicateVisitor visitor, Object data) {
-        visitor.visit(new Predicate(this.predicate.id), data);
+    public void acceptPredicateVisitor(PredicateVisitor visitor, Object context) {
+        visitor.visit(new Predicate(this.predicate.id), context);
     }
     
     @Override
