@@ -136,6 +136,9 @@ public class PredicateEditor extends Control implements PredicateVisitable {
     NSPredicate predicate;
     protected List<NSPredicateEditorRowTemplate> rowTemplates = new ArrayList<NSPredicateEditorRowTemplate>();
     
+    protected HashMap<Predicate, DynamicRightValuesRowTemplate> predicateToRowTemplateMap = new HashMap<Predicate, DynamicRightValuesRowTemplate>();
+    
+    
     private NSPredicateEditor nsPredicateEditor;
     private boolean enabledNotifications = false;
     
@@ -319,6 +322,10 @@ public class PredicateEditor extends Control implements PredicateVisitable {
         extractLRExpressionsToMap(predicate, lrExprMap);
         
         return lrExprMap;
+    }
+    
+    public HashMap<Predicate, DynamicRightValuesRowTemplate> getPredicateToRowTemplateMap() {
+        return predicateToRowTemplateMap;
     }
     
     private void bind(String binding, SWTKeyValueCodingDecorator toObject, String keyPath) {
