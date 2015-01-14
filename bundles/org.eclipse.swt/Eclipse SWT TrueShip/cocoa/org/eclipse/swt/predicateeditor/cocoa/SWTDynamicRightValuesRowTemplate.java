@@ -118,7 +118,7 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
                 tokens.add(token);
         }
         
-        tokenField.setObjectValue(NSString.stringWith(makeTokenValue()));
+        tokenField.setObjectValue(NSString.stringWith(makeTokenFieldValue()));
     }
     
     public void setTokensCallback(RightValuesCallback callback) {
@@ -164,7 +164,7 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         return tokenField;
     }
     
-    String makeTokenValue() {
+    String makeTokenFieldValue() {
         if (tokens.size() == 0) return "";
         
         StringBuilder sb = new StringBuilder();
@@ -214,7 +214,7 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
             views.replaceObjectAtIndex(2, this.shipTypeTokenField());
           
         if (tokens.size() > 0)
-            tokenField.setObjectValue(NSString.stringWith(makeTokenValue()));
+            tokenField.setObjectValue(NSString.stringWith(makeTokenFieldValue()));
         
         NSPopUpButton left = new NSPopUpButton(views.objectAtIndex(0));
         NSArray items = left.itemArray();
@@ -262,7 +262,7 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
     
     // Clears the tokenfield of any residual editing value when moving the focus in the middle of an edit session.
     long /*int*/ controlTextDidEndEditing(long /*int*/ notification) {
-        tokenField.setStringValue(NSString.stringWith(makeTokenValue()));
+        tokenField.setStringValue(NSString.stringWith(makeTokenFieldValue()));
         
         return 0;
     }
