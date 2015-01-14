@@ -31,6 +31,9 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
     static Callback setPredicateCallback;
     static long /*int*/ setPredicateCallbackAddress;
     
+    static Callback controlTextDidChangeCallback;
+    static long /*int*/ controlTextDidChangeCallbackAddress;
+    
     static Callback deallocCallback;
     static long /*int*/ deallocCallbackAddress;
     
@@ -71,6 +74,10 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         setPredicateCallbackAddress = setPredicateCallback.getAddress();
         if (setPredicateCallbackAddress == 0) SWT.error (SWT.ERROR_NO_MORE_CALLBACKS);
         
+        controlTextDidChangeCallback = new Callback(clazz, "proc3", 3);
+        controlTextDidChangeCallbackAddress = controlTextDidChangeCallback.getAddress();
+        if (controlTextDidChangeCallbackAddress == 0) SWT.error (SWT.ERROR_NO_MORE_CALLBACKS);
+        
         deallocCallback = new Callback(clazz, "deallocProc", 2);
         deallocCallbackAddress = deallocCallback.getAddress();
         if (deallocCallbackAddress == 0) SWT.error (SWT.ERROR_NO_MORE_CALLBACKS);
@@ -87,6 +94,7 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         OS.class_addMethod(cls, OS.sel_tokenField_completionsForSubstring_indexOfToken_indexOfSelectedItem_ , tokenFieldCompletionCallbackAddress, "@:@@@@");
         OS.class_addMethod(cls, OS.sel_tokenField_shouldAddObjects_atIndex_, tokenFieldAddObjectsCallbackAddress, "@:@@@");
         OS.class_addMethod(cls, OS.sel_setPredicate_, setPredicateCallbackAddress, "v@:@");
+        OS.class_addMethod(cls, OS.sel_controlTextDidChange, controlTextDidChangeCallbackAddress, "v@:@");
         OS.class_addMethod(cls, OS.sel_dealloc, deallocCallbackAddress, "@:");
         
         OS.objc_registerClassPair(cls);
@@ -238,6 +246,31 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         template.tokens = new ArrayList<String>(Arrays.asList(tokenFieldValue.split(",")));
         
         return template.superSetPredicateProc(arg0);
+    }
+    
+    static long /*int*/ proc3(long /*int*/ id, long /*int*/ sel, long /*int*/ arg0) {
+        SWTDynamicRightValuesRowTemplate template = getThis(id);
+        if (template == null) return 0;
+        
+        if (sel == OS.sel_controlTextDidChange) {
+            template.tokenField_controlTextDidChange(arg0);
+        }
+        
+        return 0;
+    }
+    
+    // Handles token deletion.
+    void tokenField_controlTextDidChange(long /*int*/ notification) {
+        String tokenFieldText = tokenField.stringValue().getString();
+        
+        List<String> currentTokens = Arrays.asList(tokenFieldText.trim().split("\\s*,\\s*"));
+        ArrayList<String> newTokens = new ArrayList<String>(tokens);
+        for (int i = 0; i < tokens.size(); i++) {
+            if (!currentTokens.contains(tokens.get(i)))
+                newTokens.remove(i);
+        }
+        
+        this.tokens = newTokens;
     }
     
     static long /*int*/ tokenFieldAddObjectsProc(long /*int*/ id, long /*int*/ sel, long /*int*/ arg0, long /*int*/ arg1, long /*int*/ arg2) {
