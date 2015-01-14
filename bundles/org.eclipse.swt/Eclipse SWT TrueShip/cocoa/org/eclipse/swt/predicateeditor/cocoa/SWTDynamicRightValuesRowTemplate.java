@@ -111,18 +111,14 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         List<String> validTokens = rightValuesCallback.getRightValues(criterion);
         
         tokens.clear();
-        StringBuilder sb = new StringBuilder();
+        
         for (int i = 0; i < currentTokens.count(); i++) {
             String token = new NSObject(currentTokens.objectAtIndex(i).id).description().getString();
-            if (validTokens.contains(token)) {
+            if (validTokens.contains(token))
                 tokens.add(token);
-                sb.append(token);
-                sb.append(",");
-            }
         }
         
-        String tokenFieldValue = sb.length() > 0 ? sb.substring(0, sb.length() - 1) : "";
-        tokenField.setObjectValue(NSString.stringWith(tokenFieldValue));
+        tokenField.setObjectValue(NSString.stringWith(makeTokenValue()));
     }
     
     public void setTokensCallback(RightValuesCallback callback) {
