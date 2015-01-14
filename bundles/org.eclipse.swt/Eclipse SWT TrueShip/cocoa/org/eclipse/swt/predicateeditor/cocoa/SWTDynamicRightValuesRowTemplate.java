@@ -67,6 +67,7 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         OS.class_addMethod(cls, OS.sel_tokenField_completionsForSubstring_indexOfToken_indexOfSelectedItem_ , tokenFieldCompletionCallbackAddress, "@:@@@@");
         OS.class_addMethod(cls, OS.sel_tokenField_shouldAddObjects_atIndex_, tokenFieldAddObjectsCallbackAddress, "@:@@@");
         OS.class_addMethod(cls, OS.sel_controlTextDidChange, proc3CallbackAddress, "v@:@");
+        OS.class_addMethod(cls, OS.sel_controlTextDidEndEditing, proc3CallbackAddress, "v@:@");
         OS.class_addMethod(cls, OS.sel_dealloc, proc2CallbackAddress, "@:");
         
         OS.objc_registerClassPair(cls);
@@ -167,6 +168,16 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         return tokenField;
     }
     
+    String makeTokenValue() {
+        if (tokens.size() == 0) return "";
+        
+        StringBuilder sb = new StringBuilder();
+        for (String token : tokens)
+            sb.append(token).append(",");
+        
+        return sb.substring(0, sb.length() - 1);
+    }
+    
     static long /*int*/ proc2(long /*int*/ id, long /*int*/ sel) {
         SWTDynamicRightValuesRowTemplate template = getThis(id);
         if (template == null) return 0;
@@ -186,6 +197,8 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         
         if (sel == OS.sel_controlTextDidChange) {
             return template.controlTextDidChangeProc(arg0);
+        } else if (sel == OS.sel_controlTextDidEndEditing) {
+            return template.controlTextDidEndEditing(arg0);
         } else if (sel == OS.sel_setPredicate_) {
             return template.setPredicateProc(arg0);
         } else if (sel == OS.sel_predicateWithSubpredicates_) {
@@ -204,14 +217,8 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         if (!view.isKindOfClass(OS.class_NSTokenField))
             views.replaceObjectAtIndex(2, this.shipTypeTokenField());
           
-        if (this.tokens.size() > 0) {
-            StringBuilder sb = new StringBuilder();
-            for (String token : this.tokens) {
-                sb.append(token);
-                sb.append(",");
-            }
-            this.tokenField.setObjectValue(NSString.stringWith(sb.substring(0, sb.length() - 1)));
-        }
+        if (tokens.size() > 0)
+            tokenField.setObjectValue(NSString.stringWith(makeTokenValue()));
         
         NSPopUpButton left = new NSPopUpButton(views.objectAtIndex(0));
         NSArray items = left.itemArray();
@@ -257,6 +264,14 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         return 0;
     }
     
+    // Clears the tokenfield of any residual editing value when moving the focus in the middle of an edit session.
+    long /*int*/ controlTextDidEndEditing(long /*int*/ notification) {
+        tokenField.setStringValue(NSString.stringWith(makeTokenValue()));
+        
+        return 0;
+    }
+    
+    // Handles token addition.
     static long /*int*/ tokenFieldAddObjectsProc(long /*int*/ id, long /*int*/ sel, long /*int*/ arg0, long /*int*/ arg1, long /*int*/ arg2) {
         SWTDynamicRightValuesRowTemplate template = getThis(id);
         if (template == null) return 0;
