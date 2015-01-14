@@ -9,14 +9,11 @@ import org.eclipse.swt.internal.cocoa.*;
 public class SWTKeyPathWithTitleRowTemplate extends NSPredicateEditorRowTemplate {
     static final byte[] SWT_OBJECT = {'S', 'W', 'T', '_', 'O', 'B', 'J', 'E', 'C', 'T', '\0'};
     
-    static Callback templateViewsCallback;
-    static long /*int*/ templateViewsCallbackAddress;
+    static Callback proc2Callback;
+    static long /*int*/ proc2CallbackAddress;
     
     static Callback copyWithZoneCallback;
     static long /*int*/ copyWithZoneCallbackAddress;
-    
-    static Callback deallocCallback;
-    static long /*int*/ deallocCallbackAddress;
     
     long /*int*/ jniRef;
     
@@ -27,26 +24,22 @@ public class SWTKeyPathWithTitleRowTemplate extends NSPredicateEditorRowTemplate
     static {
         Class<SWTKeyPathWithTitleRowTemplate> clazz = SWTKeyPathWithTitleRowTemplate.class;
         
-        templateViewsCallback = new Callback(clazz, "templateViewsProc", 2);
-        templateViewsCallbackAddress = templateViewsCallback.getAddress();
-        if (templateViewsCallbackAddress == 0) SWT.error (SWT.ERROR_NO_MORE_CALLBACKS);
+        proc2Callback = new Callback(clazz, "proc2", 2);
+        proc2CallbackAddress = proc2Callback.getAddress();
+        if (proc2CallbackAddress == 0) SWT.error (SWT.ERROR_NO_MORE_CALLBACKS);
         
         copyWithZoneCallback = new Callback(clazz, "copyWithZoneProc", 3);
         copyWithZoneCallbackAddress = copyWithZoneCallback.getAddress();
         if (copyWithZoneCallbackAddress == 0) SWT.error (SWT.ERROR_NO_MORE_CALLBACKS);
-        
-        deallocCallback = new Callback(clazz, "deallocProc", 2);
-        deallocCallbackAddress = deallocCallback.getAddress();
-        if (deallocCallbackAddress == 0) SWT.error (SWT.ERROR_NO_MORE_CALLBACKS);
                
         long /*int*/ cls = OS.objc_allocateClassPair(OS.class_NSPredicateEditorRowTemplate, SWTKeyPathWithTitleRowTemplate.class.getSimpleName(), 0);
         byte[] types = {'*','\0'};
         int size = C.PTR_SIZEOF, align = C.PTR_SIZEOF == 4 ? 2 : 3;
         
         OS.class_addIvar(cls, SWT_OBJECT, size, (byte)align, types);
-        OS.class_addMethod(cls, OS.sel_templateViews, templateViewsCallbackAddress, "@:");
+        OS.class_addMethod(cls, OS.sel_templateViews, proc2CallbackAddress, "@:");
         OS.class_addMethod(cls, OS.sel_copyWithZone_, copyWithZoneCallbackAddress, "@:@");
-        OS.class_addMethod(cls, OS.sel_dealloc, deallocCallbackAddress, "@:");
+        OS.class_addMethod(cls, OS.sel_dealloc, proc2CallbackAddress, "@:");
         
         OS.objc_registerClassPair(cls);
     }
@@ -98,18 +91,28 @@ public class SWTKeyPathWithTitleRowTemplate extends NSPredicateEditorRowTemplate
         return (SWTKeyPathWithTitleRowTemplate)OS.JNIGetObject(jniRef[0]);
     }
     
-    static long /*int*/ templateViewsProc(long /*int*/ id, long /*int*/ sel) {
-        SWTKeyPathWithTitleRowTemplate thisTemplate = getThis(id);
-        if (thisTemplate == null) return 0;
+    static long /*int*/ proc2(long /*int*/ id, long /*int*/ sel) {
+        SWTKeyPathWithTitleRowTemplate template = getThis(id);
+        if (template == null) return 0;
         
-        NSArray views = new NSArray(thisTemplate.superTemplateViews());
+        if (sel == OS.sel_templateViews) {
+            return template.templateViewsProc();
+        } else if (sel == OS.sel_dealloc) {
+            return template.deallocProc();
+        }
+        
+        return 0;
+    }
+    
+    long /*int*/ templateViewsProc() {
+        NSArray views = new NSArray(this.superTemplateViews());
         
         NSPopUpButton left = new NSPopUpButton(views.objectAtIndex(0));
         NSArray items = left.itemArray();
         for (int i = 0; i < items.count(); i++) {
             NSMenuItem item = new NSMenuItem(items.objectAtIndex(i).id);
             NSExpression keyPathExpression = new NSExpression(item.representedObject());
-            String title = thisTemplate.keyPathToTitleMap.get(keyPathExpression.keyPath().getString());
+            String title = this.keyPathToTitleMap.get(keyPathExpression.keyPath().getString());
             if (title != null)
                 item.setTitle(NSString.stringWith(title));
         }
@@ -141,11 +144,8 @@ public class SWTKeyPathWithTitleRowTemplate extends NSPredicateEditorRowTemplate
         return newTemplate.id;
     }
     
-    static long /*int*/ deallocProc(long /*int*/ id, long /*int*/ sel) {
-        SWTKeyPathWithTitleRowTemplate thisTemplate = getThis(id);
-        if (thisTemplate == null) return 0;
-        
-        thisTemplate.internal_dispose();
+    long /*int*/ deallocProc() {
+        internal_dispose();
         
         objc_super super_struct = new objc_super();
         super_struct.receiver = id;
