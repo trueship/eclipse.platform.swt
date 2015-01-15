@@ -33,6 +33,7 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
     protected ArrayList<String> tokens = new ArrayList<String>();
     protected String criterion;
     protected RightValuesCallback rightValuesCallback;
+    protected List<String> validTokens;
     protected PredicateEditor predicateEditor;
     
     static {
@@ -99,7 +100,18 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
     public void setCriterion(String criterion) {
         this.criterion = criterion;
         
+        updateValidTokenList();
         updateRightValues();
+    }
+    
+    private void updateValidTokenList() {
+        validTokens = null;
+        
+        if (rightValuesCallback != null)
+            validTokens = rightValuesCallback.getRightValues(criterion);
+        
+        if (validTokens == null)
+            validTokens = new ArrayList<String>();
     }
     
     private void updateRightValues() {
@@ -107,8 +119,6 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         
         NSArray currentTokens = new NSArray(tokenField.objectValue().id); 
         if (currentTokens.count() == 0) return;
-        
-        List<String> validTokens = rightValuesCallback.getRightValues(criterion);
         
         tokens.clear();
         
@@ -124,6 +134,7 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
     public void setTokensCallback(RightValuesCallback callback) {
         rightValuesCallback = callback;
         
+        updateValidTokenList();
         updateRightValues();
     }
     
@@ -292,11 +303,11 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         
         if (template.criterion == null || template.rightValuesCallback == null) return 0;
         
-        List<String> tokens = template.rightValuesCallback.getRightValues(template.criterion);
-        if (tokens == null) return 0;
-        
-        NSMutableArray tokensArray = NSMutableArray.arrayWithCapacity(tokens.size());
-        for (String token : tokens)
+        if (template.validTokens == null || template.validTokens.isEmpty())
+            template.updateValidTokenList();
+            
+        NSMutableArray tokensArray = NSMutableArray.arrayWithCapacity(template.validTokens.size());
+        for (String token : template.validTokens)
             tokensArray.addObject(NSString.stringWith(token));
         
         return tokensArray.id;
