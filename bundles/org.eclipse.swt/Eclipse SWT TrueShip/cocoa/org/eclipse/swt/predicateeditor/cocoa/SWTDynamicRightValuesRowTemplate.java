@@ -30,10 +30,10 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
     protected String keyPath;
     protected String title;
     NSTokenField tokenField;
-    protected ArrayList<String> tokens = new ArrayList<String>();
+    protected ArrayList<String> displayedTokens = new ArrayList<String>();
+    protected List<String> validTokens;
     protected String criterion;
     protected RightValuesCallback rightValuesCallback;
-    protected List<String> validTokens;
     protected PredicateEditor predicateEditor;
     
     static {
@@ -120,12 +120,12 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         NSArray currentTokens = new NSArray(tokenField.objectValue().id); 
         if (currentTokens.count() == 0) return;
         
-        tokens.clear();
+        displayedTokens.clear();
         
         for (int i = 0; i < currentTokens.count(); i++) {
             String token = new NSObject(currentTokens.objectAtIndex(i).id).description().getString();
             if (validTokens.contains(token))
-                tokens.add(token);
+                displayedTokens.add(token);
         }
         
         tokenField.setObjectValue(NSString.stringWith(makeTokenFieldValue()));
@@ -176,10 +176,10 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
     }
     
     String makeTokenFieldValue() {
-        if (tokens.size() == 0) return "";
+        if (displayedTokens.size() == 0) return "";
         
         StringBuilder sb = new StringBuilder();
-        for (String token : tokens)
+        for (String token : displayedTokens)
             sb.append(token).append(",");
         
         return sb.substring(0, sb.length() - 1);
@@ -224,7 +224,7 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         if (!view.isKindOfClass(OS.class_NSTokenField))
             views.replaceObjectAtIndex(2, this.shipTypeTokenField());
           
-        if (tokens.size() > 0)
+        if (displayedTokens.size() > 0)
             tokenField.setObjectValue(NSString.stringWith(makeTokenFieldValue()));
         
         NSPopUpButton left = new NSPopUpButton(views.objectAtIndex(0));
@@ -250,7 +250,7 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
     long /*int*/ setPredicateProc(long /*int*/ predicate) {
         String tokenFieldValue = new NSComparisonPredicate(predicate).rightExpression().description().getString().replaceAll("\"", "");
         
-        this.tokens = new ArrayList<String>(Arrays.asList(tokenFieldValue.split(",")));
+        this.displayedTokens = new ArrayList<String>(Arrays.asList(tokenFieldValue.split(",")));
         
         return this.superSetPredicateProc(predicate);
     }
@@ -260,13 +260,13 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         String tokenFieldText = tokenField.stringValue().getString();
         
         List<String> currentTokens = Arrays.asList(tokenFieldText.trim().split("\\s*,\\s*"));
-        ArrayList<String> newTokens = new ArrayList<String>(tokens);
-        for (int i = 0; i < tokens.size(); i++) {
-            if (!currentTokens.contains(tokens.get(i)))
+        ArrayList<String> newTokens = new ArrayList<String>(displayedTokens);
+        for (int i = 0; i < displayedTokens.size(); i++) {
+            if (!currentTokens.contains(displayedTokens.get(i)))
                 newTokens.remove(i);
         }
         
-        this.tokens = newTokens;
+        this.displayedTokens = newTokens;
         
         return 0;
     }
@@ -288,8 +288,8 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         NSMutableArray newTokens = NSMutableArray.arrayWithCapacity(objectsToAdd.count());
         for (int i = 0; i < objectsToAdd.count(); i++) {
             String token = new NSObject(objectsToAdd.objectAtIndex(i).id).description().getString();
-            if (!template.tokens.contains(token)) {
-                template.tokens.add(token);
+            if (!template.displayedTokens.contains(token)) {
+                template.displayedTokens.add(token);
                 newTokens.addObject(objectsToAdd.objectAtIndex(i));
             }
         }
