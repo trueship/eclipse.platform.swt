@@ -104,6 +104,19 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         updateTokenFieldValue();
     }
     
+    public void setTokensCallback(RightValuesCallback callback) {
+        rightValuesCallback = callback;
+        
+        updateValidTokenList();
+        updateTokenFieldValue();
+    }
+    
+    public void internal_dispose() {
+        if (jniRef != 0) OS.DeleteGlobalRef(jniRef);
+        jniRef = 0;
+        OS.object_setInstanceVariable(this.id, SWT_OBJECT, 0);
+    }
+    
     private void updateValidTokenList() {
         validTokens = null;
         
@@ -129,19 +142,6 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         }
         
         tokenField.setObjectValue(NSString.stringWith(makeTokenFieldValue()));
-    }
-    
-    public void setTokensCallback(RightValuesCallback callback) {
-        rightValuesCallback = callback;
-        
-        updateValidTokenList();
-        updateTokenFieldValue();
-    }
-    
-    public void internal_dispose() {
-        if (jniRef != 0) OS.DeleteGlobalRef(jniRef);
-        jniRef = 0;
-        OS.object_setInstanceVariable(this.id, SWT_OBJECT, 0);
     }
     
     long /*int*/ superSetPredicateProc(long /*int*/ predicate) {
