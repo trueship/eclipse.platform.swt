@@ -101,7 +101,7 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         this.criterion = criterion;
         
         updateValidTokenList();
-        updateRightValues();
+        updateTokenFieldValue();
     }
     
     private void updateValidTokenList() {
@@ -114,7 +114,7 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
             validTokens = new ArrayList<String>();
     }
     
-    private void updateRightValues() {
+    private void updateTokenFieldValue() {
         if (criterion == null || rightValuesCallback == null || tokenField == null) return;
         
         NSArray currentTokens = new NSArray(tokenField.objectValue().id); 
@@ -135,7 +135,7 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         rightValuesCallback = callback;
         
         updateValidTokenList();
-        updateRightValues();
+        updateTokenFieldValue();
     }
     
     public void internal_dispose() {
