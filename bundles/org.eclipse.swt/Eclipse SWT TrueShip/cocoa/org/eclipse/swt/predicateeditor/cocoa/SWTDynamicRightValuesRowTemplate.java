@@ -133,12 +133,15 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         NSArray currentTokens = new NSArray(tokenField.objectValue().id); 
         if (currentTokens.count() == 0) return;
         
-        displayedTokens.clear();
-        
-        for (int i = 0; i < currentTokens.count(); i++) {
-            String token = new NSObject(currentTokens.objectAtIndex(i).id).description().getString();
-            if (validTokens.contains(token))
-                displayedTokens.add(token);
+        // Keep the tokens if in 'free tokens' mode (i.e. not criterion was set).
+        if (criterion != null) {
+            displayedTokens.clear();
+            
+            for (int i = 0; i < currentTokens.count(); i++) {
+                String token = new NSObject(currentTokens.objectAtIndex(i).id).description().getString();
+                if (validTokens.contains(token))
+                    displayedTokens.add(token);
+            }
         }
         
         tokenField.setObjectValue(NSString.stringWith(makeTokenFieldValue()));
