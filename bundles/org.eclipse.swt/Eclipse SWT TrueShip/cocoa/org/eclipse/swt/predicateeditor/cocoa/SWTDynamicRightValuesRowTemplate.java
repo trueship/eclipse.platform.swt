@@ -170,6 +170,7 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
             rect.height = 22;
             tokenField.initWithFrame(rect);
             tokenField.setDelegate(this);
+            tokenField.cell().setWraps(false);
         }
         
         return tokenField;
@@ -228,6 +229,7 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
             tokenField.setObjectValue(NSString.stringWith(makeTokenFieldValue()));
         
         NSPopUpButton left = new NSPopUpButton(views.objectAtIndex(0));
+        
         NSArray items = left.itemArray();
         for (int i = 0; i < items.count(); i++) {
             NSMenuItem item = new NSMenuItem(items.objectAtIndex(i).id);
@@ -360,4 +362,34 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         
         return OS.objc_msgSendSuper(super_struct, OS.sel_dealloc);
     }
+    
+    public void refreshLayout() {
+        NSSize size = new NSSize();
+        
+        // Make the tokenfield stretch to the left of remove template ("-") button.
+        size.width = (computeRemoveTemplateButtonRect().x - tokenField.frame().x) - 5;
+        size.height = tokenField.frame().height;
+            
+        tokenField.setFrameSize(size);
+    }
+    
+    private NSRect computeRemoveTemplateButtonRect() {
+        NSArray subviews = tokenField.superview().subviews();
+         
+        NSRect maxXRect = new NSRect();
+        NSRect prevMaxXRect = new NSRect(); // the remove template ("-") button is the one before last.
+         
+        for (int i = 0; i < subviews.count(); i++) {
+            NSView view = new NSView(subviews.objectAtIndex(i));
+            NSRect viewRect = view.frame();
+            if (viewRect.x > maxXRect.x) {
+                prevMaxXRect = maxXRect;
+                maxXRect = viewRect;
+            } else if (viewRect.x > prevMaxXRect.x) {
+                prevMaxXRect = viewRect;
+            }
+        }
+         
+        return prevMaxXRect;
+     }
 }

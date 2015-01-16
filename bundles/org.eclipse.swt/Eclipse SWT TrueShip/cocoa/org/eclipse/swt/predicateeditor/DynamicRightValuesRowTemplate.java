@@ -43,4 +43,8 @@ public class DynamicRightValuesRowTemplate {
     public Predicate getPredicate() {
         return predicate;
     }
+
+    public void refreshLayout() {
+        swtTemplate.refreshLayout();
+    }
 }

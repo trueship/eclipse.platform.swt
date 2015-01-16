@@ -402,4 +402,11 @@ public class PredicateEditor extends Control implements PredicateVisitable {
         if (!foundTemplate)
             dynamicRowTemplateInstances.add(newTemplate);
     }
+
+    public void refreshLayout() {
+        Point newSize = computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        
+        for (DynamicRightValuesRowTemplate template : dynamicRowTemplateInstances)
+            template.refreshLayout();
+    }
 }
