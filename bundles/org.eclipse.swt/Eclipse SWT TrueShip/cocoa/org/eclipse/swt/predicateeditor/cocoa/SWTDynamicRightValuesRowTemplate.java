@@ -139,7 +139,7 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
             
             for (int i = 0; i < currentTokens.count(); i++) {
                 String token = new NSObject(currentTokens.objectAtIndex(i).id).description().getString();
-                if (validTokens.contains(token))
+                if (isTokenValid(token))
                     displayedTokens.add(token);
             }
         }
@@ -294,12 +294,20 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         for (int i = 0; i < objectsToAdd.count(); i++) {
             String token = new NSObject(objectsToAdd.objectAtIndex(i).id).description().getString();
             if (!template.displayedTokens.contains(token)) {
-                template.displayedTokens.add(token);
-                newTokens.addObject(objectsToAdd.objectAtIndex(i));
+                if (template.isTokenValid(token)) {
+                    template.displayedTokens.add(token);
+                    newTokens.addObject(objectsToAdd.objectAtIndex(i));
+                }
             }
         }
         
         return newTokens.id;
+    }
+    
+    boolean isTokenValid(String token) {
+       if (criterion == null || validTokens == null) return true;
+       
+       return validTokens.contains(token);
     }
     
     static long /*int*/ tokenFieldCompletionProc(long /*int*/ id, long /*int*/ sel, long /*int*/ arg0, long /*int*/ arg1, long /*int*/ arg2, long /*int*/ arg3) {
