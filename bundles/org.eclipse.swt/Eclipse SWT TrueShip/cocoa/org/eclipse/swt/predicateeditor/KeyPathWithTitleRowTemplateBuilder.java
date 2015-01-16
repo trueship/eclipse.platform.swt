@@ -7,7 +7,7 @@ import org.eclipse.swt.predicateeditor.cocoa.*;
 
 public class KeyPathWithTitleRowTemplateBuilder extends ComparisonPredicateEditorRowTemplateBuilder {
     private HashMap<String, String> keyPathToTitleMap;
-	
+    
     public ComparisonPredicateEditorRowTemplateBuilder withLeftExpressionsForKeyPathWithTitle(HashMap<String, String> keyPathToTitleMap) {
         this.keyPathToTitleMap = keyPathToTitleMap;
        
