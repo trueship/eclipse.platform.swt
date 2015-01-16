@@ -312,8 +312,10 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
             template.updateValidTokenList();
             
         NSMutableArray tokensArray = NSMutableArray.arrayWithCapacity(template.validTokens.size());
-        for (String token : template.validTokens)
-            tokensArray.addObject(NSString.stringWith(token));
+        for (String token : template.validTokens) {
+            if (!template.displayedTokens.contains(token))
+                tokensArray.addObject(NSString.stringWith(token));
+        }
         
         return tokensArray.id;
     }
