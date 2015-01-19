@@ -35,6 +35,7 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
     protected String criterion;
     protected RightValuesCallback rightValuesCallback;
     protected PredicateEditor predicateEditor;
+    private boolean released = false;
     
     static {
         Class<SWTDynamicRightValuesRowTemplate> clazz = SWTDynamicRightValuesRowTemplate.class;
@@ -111,7 +112,23 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         updateTokenFieldValue();
     }
     
-    public void internal_dispose() {
+    public void refreshLayout() {
+        if (isReleased()) return;
+        
+        NSSize size = new NSSize();
+        
+        // Make the tokenfield stretch to the left of remove template ("-") button.
+        size.width = (computeRemoveTemplateButtonRect().x - tokenField.frame().x) - 5;
+        size.height = tokenField.frame().height;
+            
+        tokenField.setFrameSize(size);
+    }
+    
+    public boolean isReleased() {
+        return released;
+    }
+    
+    void internal_dispose() {
         if (jniRef != 0) OS.DeleteGlobalRef(jniRef);
         jniRef = 0;
         OS.object_setInstanceVariable(this.id, SWT_OBJECT, 0);
@@ -369,21 +386,13 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
     long /*int*/ deallocProc() {
         internal_dispose();
         
+        released = true;
+        
         objc_super super_struct = new objc_super();
         super_struct.receiver = id;
         super_struct.super_class = OS.objc_msgSend(id, OS.sel_superclass);
         
         return OS.objc_msgSendSuper(super_struct, OS.sel_dealloc);
-    }
-    
-    public void refreshLayout() {
-        NSSize size = new NSSize();
-        
-        // Make the tokenfield stretch to the left of remove template ("-") button.
-        size.width = (computeRemoveTemplateButtonRect().x - tokenField.frame().x) - 5;
-        size.height = tokenField.frame().height;
-            
-        tokenField.setFrameSize(size);
     }
     
     private NSRect computeRemoveTemplateButtonRect() {
