@@ -34,8 +34,17 @@ public class Predicate {
         return nsPredicate.predicateFormat().getString();
     }
 
-    public boolean evaluateWithObject(KeyValueCodingDecorator kvObject) {
-        return nsPredicate.evaluateWithObject(new id(kvObject.id()));
+    public boolean evaluateWithObject(KeyValueCoding object) {
+        boolean result = false;
+        
+        KeyValueCodingDecorator kvObject = new KeyValueCodingDecorator(object);
+        try {
+            result = nsPredicate.evaluateWithObject(new id(kvObject.id()));
+        } finally {
+            kvObject.release();
+        }
+        
+        return result ;
     }
     
     public boolean isComparisonPredicate() {
