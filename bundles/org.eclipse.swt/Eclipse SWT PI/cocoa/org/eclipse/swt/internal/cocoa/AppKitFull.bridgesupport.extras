@@ -1173,6 +1173,9 @@
 		</method>
 	</class>
 	<class name="NSDatePicker" swt_gen="mixed" swt_superclass="NSControl">
+		<method selector="datePickerStyle" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
 		<method selector="dateValue" swt_gen="true">
 			<retval swt_gen="true"></retval>
 		</method>

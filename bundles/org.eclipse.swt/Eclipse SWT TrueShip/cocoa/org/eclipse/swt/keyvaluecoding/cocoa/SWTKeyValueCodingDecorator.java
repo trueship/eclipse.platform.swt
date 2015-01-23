@@ -1,5 +1,7 @@
 package org.eclipse.swt.keyvaluecoding.cocoa;
 
+import java.util.Date;
+
 import org.eclipse.swt.*;
 import org.eclipse.swt.internal.*;
 import org.eclipse.swt.internal.cocoa.*;
@@ -93,6 +95,8 @@ public class SWTKeyValueCodingDecorator extends NSObject {
             return NSNumber.numberWithInteger(((Long)value).intValue()).id;
         else if (value instanceof Boolean)
             return NSNumber.numberWithBool((Boolean)value).id;
+        else if (value instanceof Date)
+            return NSDate.dateWithTimeIntervalSince1970(((Date)value).getTime()/1000).id;
         else if (value instanceof id)
             return ((id)value).id; 
 
@@ -143,6 +147,9 @@ public class SWTKeyValueCodingDecorator extends NSObject {
                 javaObject = number.doubleValue();
                 break;
             }
+        } else if (value.isKindOfClass(OS.class_NSDate)) {
+            NSDate nsDate = new NSDate(value);
+            javaObject = new Date((long) (nsDate.timeIntervalSince1970() * 1000));
         }
         
         thisKV.decoratedObject.setValueForKey(javaObject, key);

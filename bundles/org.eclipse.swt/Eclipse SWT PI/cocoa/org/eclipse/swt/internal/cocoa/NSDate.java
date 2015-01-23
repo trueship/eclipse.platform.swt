@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2012 IBM Corporation and others.
+ * Copyright (c) 2000, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,11 @@ public NSCalendarDate dateWithCalendarFormat(NSString format, NSTimeZone aTimeZo
 	return result != 0 ? new NSCalendarDate(result) : null;
 }
 
+public static id dateWithTimeIntervalSince1970(double secs) {
+	long /*int*/ result = OS.objc_msgSend(OS.class_NSDate, OS.sel_dateWithTimeIntervalSince1970_, secs);
+	return result != 0 ? new id(result) : null;
+}
+
 public static NSDate dateWithTimeIntervalSinceNow(double secs) {
 	long /*int*/ result = OS.objc_msgSend(OS.class_NSDate, OS.sel_dateWithTimeIntervalSinceNow_, secs);
 	return result != 0 ? new NSDate(result) : null;
@@ -37,6 +42,10 @@ public static NSDate dateWithTimeIntervalSinceNow(double secs) {
 public static NSDate distantFuture() {
 	long /*int*/ result = OS.objc_msgSend(OS.class_NSDate, OS.sel_distantFuture);
 	return result != 0 ? new NSDate(result) : null;
+}
+
+public double timeIntervalSince1970() {
+	return OS.objc_msgSend_fpret(this.id, OS.sel_timeIntervalSince1970);
 }
 
 }

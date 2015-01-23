@@ -117,7 +117,25 @@ public class SWTKeyPathWithTitleRowTemplate extends NSPredicateEditorRowTemplate
                 item.setTitle(NSString.stringWith(title));
         }
         
+        NSView thirdView = new NSView(views.objectAtIndex(2));
+        if (thirdView.isKindOfClass(OS.class_NSDatePicker)) {
+            NSDatePicker datePicker = new NSDatePicker(thirdView.id);
+            if (isDateOnlyDatePicker(datePicker))
+                setDatePickerTimeToZero(datePicker);    
+        }
+        
         return views.id;
+    }
+    
+    private boolean isDateOnlyDatePicker(NSDatePicker datePicker) {
+        long /*int*/ style = datePicker.datePickerStyle();
+        return (style == OS.NSTextFieldAndStepperDatePickerStyle || style == OS.NSTextFieldDatePickerStyle);
+    }
+    
+    private void setDatePickerTimeToZero(NSDatePicker datePicker) {
+        NSDate selectedDate = datePicker.dateValue();
+        NSCalendar calendar = new NSCalendar(NSCalendar.currentCalendar());
+        datePicker.setDateValue(calendar.dateFromComponents(calendar.components((OS.NSDayCalendarUnit | OS.NSMonthCalendarUnit | OS.NSYearCalendarUnit), selectedDate)));
     }
     
     static long /*int*/ copyWithZoneProc(long /*int*/ id, long /*int*/ sel, long /*int*/ arg0) {
