@@ -11,6 +11,8 @@ import org.eclipse.swt.widgets.PredicateEditor;
 import org.eclipse.swt.widgets.PredicateEditor.*;
 
 public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTemplate {
+    private static final int DEFAULT_TOKENFIELD_WIDTH = 400;
+    private static final int DEFAULT_TOKENFIELD_HEIGHT = 22;
     private static final String IS_NOT = "is not";
     private static final String NOT_IN = "not in";
 
@@ -200,8 +202,8 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
             NSRect rect = new NSRect();
             rect.x = 0;
             rect.y = 0;
-            rect.width = 400;
-            rect.height = 22;
+            rect.width = DEFAULT_TOKENFIELD_WIDTH;
+            rect.height = DEFAULT_TOKENFIELD_HEIGHT;
             tokenField.initWithFrame(rect);
             tokenField.setDelegate(this);
             tokenField.cell().setWraps(false);
