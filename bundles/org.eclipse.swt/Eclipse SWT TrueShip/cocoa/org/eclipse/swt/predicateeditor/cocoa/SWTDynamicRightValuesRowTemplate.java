@@ -11,6 +11,9 @@ import org.eclipse.swt.widgets.PredicateEditor;
 import org.eclipse.swt.widgets.PredicateEditor.*;
 
 public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTemplate {
+    private static final String IS_NOT = "is not";
+    private static final String NOT_IN = "not in";
+
     static final byte[] SWT_OBJECT = {'S', 'W', 'T', '_', 'O', 'B', 'J', 'E', 'C', 'T', '\0'};
     
     static Callback proc2Callback;
@@ -24,6 +27,9 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
     
     static Callback tokenFieldAddObjectsCallback;
     static long /*int*/ tokenFieldAddObjectsCallbackAddress;
+    
+    static CallbackFpret matchForPredicateCallback;
+    static long /*int*/ matchForPredicateCallbackAddress;
     
     protected long /*int*/ jniRef;
     
@@ -56,6 +62,10 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         tokenFieldCompletionCallbackAddress = tokenFieldCompletionCallback.getAddress();
         if (tokenFieldCompletionCallbackAddress == 0) SWT.error (SWT.ERROR_NO_MORE_CALLBACKS);
         
+        matchForPredicateCallback = new CallbackFpret(clazz, "procMatchForPredicate", 3);
+        matchForPredicateCallbackAddress = matchForPredicateCallback.getAddress();
+        if (matchForPredicateCallbackAddress == 0) SWT.error (SWT.ERROR_NO_MORE_CALLBACKS);
+        
         long /*int*/ cls = OS.objc_allocateClassPair(OS.class_NSPredicateEditorRowTemplate, SWTDynamicRightValuesRowTemplate.class.getSimpleName(), 0);
         byte[] types = {'*','\0'};
         int size = C.PTR_SIZEOF, align = C.PTR_SIZEOF == 4 ? 2 : 3;
@@ -71,6 +81,7 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         OS.class_addMethod(cls, OS.sel_controlTextDidChange, proc3CallbackAddress, "v@:@");
         OS.class_addMethod(cls, OS.sel_controlTextDidEndEditing, proc3CallbackAddress, "v@:@");
         OS.class_addMethod(cls, OS.sel_dealloc, proc2CallbackAddress, "@:");
+        OS.class_addMethod(cls, OS.sel_matchForPredicate_, matchForPredicateCallbackAddress, "d@:@");
         
         OS.objc_registerClassPair(cls);
     }
@@ -85,8 +96,11 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         this.predicateEditor = predicateEditor;
         
         NSArray keyPaths = NSArray.arrayWithObject(NSExpression.expressionForKeyPath(NSString.stringWith(keyPath)));
-        NSArray operators = NSArray.arrayWithObject(NSNumber.numberWithInteger(PredicateOperatorType.NSInPredicateOperatorType.value()));
-
+        
+        NSMutableArray operators = NSMutableArray.arrayWithCapacity(2);
+        operators.addObject(NSNumber.numberWithInteger(PredicateOperatorType.NSInPredicateOperatorType.value()));
+        operators.addObject(NSNumber.numberWithInteger(PredicateOperatorType.NSNotEqualToPredicateOperatorType.value())); // For 'not in' operator
+        
         initWithLeftExpressions(keyPaths, 
                                AttributeType.NSStringAttributeType.value(),
                                ComparisonPredicateModifier.NSDirectPredicateModifier.value(),
@@ -238,6 +252,40 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         return 0;
     }
     
+    // Match 'keyPath in ...' for 'in' operator and '(not keyPath in ...)' for 'not in' operator.
+    static double /*float*/ procMatchForPredicate(long /*int*/ id, long /*int*/ sel, long /*int*/ arg0) {
+        SWTDynamicRightValuesRowTemplate template = getThis(id);
+        if (template == null) return 0;
+        
+        NSPredicate predicate = new NSPredicate(arg0);
+        
+        if (predicate.isKindOfClass(OS.class_NSCompoundPredicate)) {
+            NSCompoundPredicate compoundPredicate = new NSCompoundPredicate(predicate);
+            
+            if (compoundPredicate.compoundPredicateType() != CompoundPredicateType.NSNotPredicateType.value()) return 0;
+            
+            NSArray subpredicates = compoundPredicate.subpredicates();
+            if (subpredicates == null || subpredicates.count() != 1) return 0;
+            
+            NSPredicate subpredicate = new NSPredicate(subpredicates.objectAtIndex(0));
+            if (!subpredicate.isKindOfClass(OS.class_NSComparisonPredicate)) return 0;
+            
+            predicate = subpredicate;
+        }
+        
+        NSComparisonPredicate cp = new NSComparisonPredicate(predicate);
+        
+        if (cp.predicateOperatorType() != PredicateOperatorType.NSInPredicateOperatorType.value()) return 0;
+        
+        NSExpression expression = cp.leftExpression();
+        if (expression == null) return 0;
+        
+        NSString expressionKeyPath = expression.keyPath();
+        if (expressionKeyPath == null) return 0;
+        
+        return  expressionKeyPath.getString().equalsIgnoreCase(template.keyPath) ? 1 : 0;
+    }
+    
     long /*int*/ templateViewsProc() {
         NSMutableArray views = new NSMutableArray(new NSArray(this.superTemplateViews()).mutableCopy());
         
@@ -258,6 +306,8 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
                 item.setTitle(NSString.stringWith(this.title));
         }
         
+        makeNotInPredicateOperator(views);
+        
         return views.id;
     }
        
@@ -269,12 +319,33 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         return newTemplate.id;
     }
     
-    long /*int*/ setPredicateProc(long /*int*/ predicate) {
-        String tokenFieldValue = new NSComparisonPredicate(predicate).rightExpression().description().getString().replaceAll("\"", "");
+    long /*int*/ setPredicateProc(long /*int*/ predicateId) { 
+        NSPredicate predicate = new NSPredicate(predicateId);
         
+        if (predicate.isKindOfClass(OS.class_NSCompoundPredicate)) {
+            // Change a '(NOT %K in ...)' compound predicate into a '%K != ...' comparison predicate.
+            NSCompoundPredicate compoundPredicate = new NSCompoundPredicate(predicate.id);
+            NSComparisonPredicate comparisonPredicate = new NSComparisonPredicate(compoundPredicate.subpredicates().objectAtIndex(0));
+            
+            NSComparisonPredicate newComparisonPredicate = (NSComparisonPredicate) new NSComparisonPredicate().alloc();
+            newComparisonPredicate.initWithLeftExpression(comparisonPredicate.leftExpression(), 
+                                                          comparisonPredicate.rightExpression(), 
+                                                          comparisonPredicate.comparisonPredicateModifier(), 
+                                                          PredicateOperatorType.NSNotEqualToPredicateOperatorType.value(), 
+                                                          comparisonPredicate.options());
+            
+            selectNotInPredicateOperator();
+            predicate = new NSPredicate(newComparisonPredicate.id);
+        }
+        
+        updateTokenFieldFromPredicate(new NSComparisonPredicate(predicate.id));
+        
+        return this.superSetPredicateProc(predicate.id);
+    }
+
+    private void updateTokenFieldFromPredicate(NSComparisonPredicate predicate) {
+        String tokenFieldValue = predicate.rightExpression().description().getString().replaceAll("\"", "");
         this.displayedTokens = new ArrayList<String>(Arrays.asList(tokenFieldValue.split(",")));
-        
-        return this.superSetPredicateProc(predicate);
     }
     
     // Handles token deletion.
@@ -345,11 +416,27 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         return tokensArray.id;
     }
     
-    long /*int*/ predicateWithSubpredicatesProc(long /*int*/ arg0) {
+    long /*int*/ superPredicateWithSubpredicates(long /*int*/ predicate) {
+        objc_super super_struct = new objc_super();
+        super_struct.receiver = id;
+        super_struct.super_class = OS.objc_msgSend(id, OS.sel_superclass);
         
+        return OS.objc_msgSendSuper(super_struct, OS.sel_predicateWithSubpredicates_, predicate);
+    }
+    
+    long /*int*/ predicateWithSubpredicatesProc(long /*int*/ arg0) {
+        NSPredicate predicate = new NSPredicate(superPredicateWithSubpredicates(arg0));
+        
+        if (!predicate.isKindOfClass(OS.class_NSComparisonPredicate)) return predicate.id;
+            
+        NSComparisonPredicate comparisonPredicate = new NSComparisonPredicate(predicate);
+        String prefix = "";
+        if (comparisonPredicate.predicateOperatorType() == PredicateEditor.PredicateOperatorType.NSNotEqualToPredicateOperatorType.value())
+            prefix = "NOT ";
+    
         NSArray tokens = new NSArray(this.tokenField.objectValue().id);
         
-        String format = "%K IN \"\"";
+        String format = prefix + "%K IN \"\"";
         
         long numberOfTokens = tokens.count();
         
@@ -360,17 +447,17 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
                 sb.append(",");
             }
             
-            format = "%K IN \"" + sb.substring(0, sb.length() - 1) + "\"";
+            format = prefix + "%K IN \"" + sb.substring(0, sb.length() - 1) + "\"";
         }
         
-        Predicate predicate = Predicate.predicateWithFormat(format, Arrays.asList(this.keyPath));
+        Predicate newPredicate = Predicate.predicateWithFormat(format, Arrays.asList(this.keyPath));
         
         DynamicRightValuesRowTemplate newTemplate = new DynamicRightValuesRowTemplate(this);
-        newTemplate.setPredicate(predicate);
+        newTemplate.setPredicate(newPredicate);
         
         this.predicateEditor.addDynamicRowTemplateInstance(newTemplate);
         
-        return predicate.id();
+        return newPredicate.id();
     }
     
     static SWTDynamicRightValuesRowTemplate getThis(long /*int*/ id) {
@@ -414,4 +501,31 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
          
         return prevMaxXRect;
      }
+    
+    private void makeNotInPredicateOperator(NSMutableArray views) {
+        NSPopUpButton operatorButton = new NSPopUpButton(views.objectAtIndex(1));
+        
+        NSArray items = operatorButton.itemArray();
+        for (int i = 0; i < items.count(); i++) {
+            NSMenuItem item = new NSMenuItem(items.objectAtIndex(i).id);
+            if (item.title().isEqualToString(NSString.stringWith(IS_NOT))) {
+                item.setTitle(NSString.stringWith(NOT_IN));
+                return ;
+            }
+        }
+    }
+    
+    private void selectNotInPredicateOperator() {
+        NSMutableArray views = new NSMutableArray(new NSArray(this.superTemplateViews()).mutableCopy());
+        NSPopUpButton operatorButton = new NSPopUpButton(views.objectAtIndex(1));
+        
+        NSArray items = operatorButton.itemArray();
+        for (int i = 0; i < items.count(); i++) {
+            NSMenuItem item = new NSMenuItem(items.objectAtIndex(i).id);
+            if (item.title().isEqualToString(NSString.stringWith(IS_NOT))) {
+                operatorButton.selectItemAtIndex(i);
+                return ;
+            }
+        }
+    }
 }
