@@ -15,6 +15,8 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
     private static final int DEFAULT_TOKENFIELD_HEIGHT = 22;
     private static final String IS_NOT = "is not";
     private static final String NOT_IN = "not in";
+    
+    private static final long /*int*/ sel_unselectTokenFieldText = OS.sel_registerName("unselectTokenFieldText");
 
     static final byte[] SWT_OBJECT = {'S', 'W', 'T', '_', 'O', 'B', 'J', 'E', 'C', 'T', '\0'};
     
@@ -34,6 +36,8 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
     static long /*int*/ matchForPredicateCallbackAddress;
     
     protected long /*int*/ jniRef;
+    
+    protected NSMutableArray runLoopModes;
     
     protected String keyPath;
     protected String title;
@@ -84,6 +88,7 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         OS.class_addMethod(cls, OS.sel_controlTextDidEndEditing, proc3CallbackAddress, "v@:@");
         OS.class_addMethod(cls, OS.sel_dealloc, proc2CallbackAddress, "@:");
         OS.class_addMethod(cls, OS.sel_matchForPredicate_, matchForPredicateCallbackAddress, "d@:@");
+        OS.class_addMethod(cls, sel_unselectTokenFieldText, proc2CallbackAddress, "@:");
         
         OS.objc_registerClassPair(cls);
     }
@@ -140,6 +145,10 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         tokenField.setFrameSize(size);
     }
     
+    public void refreshUI() {
+        this.performSelector(sel_unselectTokenFieldText, null, 0.0, runLoopModes());
+    }
+    
     public boolean isReleased() {
         return released;
     }
@@ -178,6 +187,8 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         }
         
         tokenField.setObjectValue(NSString.stringWith(makeTokenFieldValue()));
+        
+        doUnselectTokenFieldText();
     }
     
     long /*int*/ superSetPredicateProc(long /*int*/ predicate) {
@@ -230,6 +241,8 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
             return template.templateViewsProc();
         } else if (sel == OS.sel_dealloc) {
             return template.deallocProc();
+        } else if (sel == sel_unselectTokenFieldText) {
+            return template.unselectTokenFieldTextProc();
         }
         
         return 0;
@@ -321,7 +334,7 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         return newTemplate.id;
     }
     
-    long /*int*/ setPredicateProc(long /*int*/ predicateId) { 
+    long /*int*/ setPredicateProc(long /*int*/ predicateId) {
         NSPredicate predicate = new NSPredicate(predicateId);
         
         if (predicate.isKindOfClass(OS.class_NSCompoundPredicate)) {
@@ -462,6 +475,26 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         return newPredicate.id();
     }
     
+    long /*int*/ unselectTokenFieldTextProc() {
+        doUnselectTokenFieldText();
+        
+        return 0;
+    }
+
+    NSArray runLoopModes() {
+        if (runLoopModes == null) {
+                runLoopModes = NSMutableArray.arrayWithCapacity(3);
+                runLoopModes.addObject(OS.NSEventTrackingRunLoopMode);
+                runLoopModes.addObject(OS.NSDefaultRunLoopMode);
+                runLoopModes.retain();
+        }
+
+        runLoopModes.retain();
+        runLoopModes.autorelease();
+        
+        return runLoopModes;
+    }
+    
     static SWTDynamicRightValuesRowTemplate getThis(long /*int*/ id) {
         if (id == 0) return null;
         
@@ -529,5 +562,19 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
                 return ;
             }
         }
+    }
+    
+    private void doUnselectTokenFieldText() {
+        NSCell cell = tokenField.cell();
+        if (cell == null) return;
+        
+        NSTextView textView = cell.fieldEditorForView(tokenField);
+        if (textView == null) return;
+        
+        NSRange range = new NSRange();
+        range.length = 0;
+        range.location = 0;
+        
+        textView.setSelectedRange(range);
     }
 }

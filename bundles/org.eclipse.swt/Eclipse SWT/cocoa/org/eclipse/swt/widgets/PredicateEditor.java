@@ -121,13 +121,21 @@ public class PredicateEditor extends Control implements PredicateVisitable {
     
     class PredicateEditorNotification implements KeyValueCoding {
         
+        private PredicateEditor predicateEditor;
+
+        public PredicateEditorNotification(PredicateEditor predicateEditor) {
+            this.predicateEditor = predicateEditor;
+        }
+
         public void setValueForKey(Object value, String key) {
             currentPredicate = new NSPredicate((id)value);
             
             firstTimePredicateUpdate = false;
-            
+                              
             if (enabledNotifications)               
                 sendSelectionEvent (SWT.Selection);
+            
+            predicateEditor.refreshUI();
         }
         
         public Object valueForKey(String key) {
@@ -143,7 +151,7 @@ public class PredicateEditor extends Control implements PredicateVisitable {
     protected HashSet<DynamicRightValuesRowTemplate> dynamicRowTemplateInstances = new HashSet<DynamicRightValuesRowTemplate>();
     
     private boolean enabledNotifications = false;
-    protected PredicateEditorNotification notification = new PredicateEditorNotification();
+    protected PredicateEditorNotification notification = new PredicateEditorNotification(this);
     SWTKeyValueCodingDecorator kvNotification;
     
     public PredicateEditor(Composite parent, int style) {
@@ -406,5 +414,10 @@ public class PredicateEditor extends Control implements PredicateVisitable {
     public void refreshLayout() {
         for (DynamicRightValuesRowTemplate template : dynamicRowTemplateInstances)
             template.refreshLayout();
+    }
+    
+    public void refreshUI() {
+        for (DynamicRightValuesRowTemplate template : dynamicRowTemplateInstances)
+            template.refreshUI();
     }
 }

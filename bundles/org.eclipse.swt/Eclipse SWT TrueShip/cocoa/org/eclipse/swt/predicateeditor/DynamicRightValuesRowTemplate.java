@@ -47,4 +47,8 @@ public class DynamicRightValuesRowTemplate {
     public void refreshLayout() {
         swtTemplate.refreshLayout();
     }
+
+    public void refreshUI() {
+        swtTemplate.refreshUI();
+    }
 }

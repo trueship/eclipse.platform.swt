@@ -1329,6 +1329,7 @@ public static final long /*int*/ sel_expressionForConstantValue_ = sel_registerN
 public static final long /*int*/ sel_expressionForKeyPath_ = sel_registerName("expressionForKeyPath:");
 public static final long /*int*/ sel_familyName = sel_registerName("familyName");
 public static final long /*int*/ sel_fieldEditor_forObject_ = sel_registerName("fieldEditor:forObject:");
+public static final long /*int*/ sel_fieldEditorForView_ = sel_registerName("fieldEditorForView:");
 public static final long /*int*/ sel_fileExistsAtPath_ = sel_registerName("fileExistsAtPath:");
 public static final long /*int*/ sel_fileExistsAtPath_isDirectory_ = sel_registerName("fileExistsAtPath:isDirectory:");
 public static final long /*int*/ sel_fileSystemRepresentation = sel_registerName("fileSystemRepresentation");

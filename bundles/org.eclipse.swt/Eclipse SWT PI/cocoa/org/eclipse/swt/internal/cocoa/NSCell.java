@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2012 IBM Corporation and others.
+ * Copyright (c) 2000, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,6 +63,11 @@ public NSRect expansionFrameWithFrame(NSRect cellFrame, NSView view) {
 	NSRect result = new NSRect();
 	OS.objc_msgSend_stret(result, this.id, OS.sel_expansionFrameWithFrame_inView_, cellFrame, view != null ? view.id : 0);
 	return result;
+}
+
+public NSTextView fieldEditorForView(NSView aControlView) {
+	long /*int*/ result = OS.objc_msgSend(this.id, OS.sel_fieldEditorForView_, aControlView != null ? aControlView.id : 0);
+	return result != 0 ? new NSTextView(result) : null;
 }
 
 public NSFont font() {
