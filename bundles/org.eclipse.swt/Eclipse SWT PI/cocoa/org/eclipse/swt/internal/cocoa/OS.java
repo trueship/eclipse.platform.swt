@@ -110,6 +110,9 @@ public class OS extends C {
 	public static final long /*int*/ sel_setShouldExpandItem_ = sel_registerName("setShouldExpandItem:");
 	public static final long /*int*/ sel_setShouldScrollClipView_ = sel_registerName("setShouldScrollClipView:");
 	
+    public static final long /*int*/ sel_controlTextDidChange = sel_registerName("controlTextDidChange:");
+    public static final long /*int*/ sel_controlTextDidEndEditing = sel_registerName("controlTextDidEndEditing:");
+	
 	/* These are not generated in order to avoid creating static methods on all classes */
 	public static final long /*int*/ sel_isSelectorExcludedFromWebScript_ = sel_registerName("isSelectorExcludedFromWebScript:");
 	public static final long /*int*/ sel_webScriptNameForSelector_ = sel_registerName("webScriptNameForSelector:");
@@ -1163,8 +1166,6 @@ public static final long /*int*/ sel_controlPointBounds = sel_registerName("cont
 public static final long /*int*/ sel_controlShadowColor = sel_registerName("controlShadowColor");
 public static final long /*int*/ sel_controlSize = sel_registerName("controlSize");
 public static final long /*int*/ sel_controlTextColor = sel_registerName("controlTextColor");
-public static final long /*int*/ sel_controlTextDidChange = sel_registerName("controlTextDidChange:");
-public static final long /*int*/ sel_controlTextDidEndEditing = sel_registerName("controlTextDidEndEditing:");
 public static final long /*int*/ sel_convertBaseToScreen_ = sel_registerName("convertBaseToScreen:");
 public static final long /*int*/ sel_convertFont_toHaveTrait_ = sel_registerName("convertFont:toHaveTrait:");
 public static final long /*int*/ sel_convertPoint_fromView_ = sel_registerName("convertPoint:fromView:");
