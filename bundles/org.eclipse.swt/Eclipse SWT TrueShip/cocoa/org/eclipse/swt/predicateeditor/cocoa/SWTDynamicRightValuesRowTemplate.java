@@ -573,6 +573,8 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
     }
     
     private void doUnselectTokenFieldText() {
+        if (tokenField == null) return;
+        
         NSCell cell = tokenField.cell();
         if (cell == null) return;
         

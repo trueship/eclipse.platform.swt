@@ -122,6 +122,7 @@ public class PredicateEditor extends Control implements PredicateVisitable {
     class PredicateEditorNotification implements KeyValueCoding {
         
         private PredicateEditor predicateEditor;
+        private long lastNumberOfRows;
 
         public PredicateEditorNotification(PredicateEditor predicateEditor) {
             this.predicateEditor = predicateEditor;
@@ -135,7 +136,13 @@ public class PredicateEditor extends Control implements PredicateVisitable {
             if (enabledNotifications)               
                 sendSelectionEvent (SWT.Selection);
             
-            predicateEditor.refreshUI();
+            long numberOfRows = nsPredicateEditor.numberOfRows();
+            
+            // If this is not a row deletion, refresh.
+            if (lastNumberOfRows > 0 && lastNumberOfRows <= numberOfRows)
+                predicateEditor.refreshUI();
+            
+            lastNumberOfRows = numberOfRows;
         }
         
         public Object valueForKey(String key) {
