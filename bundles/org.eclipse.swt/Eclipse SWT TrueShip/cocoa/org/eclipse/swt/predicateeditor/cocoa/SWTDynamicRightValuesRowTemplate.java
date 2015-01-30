@@ -48,6 +48,7 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
     protected RightValuesCallback rightValuesCallback;
     protected PredicateEditor predicateEditor;
     private boolean released = false;
+    private Predicate predicate;
     
     static {
         Class<SWTDynamicRightValuesRowTemplate> clazz = SWTDynamicRightValuesRowTemplate.class;
@@ -131,6 +132,10 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         
         updateValidTokenList();
         updateTokenFieldValue();
+    }
+    
+    public Predicate getPredicate() {
+        return predicate;
     }
     
     public void refreshLayout() {
@@ -465,14 +470,11 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
             format = prefix + "%K IN \"" + sb.substring(0, sb.length() - 1) + "\"";
         }
         
-        Predicate newPredicate = Predicate.predicateWithFormat(format, Arrays.asList(this.keyPath));
-        
-        DynamicRightValuesRowTemplate newTemplate = new DynamicRightValuesRowTemplate(this);
-        newTemplate.setPredicate(newPredicate);
-        
-        this.predicateEditor.addDynamicRowTemplateInstance(newTemplate);
-        
-        return newPredicate.id();
+        this.predicate = Predicate.predicateWithFormat(format, Arrays.asList(this.keyPath));
+
+        this.predicateEditor.addDynamicRowTemplateInstance(new DynamicRightValuesRowTemplate(this));
+                
+        return this.predicate.id();
     }
     
     long /*int*/ unselectTokenFieldTextProc() {
@@ -506,6 +508,8 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
     }
     
     long /*int*/ deallocProc() {
+        predicateEditor.removeDynamicRowTemplateInstance(new DynamicRightValuesRowTemplate(this));
+        
         internal_dispose();
         
         released = true;

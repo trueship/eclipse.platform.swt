@@ -420,4 +420,13 @@ public class PredicateEditor extends Control implements PredicateVisitable {
         for (DynamicRightValuesRowTemplate template : dynamicRowTemplateInstances)
             template.refreshUI();
     }
+
+    public void removeDynamicRowTemplateInstance(DynamicRightValuesRowTemplate template) {
+        for (DynamicRightValuesRowTemplate t : dynamicRowTemplateInstances) {
+            if (t.equals(template)) {
+                dynamicRowTemplateInstances.remove(t);
+                return;
+            }
+        }
+    }
 }

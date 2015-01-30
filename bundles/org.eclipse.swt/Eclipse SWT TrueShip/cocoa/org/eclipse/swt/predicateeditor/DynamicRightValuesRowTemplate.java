@@ -9,6 +9,7 @@ public class DynamicRightValuesRowTemplate {
 
     public DynamicRightValuesRowTemplate(SWTDynamicRightValuesRowTemplate template) {
         swtTemplate = template;
+        predicate = template.getPredicate();
     }
 
     public void setCriterion(String criterion) {
