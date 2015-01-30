@@ -446,7 +446,7 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
             
         NSComparisonPredicate comparisonPredicate = new NSComparisonPredicate(predicate);
         String prefix = "";
-        if (comparisonPredicate.predicateOperatorType() == PredicateEditor.PredicateOperatorType.NSNotEqualToPredicateOperatorType.value())
+        if (comparisonPredicate.predicateOperatorType() == PredicateOperatorType.NSNotEqualToPredicateOperatorType.value())
             prefix = "NOT ";
     
         NSArray tokens = new NSArray(this.tokenField.objectValue().id);
