@@ -316,15 +316,7 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         if (displayedTokens.size() > 0)
             tokenField.setObjectValue(NSString.stringWith(makeTokenFieldValue()));
         
-        NSPopUpButton left = new NSPopUpButton(views.objectAtIndex(0));
-        
-        NSArray items = left.itemArray();
-        for (int i = 0; i < items.count(); i++) {
-            NSMenuItem item = new NSMenuItem(items.objectAtIndex(i).id);
-            NSExpression keyPathExpression = new NSExpression(item.representedObject());
-            if (keyPathExpression.keyPath().getString().equalsIgnoreCase(this.keyPath))
-                item.setTitle(NSString.stringWith(this.title));
-        }
+        replaceKeyPathWithTitle(views);
         
         makeNotInPredicateOperator(views);
         
@@ -539,7 +531,19 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         }
          
         return prevMaxXRect;
-     }
+    }
+    
+    private void replaceKeyPathWithTitle(NSMutableArray views) {
+        NSPopUpButton left = new NSPopUpButton(views.objectAtIndex(0));
+        
+        NSArray items = left.itemArray();
+        for (int i = 0; i < items.count(); i++) {
+            NSMenuItem item = new NSMenuItem(items.objectAtIndex(i).id);
+            NSExpression keyPathExpression = new NSExpression(item.representedObject());
+            if (keyPathExpression.keyPath().getString().equalsIgnoreCase(this.keyPath))
+                item.setTitle(NSString.stringWith(this.title));
+        }
+    }
     
     private void makeNotInPredicateOperator(NSMutableArray views) {
         NSPopUpButton operatorButton = new NSPopUpButton(views.objectAtIndex(1));
