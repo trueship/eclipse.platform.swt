@@ -5,6 +5,7 @@ import java.util.*;
 import org.eclipse.swt.*;
 import org.eclipse.swt.internal.*;
 import org.eclipse.swt.internal.cocoa.*;
+import org.eclipse.swt.widgets.PredicateEditor.AttributeType;
 
 public class SWTKeyPathWithTitleRowTemplate extends NSPredicateEditorRowTemplate {
     static final byte[] SWT_OBJECT = {'S', 'W', 'T', '_', 'O', 'B', 'J', 'E', 'C', 'T', '\0'};
@@ -20,6 +21,19 @@ public class SWTKeyPathWithTitleRowTemplate extends NSPredicateEditorRowTemplate
     HashMap<String, String> keyPathToTitleMap;
     
     boolean initWithAttributeType;
+    long /*int*/ attributeType;
+
+    private boolean hasDateAndTimeRightExpression;
+    private boolean updatedDateTypeRow;
+    
+    static HashMap<String, String> numericToDateOperatorsTitleMap = new HashMap<String, String>();
+    
+    static {
+        numericToDateOperatorsTitleMap.put("is less than", "is before");
+        numericToDateOperatorsTitleMap.put("is less than or equal to", "is before or on");
+        numericToDateOperatorsTitleMap.put("is greater than", "is after");
+        numericToDateOperatorsTitleMap.put("is greater than or equal to", "is after or on");
+    }
     
     static {
         Class<SWTKeyPathWithTitleRowTemplate> clazz = SWTKeyPathWithTitleRowTemplate.class;
@@ -45,18 +59,24 @@ public class SWTKeyPathWithTitleRowTemplate extends NSPredicateEditorRowTemplate
     }
     
     public SWTKeyPathWithTitleRowTemplate (HashMap<String, String> keyPathToTitleMap) {
+        this(keyPathToTitleMap, false);
+    }
+    
+    public SWTKeyPathWithTitleRowTemplate(HashMap<String, String> keyPathToTitleMap, boolean hasDateAndTimeRightExpression) {
         super(0);
         alloc();
         
         this.keyPathToTitleMap = keyPathToTitleMap;
+        this.hasDateAndTimeRightExpression = hasDateAndTimeRightExpression;
         
         jniRef = OS.NewGlobalRef(this);
         if (jniRef == 0) SWT.error(SWT.ERROR_NO_HANDLES);
         OS.object_setInstanceVariable(this.id, SWT_OBJECT, jniRef);
     }
-    
+
     public id initWithLeftExpressions(NSArray leftExpressions, long /*int*/ attributeType, long /*int*/ modifier, NSArray operators, long /*int*/ options) {
         initWithAttributeType = true;
+        this.attributeType = attributeType;
         
         return super.initWithLeftExpressions(leftExpressions, attributeType, modifier, operators, options);
     }
@@ -117,14 +137,42 @@ public class SWTKeyPathWithTitleRowTemplate extends NSPredicateEditorRowTemplate
                 item.setTitle(NSString.stringWith(title));
         }
         
-        NSView thirdView = new NSView(views.objectAtIndex(2));
-        if (thirdView.isKindOfClass(OS.class_NSDatePicker)) {
-            NSDatePicker datePicker = new NSDatePicker(thirdView.id);
-            if (isDateOnlyDatePicker(datePicker))
-                setDatePickerTimeToZero(datePicker);    
+        if (isDateTypeRow() && !updatedDateTypeRow) {
+            makeDateTimePredicateOperators(new NSView(views.objectAtIndex(1)));
+            adjustDateTimeControl(new NSView(views.objectAtIndex(2)));
+            updatedDateTypeRow = true;
         }
         
         return views.id;
+    }
+
+    private void adjustDateTimeControl(NSView view) {
+        if (!view.isKindOfClass(OS.class_NSDatePicker)) return;
+        
+        NSDatePicker datePicker = new NSDatePicker(view.id);
+        
+        if (hasDateAndTimeRightExpression) {
+            datePicker.setDatePickerElements(OS.NSYearMonthDayDatePickerElementFlag | OS.NSHourMinuteSecondDatePickerElementFlag);
+            datePicker.sizeToFit();
+        } else if (isDateOnlyDatePicker(datePicker)) {
+            setDatePickerTimeToZero(datePicker);
+        }
+    }
+    
+    private boolean isDateTypeRow() {
+        return (initWithAttributeType && attributeType == AttributeType.NSDateAttributeType.value());
+    }
+
+    private void makeDateTimePredicateOperators(NSView view) {
+        NSPopUpButton operatorButton = new NSPopUpButton(view);
+        
+        NSArray items = operatorButton.itemArray();
+        for (int i = 0; i < items.count(); i++) {
+            NSMenuItem item = new NSMenuItem(items.objectAtIndex(i).id);
+            String newTitle = numericToDateOperatorsTitleMap.get(item.title().getString());
+            if (newTitle != null)
+                item.setTitle(NSString.stringWith(newTitle));
+        }
     }
     
     private boolean isDateOnlyDatePicker(NSDatePicker datePicker) {
@@ -158,6 +206,8 @@ public class SWTKeyPathWithTitleRowTemplate extends NSPredicateEditorRowTemplate
                     thisTemplate.modifier(), 
                     thisTemplate.operators(), 
                     thisTemplate.options());
+        
+        newTemplate.hasDateAndTimeRightExpression = thisTemplate.hasDateAndTimeRightExpression;
         
         return newTemplate.id;
     }

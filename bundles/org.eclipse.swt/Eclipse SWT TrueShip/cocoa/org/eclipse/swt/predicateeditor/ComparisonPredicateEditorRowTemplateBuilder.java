@@ -16,6 +16,7 @@ public class ComparisonPredicateEditorRowTemplateBuilder {
     NSMutableArray operators;
     int options = 0;
     NSMutableArray rightExpressions;
+    private boolean hasDateWithTimeRightExpression;
     
     public ComparisonPredicateEditorRowTemplateBuilder withLeftExpressions(List<String> expressions) {
         keyPaths = NSMutableArray.arrayWithCapacity(expressions.size());
@@ -58,6 +59,17 @@ public class ComparisonPredicateEditorRowTemplateBuilder {
             rightExpressions.addObject(NSExpression.expressionForConstantValue(NSString.stringWith(expression)));
         
         return this;
+    }
+    
+    public ComparisonPredicateEditorRowTemplateBuilder withDateAndTimeRightExpressionType() {
+        this.attributeType = AttributeType.NSDateAttributeType;
+        this.hasDateWithTimeRightExpression = true;
+        
+        return this;
+    }
+    
+    public boolean hasDateAndTimeRightExpression() {
+        return hasDateWithTimeRightExpression;
     }
     
     public ComparisonPredicateEditorRowTemplateBuilder withStringRightExpressionType() {

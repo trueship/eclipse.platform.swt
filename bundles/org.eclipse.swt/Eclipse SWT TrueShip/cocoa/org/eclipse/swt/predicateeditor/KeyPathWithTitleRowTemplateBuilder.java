@@ -15,7 +15,7 @@ public class KeyPathWithTitleRowTemplateBuilder extends ComparisonPredicateEdito
     }
     
     public PredicateEditorRowTemplate build() {
-        NSPredicateEditorRowTemplate template = new SWTKeyPathWithTitleRowTemplate(keyPathToTitleMap);
+        NSPredicateEditorRowTemplate template = new SWTKeyPathWithTitleRowTemplate(keyPathToTitleMap, hasDateAndTimeRightExpression());
         
         return new PredicateEditorRowTemplate(initTemplate(template).id);
     }
