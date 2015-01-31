@@ -101,6 +101,20 @@ public class SWTKeyPathWithTitleRowTemplate extends NSPredicateEditorRowTemplate
         return OS.objc_msgSendSuper(super_struct, OS.sel_templateViews);
     }
     
+    long /*int*/ templateViewsProc() {
+        NSArray views = new NSArray(this.superTemplateViews());
+        
+        replaceKeyPathWithTitle(new NSPopUpButton(views.objectAtIndex(0)));
+        
+        if (isDateTypeRow() && !updatedDateTypeRow) {
+            makeDateTimePredicateOperators(new NSView(views.objectAtIndex(1)));
+            adjustDateTimeControl(new NSView(views.objectAtIndex(2)));
+            updatedDateTypeRow = true;
+        }
+        
+        return views.id;
+    }
+    
     static SWTKeyPathWithTitleRowTemplate getThis(long /*int*/ id) {
         if (id == 0) return null;
         
@@ -122,60 +136,6 @@ public class SWTKeyPathWithTitleRowTemplate extends NSPredicateEditorRowTemplate
         }
         
         return 0;
-    }
-    
-    long /*int*/ templateViewsProc() {
-        NSArray views = new NSArray(this.superTemplateViews());
-        
-        replaceKeyPathWithTitle(new NSPopUpButton(views.objectAtIndex(0)));
-        
-        if (isDateTypeRow() && !updatedDateTypeRow) {
-            makeDateTimePredicateOperators(new NSView(views.objectAtIndex(1)));
-            adjustDateTimeControl(new NSView(views.objectAtIndex(2)));
-            updatedDateTypeRow = true;
-        }
-        
-        return views.id;
-    }
-
-    private void adjustDateTimeControl(NSView view) {
-        if (!view.isKindOfClass(OS.class_NSDatePicker)) return;
-        
-        NSDatePicker datePicker = new NSDatePicker(view.id);
-        
-        if (hasDateAndTimeRightExpression) {
-            datePicker.setDatePickerElements(OS.NSYearMonthDayDatePickerElementFlag | OS.NSHourMinuteSecondDatePickerElementFlag);
-            datePicker.sizeToFit();
-        } else if (isDateOnlyDatePicker(datePicker)) {
-            setDatePickerTimeToZero(datePicker);
-        }
-    }
-    
-    private boolean isDateTypeRow() {
-        return (initWithAttributeType && attributeType == AttributeType.NSDateAttributeType.value());
-    }
-
-    private void makeDateTimePredicateOperators(NSView view) {
-        NSPopUpButton operatorButton = new NSPopUpButton(view);
-        
-        NSArray items = operatorButton.itemArray();
-        for (int i = 0; i < items.count(); i++) {
-            NSMenuItem item = new NSMenuItem(items.objectAtIndex(i).id);
-            String newTitle = numericToDateOperatorsTitleMap.get(item.title().getString());
-            if (newTitle != null)
-                item.setTitle(NSString.stringWith(newTitle));
-        }
-    }
-    
-    private boolean isDateOnlyDatePicker(NSDatePicker datePicker) {
-        long /*int*/ style = datePicker.datePickerStyle();
-        return (style == OS.NSTextFieldAndStepperDatePickerStyle || style == OS.NSTextFieldDatePickerStyle);
-    }
-    
-    private void setDatePickerTimeToZero(NSDatePicker datePicker) {
-        NSDate selectedDate = datePicker.dateValue();
-        NSCalendar calendar = new NSCalendar(NSCalendar.currentCalendar());
-        datePicker.setDateValue(calendar.dateFromComponents(calendar.components((OS.NSDayCalendarUnit | OS.NSMonthCalendarUnit | OS.NSYearCalendarUnit), selectedDate)));
     }
     
     static long /*int*/ copyWithZoneProc(long /*int*/ id, long /*int*/ sel, long /*int*/ arg0) {
@@ -223,5 +183,45 @@ public class SWTKeyPathWithTitleRowTemplate extends NSPredicateEditorRowTemplate
             if (title != null)
                 item.setTitle(NSString.stringWith(title));
         }
+    }
+    
+    private void adjustDateTimeControl(NSView view) {
+        if (!view.isKindOfClass(OS.class_NSDatePicker)) return;
+        
+        NSDatePicker datePicker = new NSDatePicker(view.id);
+        
+        if (hasDateAndTimeRightExpression) {
+            datePicker.setDatePickerElements(OS.NSYearMonthDayDatePickerElementFlag | OS.NSHourMinuteSecondDatePickerElementFlag);
+            datePicker.sizeToFit();
+        } else if (isDateOnlyDatePicker(datePicker)) {
+            setDatePickerTimeToZero(datePicker);
+        }
+    }
+    
+    private boolean isDateTypeRow() {
+        return (initWithAttributeType && attributeType == AttributeType.NSDateAttributeType.value());
+    }
+
+    private void makeDateTimePredicateOperators(NSView view) {
+        NSPopUpButton operatorButton = new NSPopUpButton(view);
+        
+        NSArray items = operatorButton.itemArray();
+        for (int i = 0; i < items.count(); i++) {
+            NSMenuItem item = new NSMenuItem(items.objectAtIndex(i).id);
+            String newTitle = numericToDateOperatorsTitleMap.get(item.title().getString());
+            if (newTitle != null)
+                item.setTitle(NSString.stringWith(newTitle));
+        }
+    }
+    
+    private boolean isDateOnlyDatePicker(NSDatePicker datePicker) {
+        long /*int*/ style = datePicker.datePickerStyle();
+        return (style == OS.NSTextFieldAndStepperDatePickerStyle || style == OS.NSTextFieldDatePickerStyle);
+    }
+    
+    private void setDatePickerTimeToZero(NSDatePicker datePicker) {
+        NSDate selectedDate = datePicker.dateValue();
+        NSCalendar calendar = new NSCalendar(NSCalendar.currentCalendar());
+        datePicker.setDateValue(calendar.dateFromComponents(calendar.components((OS.NSDayCalendarUnit | OS.NSMonthCalendarUnit | OS.NSYearCalendarUnit), selectedDate)));
     }
 }
