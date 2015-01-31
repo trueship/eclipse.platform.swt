@@ -127,15 +127,7 @@ public class SWTKeyPathWithTitleRowTemplate extends NSPredicateEditorRowTemplate
     long /*int*/ templateViewsProc() {
         NSArray views = new NSArray(this.superTemplateViews());
         
-        NSPopUpButton left = new NSPopUpButton(views.objectAtIndex(0));
-        NSArray items = left.itemArray();
-        for (int i = 0; i < items.count(); i++) {
-            NSMenuItem item = new NSMenuItem(items.objectAtIndex(i).id);
-            NSExpression keyPathExpression = new NSExpression(item.representedObject());
-            String title = this.keyPathToTitleMap.get(keyPathExpression.keyPath().getString());
-            if (title != null)
-                item.setTitle(NSString.stringWith(title));
-        }
+        replaceKeyPathWithTitle(new NSPopUpButton(views.objectAtIndex(0)));
         
         if (isDateTypeRow() && !updatedDateTypeRow) {
             makeDateTimePredicateOperators(new NSView(views.objectAtIndex(1)));
@@ -220,5 +212,16 @@ public class SWTKeyPathWithTitleRowTemplate extends NSPredicateEditorRowTemplate
         super_struct.super_class = OS.objc_msgSend(id, OS.sel_superclass);
         
         return OS.objc_msgSendSuper(super_struct, OS.sel_dealloc);
+    }
+    
+    private void replaceKeyPathWithTitle(NSPopUpButton button) {
+        NSArray items = button.itemArray();
+        for (int i = 0; i < items.count(); i++) {
+            NSMenuItem item = new NSMenuItem(items.objectAtIndex(i).id);
+            NSExpression keyPathExpression = new NSExpression(item.representedObject());
+            String title = this.keyPathToTitleMap.get(keyPathExpression.keyPath().getString());
+            if (title != null)
+                item.setTitle(NSString.stringWith(title));
+        }
     }
 }
