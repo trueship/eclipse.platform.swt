@@ -141,13 +141,7 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
     public void refreshLayout() {
         if (isReleased()) return;
         
-        NSSize size = new NSSize();
-        
-        // Make the tokenfield stretch to the left of remove template ("-") button.
-        size.width = (computeRemoveTemplateButtonRect().x - tokenField.frame().x) - 5;
-        size.height = tokenField.frame().height;
-            
-        tokenField.setFrameSize(size);
+        resizeTokenField();
     }
     
     public void refreshUI() {
@@ -514,7 +508,13 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
     }
     
     private NSRect computeRemoveTemplateButtonRect() {
-        NSArray subviews = tokenField.superview().subviews();
+        if (tokenField == null) return null;
+        
+        NSView superview = tokenField.superview();
+        if (superview == null) return null;
+        
+        NSArray subviews = superview.subviews();
+        if (subviews == null) return null;
          
         NSRect maxXRect = new NSRect();
         NSRect prevMaxXRect = new NSRect(); // the remove template ("-") button is the one before last.
@@ -586,5 +586,20 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         range.location = 0;
         
         textView.setSelectedRange(range);
+    }
+    
+    private void resizeTokenField() {
+        if (tokenField == null) return;
+        
+        // Make the tokenfield stretch to the left of remove template ("-") button.
+        NSRect removeButtonRect = computeRemoveTemplateButtonRect();
+        if (removeButtonRect == null) return;
+        
+        NSSize size = new NSSize();
+        
+        size.width = (removeButtonRect.x - tokenField.frame().x) - 5;
+        size.height = tokenField.frame().height;
+            
+        tokenField.setFrameSize(size);
     }
 }
