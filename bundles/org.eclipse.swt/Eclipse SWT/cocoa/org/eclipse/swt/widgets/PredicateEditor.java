@@ -2,6 +2,8 @@ package org.eclipse.swt.widgets;
 
 import java.util.*;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.swt.*;
 import org.eclipse.swt.events.*;
@@ -121,13 +123,6 @@ public class PredicateEditor extends Control implements PredicateVisitable {
     
     class PredicateEditorNotification implements KeyValueCoding {
         
-        private PredicateEditor predicateEditor;
-        private long lastNumberOfRows;
-
-        public PredicateEditorNotification(PredicateEditor predicateEditor) {
-            this.predicateEditor = predicateEditor;
-        }
-
         public void setValueForKey(Object value, String key) {
             currentPredicate = new NSPredicate((id)value);
             
@@ -136,15 +131,9 @@ public class PredicateEditor extends Control implements PredicateVisitable {
             if (enabledNotifications)               
                 sendSelectionEvent (SWT.Selection);
             
-            long numberOfRows = nsPredicateEditor.numberOfRows();
-            
-            // If this is not a row deletion, refresh.
-            if (lastNumberOfRows > 0 && lastNumberOfRows <= numberOfRows)
-                predicateEditor.refreshUI();
-            
-            lastNumberOfRows = numberOfRows;
+            handlePredicateChanged();
         }
-        
+
         public Object valueForKey(String key) {
             return currentPredicate;
         }
@@ -156,10 +145,12 @@ public class PredicateEditor extends Control implements PredicateVisitable {
     NSPredicate currentPredicate;
     protected List<NSPredicateEditorRowTemplate> rowTemplates = new ArrayList<NSPredicateEditorRowTemplate>();
     protected HashSet<DynamicRightValuesRowTemplate> dynamicRowTemplateInstances = new HashSet<DynamicRightValuesRowTemplate>();
+    protected HashSet<String> dynamicRightValuesRowsKeyPaths = new HashSet<String>();
     
     private boolean enabledNotifications = false;
-    protected PredicateEditorNotification notification = new PredicateEditorNotification(this);
+    protected PredicateEditorNotification notification = new PredicateEditorNotification();
     SWTKeyValueCodingDecorator kvNotification;
+    private long lastNumberOfRows;
     
     public PredicateEditor(Composite parent, int style) {
         super(parent, style);
@@ -414,8 +405,10 @@ public class PredicateEditor extends Control implements PredicateVisitable {
             }
         }
                
-        if (!foundTemplate)
+        if (!foundTemplate) {
             dynamicRowTemplateInstances.add(newTemplate);
+            dynamicRightValuesRowsKeyPaths.add(newTemplate.getKeyPath());
+        }
     }
 
     public void refreshLayout() {
@@ -435,5 +428,42 @@ public class PredicateEditor extends Control implements PredicateVisitable {
                 return;
             }
         }
+    }
+    
+    private void handlePredicateChanged() {
+        if (lastNumberOfRows > 0 && !checkIfRowWasRemoved())
+            refreshUI();
+    
+        lastNumberOfRows = nsPredicateEditor.numberOfRows();
+    }
+    
+    private boolean checkIfRowWasRemoved() {
+        long currentNumberOfRows = nsPredicateEditor.numberOfRows();
+        
+        if (currentNumberOfRows == lastNumberOfRows)
+            return countDynamicRowsPredicates(currentPredicate.predicateFormat().getString()) < dynamicRowTemplateInstances.size();
+        else
+            return currentNumberOfRows < lastNumberOfRows;
+    }
+    
+    private int countDynamicRowsPredicates(String predicateFormat) {
+        int count = 0;
+        
+        for (String keyPath : dynamicRightValuesRowsKeyPaths)
+            count += countPredicates(predicateFormat, keyPath + " ");
+        
+        return count;
+    }
+    
+    private int countPredicates(String predicateFormat, String keyPath) {
+        if (predicateFormat == null) return 0;
+        
+        Pattern p = Pattern.compile(keyPath);
+        Matcher m = p.matcher(predicateFormat);
+        int count = 0;
+        while (m.find())
+            count++;
+        
+        return count;
     }
 }

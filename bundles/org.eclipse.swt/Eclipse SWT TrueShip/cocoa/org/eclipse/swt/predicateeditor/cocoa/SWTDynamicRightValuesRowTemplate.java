@@ -138,6 +138,10 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         return predicate;
     }
     
+    public String getKeyPath() {
+        return keyPath;
+    }
+    
     public void refreshLayout() {
         if (isReleased()) return;
         

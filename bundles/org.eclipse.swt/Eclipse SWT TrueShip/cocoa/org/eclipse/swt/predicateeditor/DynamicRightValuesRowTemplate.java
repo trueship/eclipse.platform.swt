@@ -50,6 +50,11 @@ public class DynamicRightValuesRowTemplate {
     }
 
     public void refreshUI() {
-        swtTemplate.refreshUI();
+        if (!swtTemplate.isReleased())
+            swtTemplate.refreshUI();
+    }
+
+    public String getKeyPath() {
+        return swtTemplate.getKeyPath();
     }
 }
