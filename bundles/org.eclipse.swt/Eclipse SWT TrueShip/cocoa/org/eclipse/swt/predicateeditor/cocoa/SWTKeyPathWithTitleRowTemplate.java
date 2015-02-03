@@ -8,9 +8,9 @@ import org.eclipse.swt.internal.cocoa.*;
 import org.eclipse.swt.widgets.PredicateEditor.AttributeType;
 
 public class SWTKeyPathWithTitleRowTemplate extends NSPredicateEditorRowTemplate {
-    private static final int NUMERIC_TEXTFIELD_WIDTH = 100;
-
     static final byte[] SWT_OBJECT = {'S', 'W', 'T', '_', 'O', 'B', 'J', 'E', 'C', 'T', '\0'};
+    
+    private static final int NUMERIC_TEXTFIELD_WIDTH = 100;
     
     static Callback proc2Callback;
     static long /*int*/ proc2CallbackAddress;
@@ -113,26 +113,6 @@ public class SWTKeyPathWithTitleRowTemplate extends NSPredicateEditorRowTemplate
         
         return views.id;
     }
-
-    private void updateRowForRightSideType(NSArray views) {
-        if (isNumericTypeRow())
-            adjustTextFieldForNumericType(new NSTextField(views.objectAtIndex(2)));
-        else if (isDateTypeRow()) {
-            makeDateTimePredicateOperators(new NSView(views.objectAtIndex(1)));
-            adjustDateTimeControl(new NSView(views.objectAtIndex(2)));
-        }
-        
-        updatedRow = true;
-    }
-    
-    private void adjustTextFieldForNumericType(NSTextField textField) {
-        NSSize size = new NSSize();
-        size.width = NUMERIC_TEXTFIELD_WIDTH;
-        size.height = textField.frame().height;
-        textField.setFrameSize(size);
-        
-        textField.setAlignment(OS.NSRightTextAlignment);
-    }
     
     static SWTKeyPathWithTitleRowTemplate getThis(long /*int*/ id) {
         if (id == 0) return null;
@@ -191,6 +171,26 @@ public class SWTKeyPathWithTitleRowTemplate extends NSPredicateEditorRowTemplate
         super_struct.super_class = OS.objc_msgSend(id, OS.sel_superclass);
         
         return OS.objc_msgSendSuper(super_struct, OS.sel_dealloc);
+    }
+    
+    private void updateRowForRightSideType(NSArray views) {
+        if (isNumericTypeRow())
+            adjustTextFieldForNumericType(new NSTextField(views.objectAtIndex(2)));
+        else if (isDateTypeRow()) {
+            makeDateTimePredicateOperators(new NSView(views.objectAtIndex(1)));
+            adjustDateTimeControl(new NSView(views.objectAtIndex(2)));
+        }
+        
+        updatedRow = true;
+    }
+    
+    private void adjustTextFieldForNumericType(NSTextField textField) {
+        NSSize size = new NSSize();
+        size.width = NUMERIC_TEXTFIELD_WIDTH;
+        size.height = textField.frame().height;
+        textField.setFrameSize(size);
+        
+        textField.setAlignment(OS.NSRightTextAlignment);
     }
     
     private void replaceKeyPathWithTitle(NSPopUpButton button) {
