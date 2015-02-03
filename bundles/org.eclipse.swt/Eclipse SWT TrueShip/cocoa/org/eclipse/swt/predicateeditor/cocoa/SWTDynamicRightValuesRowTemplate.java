@@ -199,7 +199,7 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         super_struct.receiver = id;
         super_struct.super_class = OS.objc_msgSend(id, OS.sel_superclass);
         
-        return OS.objc_msgSendSuper(super_struct, OS.sel_templateViews, predicate);
+        return OS.objc_msgSendSuper(super_struct, OS.sel_setPredicate_, predicate);
     }
     
     long /*int*/ superTemplateViews() {
