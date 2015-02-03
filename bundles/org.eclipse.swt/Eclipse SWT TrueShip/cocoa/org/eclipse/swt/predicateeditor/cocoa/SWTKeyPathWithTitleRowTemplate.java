@@ -8,6 +8,8 @@ import org.eclipse.swt.internal.cocoa.*;
 import org.eclipse.swt.widgets.PredicateEditor.AttributeType;
 
 public class SWTKeyPathWithTitleRowTemplate extends NSPredicateEditorRowTemplate {
+    private static final int NUMERIC_TEXTFIELD_WIDTH = 100;
+
     static final byte[] SWT_OBJECT = {'S', 'W', 'T', '_', 'O', 'B', 'J', 'E', 'C', 'T', '\0'};
     
     static Callback proc2Callback;
@@ -24,7 +26,7 @@ public class SWTKeyPathWithTitleRowTemplate extends NSPredicateEditorRowTemplate
     long /*int*/ attributeType;
 
     private boolean hasDateAndTimeRightExpression;
-    private boolean updatedDateTypeRow;
+    private boolean updatedRow;
     
     static HashMap<String, String> numericToDateOperatorsTitleMap = new HashMap<String, String>();
     
@@ -106,13 +108,30 @@ public class SWTKeyPathWithTitleRowTemplate extends NSPredicateEditorRowTemplate
         
         replaceKeyPathWithTitle(new NSPopUpButton(views.objectAtIndex(0)));
         
-        if (isDateTypeRow() && !updatedDateTypeRow) {
-            makeDateTimePredicateOperators(new NSView(views.objectAtIndex(1)));
-            adjustDateTimeControl(new NSView(views.objectAtIndex(2)));
-            updatedDateTypeRow = true;
-        }
+        if (!updatedRow)
+            updateRowForRightSideType(views);
         
         return views.id;
+    }
+
+    private void updateRowForRightSideType(NSArray views) {
+        if (isNumericTypeRow())
+            adjustTextFieldForNumericType(new NSTextField(views.objectAtIndex(2)));
+        else if (isDateTypeRow()) {
+            makeDateTimePredicateOperators(new NSView(views.objectAtIndex(1)));
+            adjustDateTimeControl(new NSView(views.objectAtIndex(2)));
+        }
+        
+        updatedRow = true;
+    }
+    
+    private void adjustTextFieldForNumericType(NSTextField textField) {
+        NSSize size = new NSSize();
+        size.width = NUMERIC_TEXTFIELD_WIDTH;
+        size.height = textField.frame().height;
+        textField.setFrameSize(size);
+        
+        textField.setAlignment(OS.NSRightTextAlignment);
     }
     
     static SWTKeyPathWithTitleRowTemplate getThis(long /*int*/ id) {
@@ -196,6 +215,17 @@ public class SWTKeyPathWithTitleRowTemplate extends NSPredicateEditorRowTemplate
         } else if (isDateOnlyDatePicker(datePicker)) {
             setDatePickerTimeToZero(datePicker);
         }
+    }
+    
+    private boolean isNumericTypeRow() {
+        return (initWithAttributeType && 
+                (attributeType == AttributeType.NSDecimalAttributeType.value() ||
+                 attributeType == AttributeType.NSDoubleAttributeType.value() ||
+                 attributeType == AttributeType.NSFloatAttributeType.value() ||
+                 attributeType == AttributeType.NSInteger16AttributeType.value() ||
+                 attributeType == AttributeType.NSInteger32AttributeType.value() ||
+                 attributeType == AttributeType.NSInteger64AttributeType.value()
+                 ));
     }
     
     private boolean isDateTypeRow() {
