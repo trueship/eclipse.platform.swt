@@ -210,7 +210,7 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         return OS.objc_msgSendSuper(super_struct, OS.sel_templateViews);
     }
     
-    id shipTypeTokenField() {
+    id tokenField() {
         if (tokenField == null) {
             tokenField = (NSTokenField) new NSTokenField().alloc();
             NSRect rect = new NSRect();
@@ -309,7 +309,7 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         
         NSView view = new NSView(views.objectAtIndex(2).id);
         if (!view.isKindOfClass(OS.class_NSTokenField))
-            views.replaceObjectAtIndex(2, this.shipTypeTokenField());
+            views.replaceObjectAtIndex(2, this.tokenField());
           
         if (displayedTokens.size() > 0)
             tokenField.setObjectValue(NSString.stringWith(makeTokenFieldValue()));
