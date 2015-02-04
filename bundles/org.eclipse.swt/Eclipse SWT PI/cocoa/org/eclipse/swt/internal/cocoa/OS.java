@@ -767,6 +767,7 @@ public static final long /*int*/ class_NSData = objc_getClass("NSData");
 public static final long /*int*/ class_NSDate = objc_getClass("NSDate");
 public static final long /*int*/ class_NSDateComponents = objc_getClass("NSDateComponents");
 public static final long /*int*/ class_NSDatePicker = objc_getClass("NSDatePicker");
+public static final long /*int*/ class_NSDecimalNumber = objc_getClass("NSDecimalNumber");
 public static final long /*int*/ class_NSDictionary = objc_getClass("NSDictionary");
 public static final long /*int*/ class_NSDirectoryEnumerator = objc_getClass("NSDirectoryEnumerator");
 public static final long /*int*/ class_NSDockTile = objc_getClass("NSDockTile");
@@ -1223,6 +1224,7 @@ public static final long /*int*/ sel_dateWithYear_month_day_hour_minute_second_t
 public static final long /*int*/ sel_dayOfMonth = sel_registerName("dayOfMonth");
 public static final long /*int*/ sel_dealloc = sel_registerName("dealloc");
 public static final long /*int*/ sel_decimalDigitCharacterSet = sel_registerName("decimalDigitCharacterSet");
+public static final long /*int*/ sel_decimalNumberWithString_ = sel_registerName("decimalNumberWithString:");
 public static final long /*int*/ sel_decimalSeparator = sel_registerName("decimalSeparator");
 public static final long /*int*/ sel_declareTypes_owner_ = sel_registerName("declareTypes:owner:");
 public static final long /*int*/ sel_defaultBaselineOffsetForFont_ = sel_registerName("defaultBaselineOffsetForFont:");
@@ -1636,6 +1638,7 @@ public static final long /*int*/ sel_numberOfSelectedRows = sel_registerName("nu
 public static final long /*int*/ sel_numberOfVisibleItems = sel_registerName("numberOfVisibleItems");
 public static final long /*int*/ sel_numberWithBool_ = sel_registerName("numberWithBool:");
 public static final long /*int*/ sel_numberWithDouble_ = sel_registerName("numberWithDouble:");
+public static final long /*int*/ sel_numberWithFloat_ = sel_registerName("numberWithFloat:");
 public static final long /*int*/ sel_numberWithInt_ = sel_registerName("numberWithInt:");
 public static final long /*int*/ sel_numberWithInteger_ = sel_registerName("numberWithInteger:");
 public static final long /*int*/ sel_objCType = sel_registerName("objCType");
@@ -4263,6 +4266,8 @@ public static final native long /*int*/ objc_msgSend(long /*int*/ id, long /*int
 public static final native long /*int*/ objc_msgSend(long /*int*/ id, long /*int*/ sel, int[] arg0, int arg1);
 /** @method flags=cast */
 public static final native int objc_msgSend(int id, int sel, float arg0);
+/** @method flags=cast */
+public static final native long objc_msgSend(long id, long sel, float arg0);
 /** @method flags=cast */
 public static final native long objc_msgSend(long id, long sel, int arg0);
 /** @method flags=cast */

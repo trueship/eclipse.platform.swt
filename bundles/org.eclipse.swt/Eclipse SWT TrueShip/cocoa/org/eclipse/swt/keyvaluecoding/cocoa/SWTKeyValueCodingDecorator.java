@@ -1,5 +1,6 @@
 package org.eclipse.swt.keyvaluecoding.cocoa;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import org.eclipse.swt.*;
@@ -93,13 +94,24 @@ public class SWTKeyValueCodingDecorator extends NSObject {
             return NSNumber.numberWithInteger(((Integer)value)).id;
         else if (value instanceof Long)
             return NSNumber.numberWithInteger(((Long)value).intValue()).id;
+        else if (value instanceof Float)
+            return NSNumber.numberWithFloat((Float)value).id;
+        else if (value instanceof Double)
+            return NSNumber.numberWithDouble((Double)value).id;
+        else if (value instanceof BigDecimal)
+            return NSDecimalNumber.numberWithDouble(((BigDecimal)value).doubleValue()).id;
         else if (value instanceof Boolean)
             return NSNumber.numberWithBool((Boolean)value).id;
         else if (value instanceof Date)
             return NSDate.dateWithTimeIntervalSince1970(((Date)value).getTime()/1000).id;
+        else if (value instanceof KeyValueCodingDecorator)
+            return ((KeyValueCodingDecorator)value).id();
+        else if (value instanceof KeyValueCoding) {
+            return new KeyValueCodingDecorator((KeyValueCoding) value).id();
+        }
         else if (value instanceof id)
             return ((id)value).id; 
-
+        
         return 0;
     }
     

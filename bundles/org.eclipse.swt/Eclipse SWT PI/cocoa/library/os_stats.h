@@ -962,6 +962,7 @@ typedef enum {
 #else
 	objc_1msgSend__JJ_3JII_FUNC,
 #endif
+	objc_1msgSend__JJF_FUNC,
 	objc_1msgSend__JJI_FUNC,
 	objc_1msgSend__JJ_3I_FUNC,
 	objc_1msgSend__JJ_3JJJ_FUNC,

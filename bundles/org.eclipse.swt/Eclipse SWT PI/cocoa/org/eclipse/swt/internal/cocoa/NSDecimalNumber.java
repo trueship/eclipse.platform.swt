@@ -10,90 +10,72 @@
  *******************************************************************************/
 package org.eclipse.swt.internal.cocoa;
 
-public class NSNumber extends NSValue {
+public class NSDecimalNumber extends NSNumber {
 
-public NSNumber() {
+public NSDecimalNumber() {
 	super();
 }
 
-public NSNumber(long /*int*/ id) {
+public NSDecimalNumber(long /*int*/ id) {
 	super(id);
 }
 
-public NSNumber(id id) {
+public NSDecimalNumber(id id) {
 	super(id);
 }
 
-public boolean boolValue() {
-	return OS.objc_msgSend_bool(this.id, OS.sel_boolValue);
+public static NSDecimalNumber decimalNumberWithString(NSString numberValue) {
+	long /*int*/ result = OS.objc_msgSend(OS.class_NSDecimalNumber, OS.sel_decimalNumberWithString_, numberValue != null ? numberValue.id : 0);
+	return result != 0 ? new NSDecimalNumber(result) : null;
 }
 
-public double doubleValue() {
-	return OS.objc_msgSend_fpret(this.id, OS.sel_doubleValue);
-}
-
-public float floatValue() {
-	return OS.objc_msgSend_floatret(this.id, OS.sel_floatValue);
-}
-
-public int intValue() {
-	return (int)/*64*/OS.objc_msgSend(this.id, OS.sel_intValue);
-}
-
-public long /*int*/ integerValue() {
-	return OS.objc_msgSend(this.id, OS.sel_integerValue);
-}
-
-public long longLongValue() {
-	return (long)OS.objc_msgSend(this.id, OS.sel_longLongValue);
-}
-
-public long /*int*/ longValue() {
-	return OS.objc_msgSend(this.id, OS.sel_longValue);
+public id initWithString(NSString numberValue) {
+	long /*int*/ result = OS.objc_msgSend(this.id, OS.sel_initWithString_, numberValue != null ? numberValue.id : 0);
+	return result != 0 ? new id(result) : null;
 }
 
 public static NSNumber numberWithBool(boolean value) {
-	long /*int*/ result = OS.objc_msgSend(OS.class_NSNumber, OS.sel_numberWithBool_, value);
+	long /*int*/ result = OS.objc_msgSend(OS.class_NSDecimalNumber, OS.sel_numberWithBool_, value);
 	return result != 0 ? new NSNumber(result) : null;
 }
 
 public static NSNumber numberWithDouble(double value) {
-	long /*int*/ result = OS.objc_msgSend(OS.class_NSNumber, OS.sel_numberWithDouble_, value);
+	long /*int*/ result = OS.objc_msgSend(OS.class_NSDecimalNumber, OS.sel_numberWithDouble_, value);
 	return result != 0 ? new NSNumber(result) : null;
 }
 
 public static NSNumber numberWithFloat(float value) {
-	long /*int*/ result = OS.objc_msgSend(OS.class_NSNumber, OS.sel_numberWithFloat_, value);
+	long /*int*/ result = OS.objc_msgSend(OS.class_NSDecimalNumber, OS.sel_numberWithFloat_, value);
 	return result != 0 ? new NSNumber(result) : null;
 }
 
 public static NSNumber numberWithInt(int value) {
-	long /*int*/ result = OS.objc_msgSend(OS.class_NSNumber, OS.sel_numberWithInt_, value);
+	long /*int*/ result = OS.objc_msgSend(OS.class_NSDecimalNumber, OS.sel_numberWithInt_, value);
 	return result != 0 ? new NSNumber(result) : null;
 }
 
 public static NSNumber numberWithInteger(long /*int*/ value) {
-	long /*int*/ result = OS.objc_msgSend(OS.class_NSNumber, OS.sel_numberWithInteger_, value);
+	long /*int*/ result = OS.objc_msgSend(OS.class_NSDecimalNumber, OS.sel_numberWithInteger_, value);
 	return result != 0 ? new NSNumber(result) : null;
 }
 
 public static NSValue valueWithPoint(NSPoint point) {
-	long /*int*/ result = OS.objc_msgSend(OS.class_NSNumber, OS.sel_valueWithPoint_, point);
+	long /*int*/ result = OS.objc_msgSend(OS.class_NSDecimalNumber, OS.sel_valueWithPoint_, point);
 	return result != 0 ? new NSValue(result) : null;
 }
 
 public static NSValue valueWithRange(NSRange range) {
-	long /*int*/ result = OS.objc_msgSend(OS.class_NSNumber, OS.sel_valueWithRange_, range);
+	long /*int*/ result = OS.objc_msgSend(OS.class_NSDecimalNumber, OS.sel_valueWithRange_, range);
 	return result != 0 ? new NSValue(result) : null;
 }
 
 public static NSValue valueWithRect(NSRect rect) {
-	long /*int*/ result = OS.objc_msgSend(OS.class_NSNumber, OS.sel_valueWithRect_, rect);
+	long /*int*/ result = OS.objc_msgSend(OS.class_NSDecimalNumber, OS.sel_valueWithRect_, rect);
 	return result != 0 ? new NSValue(result) : null;
 }
 
 public static NSValue valueWithSize(NSSize size) {
-	long /*int*/ result = OS.objc_msgSend(OS.class_NSNumber, OS.sel_valueWithSize_, size);
+	long /*int*/ result = OS.objc_msgSend(OS.class_NSDecimalNumber, OS.sel_valueWithSize_, size);
 	return result != 0 ? new NSValue(result) : null;
 }
 

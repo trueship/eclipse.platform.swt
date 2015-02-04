@@ -342,7 +342,15 @@
 	</class>
 	<class name="NSDateFormatter" swt_superclass="NSFormatter">
 	</class>
-	<class name="NSDecimalNumber" swt_superclass="NSNumber">
+	<class name="NSDecimalNumber" swt_gen="mixed" swt_superclass="NSNumber">
+		<method class_method="true" selector="decimalNumberWithString:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="initWithString:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
 	</class>
 	<class name="NSDeleteCommand" swt_superclass="NSScriptCommand">
 	</class>
@@ -790,6 +798,10 @@
 			<retval swt_gen="true"></retval>
 		</method>
 		<method class_method="true" selector="numberWithDouble:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method class_method="true" selector="numberWithFloat:" swt_gen="true">
 			<arg swt_gen="true"></arg>
 			<retval swt_gen="true"></retval>
 		</method>

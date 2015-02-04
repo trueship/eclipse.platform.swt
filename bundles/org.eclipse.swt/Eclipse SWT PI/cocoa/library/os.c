@@ -8897,6 +8897,18 @@ fail:
 }
 #endif
 
+#ifndef NO_objc_1msgSend__JJF
+JNIEXPORT jlong JNICALL OS_NATIVE(objc_1msgSend__JJF)
+	(JNIEnv *env, jclass that, jlong arg0, jlong arg1, jfloat arg2)
+{
+	jlong rc = 0;
+	OS_NATIVE_ENTER(env, that, objc_1msgSend__JJF_FUNC);
+	rc = (jlong)((jlong (*)(jlong, jlong, jfloat))objc_msgSend)(arg0, arg1, arg2);
+	OS_NATIVE_EXIT(env, that, objc_1msgSend__JJF_FUNC);
+	return rc;
+}
+#endif
+
 #ifndef NO_objc_1msgSend__JJI
 JNIEXPORT jlong JNICALL OS_NATIVE(objc_1msgSend__JJI)
 	(JNIEnv *env, jclass that, jlong arg0, jlong arg1, jint arg2)
