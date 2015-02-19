@@ -207,7 +207,13 @@ public class SWTMoneyRowTemplate extends NSPredicateEditorRowTemplate {
         
         NSComparisonPredicate currencyPredicate = (NSComparisonPredicate) new NSComparisonPredicate().alloc();
         
+        if (keyPath == null) {
+            NSComparisonPredicate amountPredicate = new NSComparisonPredicate(predicate);
+            keyPath = amountPredicate.leftExpression().description().getString().split("\\.")[0];
+        }
+        
         NSExpression left = NSExpression.expressionForKeyPath(NSString.stringWith(keyPath + ".CURRENCY"));
+               
         NSExpression right = NSExpression.expressionForConstantValue(NSString.stringWith(currencies.get((int) currencyPopUpButton.indexOfSelectedItem())));
         
         currencyPredicate.initWithLeftExpression(left, 
