@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2012 IBM Corporation and others.
+ * Copyright (c) 2000, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -59,6 +59,11 @@ public boolean isEnabled() {
 	return OS.objc_msgSend_bool(this.id, OS.sel_isEnabled);
 }
 
+public id objectValue() {
+	long /*int*/ result = OS.objc_msgSend(this.id, OS.sel_objectValue);
+	return result != 0 ? new id(result) : null;
+}
+
 public boolean sendAction(long /*int*/ theAction, id theTarget) {
 	return OS.objc_msgSend_bool(this.id, OS.sel_sendAction_to_, theAction, theTarget != null ? theTarget.id : 0);
 }
@@ -97,6 +102,10 @@ public void setFont(NSFont fontObj) {
 
 public void setFormatter(NSFormatter newFormatter) {
 	OS.objc_msgSend(this.id, OS.sel_setFormatter_, newFormatter != null ? newFormatter.id : 0);
+}
+
+public void setObjectValue(id obj) {
+	OS.objc_msgSend(this.id, OS.sel_setObjectValue_, obj != null ? obj.id : 0);
 }
 
 public void setStringValue(NSString aString) {

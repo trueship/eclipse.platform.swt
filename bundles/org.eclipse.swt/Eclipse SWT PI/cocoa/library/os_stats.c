@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2012 IBM Corporation and others.
+ * Copyright (c) 2000, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,6 +63,7 @@ char * OS_nativeFunctionNames[] = {
 	"CFDataGetLength",
 	"CFDictionaryAddValue",
 	"CFDictionaryCreateMutable",
+	"CFNumberGetType",
 	"CFRange_1sizeof",
 	"CFRelease",
 	"CFRunLoopAddObserver",
@@ -359,6 +360,7 @@ char * OS_nativeFunctionNames[] = {
 	"NSLigatureAttributeName",
 	"NSLinkAttributeName",
 	"NSLocaleLanguageCode",
+	"NSMakeRect",
 	"NSModalPanelRunLoopMode",
 	"NSNumberOfColorComponents",
 	"NSObliquenessAttributeName",
@@ -950,6 +952,7 @@ char * OS_nativeFunctionNames[] = {
 #else
 	"objc_1msgSend__JJ_3JII",
 #endif
+	"objc_1msgSend__JJF",
 	"objc_1msgSend__JJI",
 	"objc_1msgSend__JJ_3I",
 	"objc_1msgSend__JJ_3JJJ",

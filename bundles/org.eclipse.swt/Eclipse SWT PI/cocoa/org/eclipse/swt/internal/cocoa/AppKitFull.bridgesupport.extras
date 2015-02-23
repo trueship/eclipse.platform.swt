@@ -661,6 +661,10 @@
 			<arg swt_gen="true"></arg>
 			<retval swt_gen="true"></retval>
 		</method>
+		<method selector="fieldEditorForView:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
 		<method selector="font" swt_gen="true">
 			<retval swt_gen="true"></retval>
 		</method>
@@ -1043,6 +1047,9 @@
 		<method selector="isEnabled" swt_gen="true">
 			<retval swt_gen="true"></retval>
 		</method>
+		<method selector="objectValue" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
 		<method selector="sendAction:to:" swt_gen="true">
 			<arg swt_gen="true"></arg>
 			<arg swt_gen="true"></arg>
@@ -1081,6 +1088,10 @@
 			<retval swt_gen="true"></retval>
 		</method>
 		<method selector="setFormatter:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="setObjectValue:" swt_gen="true">
 			<arg swt_gen="true"></arg>
 			<retval swt_gen="true"></retval>
 		</method>
@@ -1166,6 +1177,9 @@
 		</method>
 	</class>
 	<class name="NSDatePicker" swt_gen="mixed" swt_superclass="NSControl">
+		<method selector="datePickerStyle" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
 		<method selector="dateValue" swt_gen="true">
 			<retval swt_gen="true"></retval>
 		</method>
@@ -1884,6 +1898,9 @@
 		<method selector="keyEquivalentModifierMask" swt_gen="true">
 			<retval swt_gen="true"></retval>
 		</method>
+		<method selector="representedObject" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
 		<method class_method="true" selector="separatorItem" swt_gen="true">
 			<retval swt_gen="true"></retval>
 		</method>
@@ -1940,6 +1957,10 @@
 			<retval swt_gen="true"></retval>
 		</method>
 		<method selector="setTitle:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="setToolTip:" swt_gen="true">
 			<arg swt_gen="true"></arg>
 			<retval swt_gen="true"></retval>
 		</method>
@@ -2019,6 +2040,13 @@
 			<arg swt_gen="true"></arg>
 			<retval swt_gen="true"></retval>
 		</method>
+		<method selector="bind:toObject:withKeyPath:options:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
 		<method selector="draggedImage:endedAt:operation:" swt_gen="true" swt_gen_super_msgSend="true">
 			<arg swt_gen="true"></arg>
 			<arg swt_gen="true"></arg>
@@ -2080,6 +2108,10 @@
 			<arg swt_gen="true"></arg>
 			<arg swt_gen="true"></arg>
 			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="unbind:" swt_gen="true">
 			<arg swt_gen="true"></arg>
 			<retval swt_gen="true"></retval>
 		</method>
@@ -2329,6 +2361,9 @@
 			<arg swt_gen="true"></arg>
 			<retval swt_gen="true" swt_java_type="NSPopUpButton"></retval>
 		</method>
+		<method selector="itemArray" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
 		<method selector="itemAtIndex:" swt_gen="true">
 			<arg swt_gen="true"></arg>
 			<retval swt_gen="true"></retval>
@@ -2372,7 +2407,69 @@
 	</class>
 	<class name="NSPopUpButtonCell" swt_superclass="NSMenuItemCell">
 	</class>
-	<class name="NSPredicateEditor" swt_superclass="NSRuleEditor">
+	<class name="NSPredicateEditor" swt_gen="true" swt_superclass="NSRuleEditor">
+		<method selector="rowTemplates" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="setRowTemplates:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+	</class>
+	<class name="NSPredicateEditorRowTemplate" swt_gen="mixed">
+		<method selector="initWithCompoundTypes:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="initWithLeftExpressions:rightExpressionAttributeType:modifier:operators:options:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="initWithLeftExpressions:rightExpressions:modifier:operators:options:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="leftExpressions" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="matchForPredicate:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="modifier" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="operators" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="options" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="predicateWithSubpredicates:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="rightExpressionAttributeType" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="rightExpressions" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="setPredicate:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="templateViews" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
 	</class>
 	<class name="NSPrintInfo" swt_gen="mixed">
 		<method selector="PMPrintSession" swt_gen="true">
@@ -2721,7 +2818,165 @@
 			<retval swt_gen="true"></retval>
 		</method>
 	</class>
-	<class name="NSRuleEditor" swt_superclass="NSControl">
+	<class name="NSRuleEditor" swt_gen="true" swt_superclass="NSControl">
+		<method selector="addRow:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="canRemoveAllRows" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="criteriaForRow:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="criteriaKeyPath" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="delegate" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="displayValuesForRow:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="displayValuesKeyPath" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="formattingDictionary" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="formattingStringsFilename" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="insertRowAtIndex:withType:asSubrowOfRow:animate:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="isEditable" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="nestingMode" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="numberOfRows" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="parentRowForRow:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="predicate" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="predicateForRow:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="reloadCriteria" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="reloadPredicate" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="removeRowAtIndex:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="removeRowsAtIndexes:includeSubrows:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="rowClass" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="rowForDisplayValue:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="rowHeight" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="rowTypeForRow:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="rowTypeKeyPath" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="selectRowIndexes:byExtendingSelection:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="selectedRowIndexes" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="setCanRemoveAllRows:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="setCriteria:andDisplayValues:forRowAtIndex:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="setCriteriaKeyPath:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="setDelegate:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="setDisplayValuesKeyPath:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="setEditable:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="setFormattingDictionary:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="setFormattingStringsFilename:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="setNestingMode:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="setRowClass:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="setRowHeight:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="setRowTypeKeyPath:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="setSubrowsKeyPath:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="subrowIndexesForRow:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="subrowsKeyPath" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
 	</class>
 	<class name="NSRulerView" swt_superclass="NSView">
 	</class>
@@ -3713,7 +3968,11 @@
 			<retval swt_gen="true"></retval>
 		</method>
 	</class>
-	<class name="NSTokenField" swt_superclass="NSTextField">
+	<class name="NSTokenField" swt_gen="mixed" swt_superclass="NSTextField">
+		<method selector="setDelegate:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
 	</class>
 	<class name="NSTokenFieldCell" swt_superclass="NSTextFieldCell">
 	</class>
@@ -4860,6 +5119,7 @@
 	<enum name="NSPrintPanelShowsOrientation" swt_gen="true"></enum>
 	<enum name="NSPrintPanelShowsPageRange" swt_gen="true"></enum>
 	<enum name="NSPrintPanelShowsPageSetupAccessory" swt_gen="true"></enum>
+	<enum name="NSPrintPanelShowsPrintSelection" swt_gen="true"></enum>
 	<enum name="NSProgressIndicatorPreferredThickness" swt_gen="true"></enum>
 	<enum name="NSPushOnPushOffButton" swt_gen="true"></enum>
 	<enum name="NSRGBColorSpaceModel" swt_gen="true"></enum>
@@ -5173,6 +5433,19 @@
 			<retval></retval>
 		</method>
 	</informal_protocol>
+	<informal_protocol name="NSKeyValueBindingCreation" swt_gen="mixed">
+		<method selector="bind:toObject:withKeyPath:options:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="unbind:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+	</informal_protocol>
 	<informal_protocol name="NSMenuDelegate" swt_gen="mixed">
 		<method selector="menu:willHighlightItem:" swt_gen="true">
 			<arg swt_gen="true"></arg>
@@ -5451,6 +5724,21 @@
 		<method selector="textViewDidChangeSelection:" swt_gen="true">
 			<arg swt_gen="true"></arg>
 			<retval></retval>
+		</method>
+	</informal_protocol>
+	<informal_protocol name="NSTokenFieldDelegate" swt_gen="mixed">
+		<method selector="tokenField:completionsForSubstring:indexOfToken:indexOfSelectedItem:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="tokenField:shouldAddObjects:atIndex:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
 		</method>
 	</informal_protocol>
 	<informal_protocol name="NSToolTipOwner" swt_gen="true">

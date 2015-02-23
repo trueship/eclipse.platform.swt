@@ -196,6 +196,7 @@
 			<fileset dir="${plugindir}/Eclipse SWT Program/cocoa/"/>
 			<fileset dir="${plugindir}/Eclipse SWT Program/common/"/>
 			<fileset dir="${plugindir}/Eclipse SWT Theme/emulated/"/>
+                        <fileset dir="${plugindir}/Eclipse SWT TrueShip/cocoa/"/>
 			<fileset dir="${plugindir}/components/" excludes="**/*.idl" />
 		</copy>
 		<antcall target="copy.translationfiles"/>

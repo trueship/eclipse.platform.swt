@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF8"?>
 <signatures swt_gen="mixed">
 	<cftype name="CGMutablePathRef" swt_gen="true"></cftype>
+	<enum name="CGFLOAT_MAX" swt_gen="true"></enum>
 	<enum name="kCGBlendModeDifference" swt_gen="true"></enum>
 	<enum name="kCGBlendModeNormal" swt_gen="true"></enum>
 	<enum name="kCGEventFilterMaskPermitLocalKeyboardEvents" swt_gen="true"></enum>

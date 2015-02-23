@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2012 IBM Corporation and others.
+ * Copyright (c) 2000, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,11 @@ public long /*int*/ indexOfSelectedItem() {
 public NSPopUpButton initWithFrame(NSRect buttonFrame, boolean flag) {
 	long /*int*/ result = OS.objc_msgSend(this.id, OS.sel_initWithFrame_pullsDown_, buttonFrame, flag);
 	return result == this.id ? this : (result != 0 ? new NSPopUpButton(result) : null);
+}
+
+public NSArray itemArray() {
+	long /*int*/ result = OS.objc_msgSend(this.id, OS.sel_itemArray);
+	return result != 0 ? new NSArray(result) : null;
 }
 
 public NSMenuItem itemAtIndex(long /*int*/ index) {
