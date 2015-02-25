@@ -148,6 +148,7 @@ public class StyledText extends Canvas {
 	boolean updateCaretDirection = true;
 	boolean fixedLineHeight;
 	boolean dragDetect = true;
+	boolean allowdDragWithoutSelection = true;
 	IME ime;
 	Cursor cursor;
 	int alignment;
@@ -1968,6 +1969,8 @@ boolean checkDragDetect(Event event) {
 			return dragDetect(event);
 		}
 	} else {
+		if (allowdDragWithoutSelection)
+			return dragDetect(event);
 		if (selection.x == selection.y) return false;
 		int offset = getOffsetAtPoint(event.x, event.y, null, true);
 		if (selection.x <= offset && offset < selection.y) {
@@ -10375,5 +10378,12 @@ void updateSelection(int startOffset, int replacedLength, int newLength) {
 		setSelection(selection.x + newLength - replacedLength, selection.y - selection.x, true, false);
 	}
 	setCaretLocation();
+}
+
+public boolean isAllowdDragWithoutSelection() {
+	return allowdDragWithoutSelection;
+}
+public void setAllowdDragWithoutSelection(boolean allowdDragWithoutSelection) {
+	this.allowdDragWithoutSelection = allowdDragWithoutSelection;
 }
 }
