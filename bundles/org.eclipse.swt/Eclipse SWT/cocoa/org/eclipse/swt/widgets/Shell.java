@@ -452,6 +452,10 @@ boolean accessibilityIsIgnored(long /*int*/ id, long /*int*/ sel) {
 	return super.accessibilityIsIgnored(id, sel);
 }
 
+public void setWindow(NSWindow window) {
+    this.window = window;
+}
+
 /**
  * Adds the listener to the collection of listeners who will
  * be notified when operations are performed on the receiver,

@@ -38,6 +38,11 @@ public boolean accessibilitySetOverrideValue(id value, NSString attribute) {
 	return OS.objc_msgSend_bool(this.id, OS.sel_accessibilitySetOverrideValue_forAttribute_, value != null ? value.id : 0, attribute != null ? attribute.id : 0);
 }
 
+public NSWindow detachableWindowForPopover(NSPopover popover) {
+	long /*int*/ result = OS.objc_msgSend(this.id, OS.sel_detachableWindowForPopover_, popover != null ? popover.id : 0);
+	return result != 0 ? new NSWindow(result) : null;
+}
+
 public void bind(NSString binding, id observable, NSString keyPath, NSDictionary options) {
 	OS.objc_msgSend(this.id, OS.sel_bind_toObject_withKeyPath_options_, binding != null ? binding.id : 0, observable != null ? observable.id : 0, keyPath != null ? keyPath.id : 0, options != null ? options.id : 0);
 }
@@ -80,6 +85,26 @@ public boolean outlineView(NSOutlineView outlineView, id item) {
 
 public boolean outlineView(NSOutlineView outlineView, NSCell cell, NSTableColumn tableColumn, id item) {
 	return OS.objc_msgSend_bool(this.id, OS.sel_outlineView_shouldTrackCell_forTableColumn_item_, outlineView != null ? outlineView.id : 0, cell != null ? cell.id : 0, tableColumn != null ? tableColumn.id : 0, item != null ? item.id : 0);
+}
+
+public void popoverDidClose(NSNotification notification) {
+	OS.objc_msgSend(this.id, OS.sel_popoverDidClose_, notification != null ? notification.id : 0);
+}
+
+public void popoverDidShow(NSNotification notification) {
+	OS.objc_msgSend(this.id, OS.sel_popoverDidShow_, notification != null ? notification.id : 0);
+}
+
+public boolean popoverShouldClose(NSPopover popover) {
+	return OS.objc_msgSend_bool(this.id, OS.sel_popoverShouldClose_, popover != null ? popover.id : 0);
+}
+
+public void popoverWillClose(NSNotification notification) {
+	OS.objc_msgSend(this.id, OS.sel_popoverWillClose_, notification != null ? notification.id : 0);
+}
+
+public void popoverWillShow(NSNotification notification) {
+	OS.objc_msgSend(this.id, OS.sel_popoverWillShow_, notification != null ? notification.id : 0);
 }
 
 public boolean readSelectionFromPasteboard(NSPasteboard pboard) {

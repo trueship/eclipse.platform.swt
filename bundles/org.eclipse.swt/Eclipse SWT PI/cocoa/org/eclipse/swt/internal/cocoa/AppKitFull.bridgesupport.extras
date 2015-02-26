@@ -2040,6 +2040,10 @@
 			<arg swt_gen="true"></arg>
 			<retval swt_gen="true"></retval>
 		</method>
+		<method selector="detachableWindowForPopover:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
 		<method selector="bind:toObject:withKeyPath:options:" swt_gen="true">
 			<arg swt_gen="true"></arg>
 			<arg swt_gen="true"></arg>
@@ -2086,6 +2090,26 @@
 			<arg swt_gen="true"></arg>
 			<arg swt_gen="true"></arg>
 			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="popoverDidClose:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="popoverDidShow:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="popoverShouldClose:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="popoverWillClose:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="popoverWillShow:" swt_gen="true">
 			<arg swt_gen="true"></arg>
 			<retval swt_gen="true"></retval>
 		</method>
@@ -2406,6 +2430,73 @@
 		</method>
 	</class>
 	<class name="NSPopUpButtonCell" swt_superclass="NSMenuItemCell">
+	</class>
+	<class name="NSPopover" swt_gen="true">
+		<method selector="animates" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="appearance" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="behavior" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="close" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="contentSize" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="contentViewController" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="delegate" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="isShown" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="performClose:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="positioningRect" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="setAnimates:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="setAppearance:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="setBehavior:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="setContentSize:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="setContentViewController:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="setDelegate:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="setPositioningRect:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="showRelativeToRect:ofView:preferredEdge:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
 	</class>
 	<class name="NSPredicateEditor" swt_gen="true" swt_superclass="NSRuleEditor">
 		<method selector="rowTemplates" swt_gen="true">
@@ -4411,7 +4502,54 @@
 	</class>
 	<class name="NSViewAnimation" swt_superclass="NSAnimation">
 	</class>
-	<class name="NSViewController" swt_superclass="NSResponder">
+	<class name="NSViewController" swt_gen="true" swt_superclass="NSResponder">
+		<method selector="commitEditing" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="commitEditingWithDelegate:didCommitSelector:contextInfo:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="discardEditing" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="initWithNibName:bundle:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="loadView" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="nibBundle" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="nibName" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="representedObject" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="setRepresentedObject:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="setTitle:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="setView:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="title" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="view" swt_gen="true">
+			<retval swt_gen="true"></retval>
+		</method>
 	</class>
 	<class name="NSWindow" swt_gen="mixed" swt_superclass="NSResponder">
 		<method selector="addChildWindow:ordered:" swt_gen="true">
