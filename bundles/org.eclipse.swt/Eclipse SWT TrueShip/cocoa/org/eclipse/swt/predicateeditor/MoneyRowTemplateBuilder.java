@@ -12,9 +12,7 @@ public class MoneyRowTemplateBuilder extends ComparisonPredicateEditorRowTemplat
     private List<String> currencies;
     
     public ComparisonPredicateEditorRowTemplateBuilder withLeftExpressionsForKeyPathWithTitle(HashMap<String, String> keyPathToTitleMap) {      
-        this.keyPathToTitleMap = new HashMap<String, String>();
-        for (Entry<String, String> entry : keyPathToTitleMap.entrySet())
-            this.keyPathToTitleMap.put(entry.getKey() + ".AMOUNT", entry.getValue());
+        this.keyPathToTitleMap = keyPathToTitleMap;
        
         return this.withLeftExpressions(new ArrayList<String>(this.keyPathToTitleMap.keySet()))
                    .withRightExpressionAttributeType(AttributeType.NSDecimalAttributeType)

@@ -6,8 +6,6 @@ import org.eclipse.swt.*;
 import org.eclipse.swt.internal.*;
 import org.eclipse.swt.internal.cocoa.*;
 import org.eclipse.swt.widgets.PredicateEditor.ComparisonPredicateModifier;
-import org.eclipse.swt.widgets.PredicateEditor.CompoundPredicateType;
-import org.eclipse.swt.widgets.PredicateEditor.PredicateOperatorType;
 
 public class SWTMoneyRowTemplate extends NSPredicateEditorRowTemplate {
     private static final int TEXTFIELD_WIDTH = 100;
@@ -27,7 +25,6 @@ public class SWTMoneyRowTemplate extends NSPredicateEditorRowTemplate {
     
     protected HashMap<String, String> keyPathToTitleMap;
     protected NSPopUpButton currencyPopUpButton;
-    protected String keyPath;
     protected List<String> currencies;
     
     static {
@@ -106,6 +103,15 @@ public class SWTMoneyRowTemplate extends NSPredicateEditorRowTemplate {
         
         return currencyPopUpButton;
     }
+    
+    void selectCurrency(String currency) {
+        int currencyIndex = 0;
+        for (int i = 0; i < currencies.size(); i++) {
+            if (currencies.get(i).equalsIgnoreCase(currency))
+                currencyIndex = i;
+        }
+        currencyPopUpButton().selectItemAtIndex(currencyIndex);
+    }
      
     long /*int*/ templateViewsProc() {
         NSMutableArray views = new NSMutableArray(new NSArray(this.superTemplateViews()).mutableCopy());
@@ -178,9 +184,7 @@ public class SWTMoneyRowTemplate extends NSPredicateEditorRowTemplate {
                                             this.modifier(), 
                                             this.operators(), 
                                             this.options());
-        
-        newTemplate.keyPath = keyPath;
-        
+                
         return newTemplate.id;
     }
     
@@ -205,80 +209,71 @@ public class SWTMoneyRowTemplate extends NSPredicateEditorRowTemplate {
         
         if (!predicate.isKindOfClass(OS.class_NSComparisonPredicate)) return predicate.id;
         
-        NSComparisonPredicate currencyPredicate = (NSComparisonPredicate) new NSComparisonPredicate().alloc();
+        NSComparisonPredicate comparisonPredicate = new NSComparisonPredicate(predicate);
         
-        if (keyPath == null) {
-            NSComparisonPredicate amountPredicate = new NSComparisonPredicate(predicate);
-            keyPath = amountPredicate.leftExpression().description().getString().split("\\.")[0];
-        }
+        NSComparisonPredicate newPredicate = (NSComparisonPredicate) new NSComparisonPredicate().alloc();
+          
+        NSExpression newRightExpression = NSExpression.expressionForConstantValue(NSString.stringWith(createMoneyRightExpressionValue(comparisonPredicate)));
         
-        NSExpression left = NSExpression.expressionForKeyPath(NSString.stringWith(keyPath + ".CURRENCY"));
-               
-        NSExpression right = NSExpression.expressionForConstantValue(NSString.stringWith(currencies.get((int) currencyPopUpButton.indexOfSelectedItem())));
-        
-        currencyPredicate.initWithLeftExpression(left, 
-                                                 right, 
-                                                 ComparisonPredicateModifier.NSDirectPredicateModifier.value(), 
-                                                 PredicateOperatorType.NSEqualToPredicateOperatorType.value(), 
-                                                 0);
-        
-        NSMutableArray moneySubpredicates = NSMutableArray.arrayWithCapacity(2);
-        moneySubpredicates.addObject(predicate);
-        moneySubpredicates.addObject(currencyPredicate);
-        
-        NSCompoundPredicate moneyAndPredicate = (NSCompoundPredicate) new NSCompoundPredicate().alloc();
-        moneyAndPredicate.initWithType(CompoundPredicateType.NSAndPredicateType.value(), moneySubpredicates);
-        
-        // Add a special false predicate to force the parser (in case of saving and reloading the predicate)
-        // to send the compound predicate as a whole to matchForPredicate,
-        // otherwise it'll split the amount and currency parts into two different predicates.
-        NSPredicate falsePredicate = NSPredicate.predicateWithFormat(NSString.stringWith("0 > 1"));
-        
-        NSMutableArray subpredicates = NSMutableArray.arrayWithCapacity(2);
-        subpredicates.addObject(moneyAndPredicate);
-        subpredicates.addObject(falsePredicate);
-        
-        NSCompoundPredicate newPredicate = (NSCompoundPredicate) new NSCompoundPredicate().alloc();
-        newPredicate.initWithType(CompoundPredicateType.NSOrPredicateType.value(), subpredicates);
-        
+        newPredicate.initWithLeftExpression(comparisonPredicate.leftExpression(), 
+                                            newRightExpression, 
+                                            ComparisonPredicateModifier.NSDirectPredicateModifier.value(), 
+                                            comparisonPredicate.predicateOperatorType(), 
+                                            0);
+             
         return newPredicate.id;
     }
     
+    private String createMoneyRightExpressionValue(NSComparisonPredicate comparisonPredicate) {
+        return "MONEY('" + comparisonPredicate.rightExpression().description().getString() + " " + currencies.get((int) currencyPopUpButton.indexOfSelectedItem()) + "')";
+    }
+
     long /*int*/ setPredicateProc(long /*int*/ predicateId) {
         NSPredicate predicate = new NSPredicate(predicateId);
         
-        if (predicate.isKindOfClass(OS.class_NSCompoundPredicate)) {
-            NSCompoundPredicate compoundPredicate = new NSCompoundPredicate(predicate.id);
-            NSCompoundPredicate moneyPredicate = new NSCompoundPredicate(compoundPredicate.subpredicates().objectAtIndex(0));
-            
-            NSComparisonPredicate newComparisonPredicate = new NSComparisonPredicate(moneyPredicate.subpredicates().objectAtIndex(0));
-            
-            predicate = new NSPredicate(newComparisonPredicate.id);
-        }
+        if (!predicate.isKindOfClass(OS.class_NSComparisonPredicate)) 
+            return this.superSetPredicateProc(predicate.id);
         
-        return this.superSetPredicateProc(predicate.id);
+        NSComparisonPredicate comparisonPredicate = new NSComparisonPredicate(predicate.id);
+             
+        String[] moneyParts = getMoneyParts(comparisonPredicate.rightExpression().description().getString());
+
+        selectCurrency(moneyParts[1]);
+        
+        NSComparisonPredicate newPredicate = (NSComparisonPredicate) new NSComparisonPredicate().alloc();
+        newPredicate.initWithLeftExpression(comparisonPredicate.leftExpression(),
+                                            NSExpression.expressionForConstantValue(NSString.stringWith(moneyParts[0])), 
+                                            comparisonPredicate.comparisonPredicateModifier(), 
+                                            comparisonPredicate.predicateOperatorType(), 
+                                            comparisonPredicate.options());
+            
+        return this.superSetPredicateProc(newPredicate.id);
     }
     
+    private String[] getMoneyParts(String moneyRightExpressionValue) {
+        int startPos = moneyRightExpressionValue.indexOf('(');
+        int endPos = moneyRightExpressionValue.indexOf(')');
+      
+        return moneyRightExpressionValue.substring(startPos + 1, endPos).replace("'", "").split(" ");
+    }
+
     static double /*float*/ procMatchForPredicate(long /*int*/ id, long /*int*/ sel, long /*int*/ arg0) {
         SWTMoneyRowTemplate template = getThis(id);
         if (template == null) return 0;
                 
         NSPredicate predicate = new NSPredicate(arg0);
         
-        if (!predicate.isKindOfClass(OS.class_NSCompoundPredicate))
+        if (!predicate.isKindOfClass(OS.class_NSComparisonPredicate))
             return 0;
         
-        NSCompoundPredicate compoundPredicate = new NSCompoundPredicate(predicate);
+        NSComparisonPredicate comparisonPredicate = new NSComparisonPredicate(predicate);
 
-        String predicateFormat = compoundPredicate.predicateFormat().getString().trim();
-        for (String keyPath : template.keyPathToTitleMap.keySet()) {
-            if (predicateFormat.startsWith("(" + keyPath)) {
-                template.keyPath = keyPath.split("\\.")[0];
-                return 1;
-            }
-        }
+        if (!template.keyPathToTitleMap.containsKey(comparisonPredicate.leftExpression().description().getString()))
+            return 0;
         
-        return 0;
+        String rightExpr = comparisonPredicate.rightExpression().description().getString().toUpperCase().trim();
+                
+        return rightExpr.startsWith("\"MONEY(") ? 1 : 0;
     }
     
     long /*int*/ deallocProc() {
