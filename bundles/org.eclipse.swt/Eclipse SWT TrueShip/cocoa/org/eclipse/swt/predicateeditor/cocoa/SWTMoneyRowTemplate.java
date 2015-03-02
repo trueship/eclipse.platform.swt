@@ -140,6 +140,8 @@ public class SWTMoneyRowTemplate extends NSPredicateEditorRowTemplate {
         if (!isTextFieldInitialized)
             initializeTextField(views.objectAtIndex(2).id);
         
+        resizeTextField();
+        
         views.autorelease();
         
         return views.id;
@@ -147,16 +149,18 @@ public class SWTMoneyRowTemplate extends NSPredicateEditorRowTemplate {
 
     private void initializeTextField(long /*int*/ id) {
         textField = new NSTextField(id);
-        
-        NSSize size = new NSSize();
-        size.width = TEXTFIELD_WIDTH;
-        size.height = textField.frame().height;
-        textField.setFrameSize(size);
-        
+                
         textField.setAlignment(OS.NSRightTextAlignment);
         textField.setDelegate(this);
 
         isTextFieldInitialized = true;
+    }
+    
+    private void resizeTextField() {
+        NSSize size = new NSSize();
+        size.width = TEXTFIELD_WIDTH;
+        size.height = textField.frame().height;
+        textField.setFrameSize(size);
     }
     
     static SWTMoneyRowTemplate getThis(long /*int*/ id) {
