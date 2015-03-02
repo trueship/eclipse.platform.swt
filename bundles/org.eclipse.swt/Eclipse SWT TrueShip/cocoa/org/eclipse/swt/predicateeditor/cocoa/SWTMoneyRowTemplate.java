@@ -1,6 +1,8 @@
 package org.eclipse.swt.predicateeditor.cocoa;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.swt.*;
 import org.eclipse.swt.internal.*;
@@ -26,6 +28,12 @@ public class SWTMoneyRowTemplate extends NSPredicateEditorRowTemplate {
     protected HashMap<String, String> keyPathToTitleMap;
     protected NSPopUpButton currencyPopUpButton;
     protected List<String> currencies;
+
+    private NSTextField textField;
+    private String lastAmountValue = "";
+    private Pattern decimalNumberPattern;
+
+    private boolean isTextFieldInitialized;
     
     static {
         Class<SWTMoneyRowTemplate> clazz = SWTMoneyRowTemplate.class;
@@ -50,6 +58,7 @@ public class SWTMoneyRowTemplate extends NSPredicateEditorRowTemplate {
         OS.class_addMethod(cls, OS.sel_templateViews, proc2CallbackAddress, "@:");
         OS.class_addMethod(cls, OS.sel_copyWithZone_, proc3CallbackAddress, "@:@");
         OS.class_addMethod(cls, OS.sel_setPredicate_, proc3CallbackAddress, "v@:@");
+        OS.class_addMethod(cls, OS.sel_controlTextDidChange, proc3CallbackAddress, "v@:@");
         OS.class_addMethod(cls, OS.sel_predicateWithSubpredicates_, proc3CallbackAddress, "@:@");
         OS.class_addMethod(cls, OS.sel_matchForPredicate_, matchForPredicateCallbackAddress, "d@:@");
         OS.class_addMethod(cls, OS.sel_dealloc, proc2CallbackAddress, "@:");
@@ -104,6 +113,14 @@ public class SWTMoneyRowTemplate extends NSPredicateEditorRowTemplate {
         return currencyPopUpButton;
     }
     
+    Pattern decimalNumberPattern() {
+        if (decimalNumberPattern == null) {
+            decimalNumberPattern = Pattern.compile("^(\\d+(\\.\\d*)?)?$");
+        }
+        
+        return decimalNumberPattern;
+    }
+    
     void selectCurrency(String currency) {
         int currencyIndex = 0;
         for (int i = 0; i < currencies.size(); i++) {
@@ -120,15 +137,16 @@ public class SWTMoneyRowTemplate extends NSPredicateEditorRowTemplate {
         
         views.addObject(currencyPopUpButton());
         
-        adjustTextField(views);
+        if (!isTextFieldInitialized)
+            initializeTextField(views.objectAtIndex(2).id);
         
         views.autorelease();
         
         return views.id;
     }
 
-    private void adjustTextField(NSMutableArray views) {
-        NSTextField textField = new NSTextField(views.objectAtIndex(2));
+    private void initializeTextField(long /*int*/ id) {
+        textField = new NSTextField(id);
         
         NSSize size = new NSSize();
         size.width = TEXTFIELD_WIDTH;
@@ -136,6 +154,9 @@ public class SWTMoneyRowTemplate extends NSPredicateEditorRowTemplate {
         textField.setFrameSize(size);
         
         textField.setAlignment(OS.NSRightTextAlignment);
+        textField.setDelegate(this);
+
+        isTextFieldInitialized = true;
     }
     
     static SWTMoneyRowTemplate getThis(long /*int*/ id) {
@@ -171,11 +192,34 @@ public class SWTMoneyRowTemplate extends NSPredicateEditorRowTemplate {
             return template.predicateWithSubpredicatesProc(arg0);
         } else if (sel == OS.sel_copyWithZone_) {
             return template.copyWithZoneProc(arg0);
+        } else if (sel == OS.sel_controlTextDidChange) {
+            return template.controlTextDidChange(arg0);
         }
         
         return 0;
     }
     
+    // Used for allowing only decimal numbers input into the money text field.
+    // (alternative to using a custom NSNumberFormatter, as for some reason the isPartialStringValid* overriden methods are not called in SWT).
+    private long /*int*/ controlTextDidChange(long /*int*/ arg0) {
+        NSNotification notification = new NSNotification(arg0);
+        
+        if (notification.object().id == this.textField.id) {
+            String currentValue = textField.stringValue().getString();
+            
+            Matcher matcher = decimalNumberPattern().matcher(currentValue);
+            if (matcher.matches()) {
+                lastAmountValue = currentValue;
+            }
+            else {
+                OS.NSBeep();
+                textField.setStringValue(NSString.stringWith(lastAmountValue));
+            }   
+        }
+        
+        return 0;
+    }
+
     long /*int*/ copyWithZoneProc(long /*int*/ arg0) {
         SWTMoneyRowTemplate newTemplate = new SWTMoneyRowTemplate(keyPathToTitleMap, currencies);
         
@@ -225,7 +269,11 @@ public class SWTMoneyRowTemplate extends NSPredicateEditorRowTemplate {
     }
     
     private String createMoneyRightExpressionValue(NSComparisonPredicate comparisonPredicate) {
-        return "MONEY('" + comparisonPredicate.rightExpression().description().getString() + " " + currencies.get((int) currencyPopUpButton.indexOfSelectedItem()) + "')";
+        String amount = comparisonPredicate.rightExpression().description().getString();
+        if ("NaN".equalsIgnoreCase(amount))
+            amount = "0";
+        
+        return "MONEY('" + amount + " " + currencies.get((int) currencyPopUpButton.indexOfSelectedItem()) + "')";
     }
 
     long /*int*/ setPredicateProc(long /*int*/ predicateId) {
