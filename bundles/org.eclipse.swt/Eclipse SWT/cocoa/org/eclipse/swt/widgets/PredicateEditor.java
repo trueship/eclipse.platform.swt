@@ -147,6 +147,8 @@ public class PredicateEditor extends Control implements PredicateVisitable {
     protected HashSet<DynamicRightValuesRowTemplate> dynamicRowTemplateInstances = new HashSet<DynamicRightValuesRowTemplate>();
     protected HashSet<String> dynamicRightValuesRowsKeyPaths = new HashSet<String>();
     
+    protected HashSet<MoneyRowTemplate> moneyRowTemplateInstances = new HashSet<MoneyRowTemplate>();
+    
     private boolean enabledNotifications = false;
     protected PredicateEditorNotification notification = new PredicateEditorNotification();
     SWTKeyValueCodingDecorator kvNotification;
@@ -411,16 +413,6 @@ public class PredicateEditor extends Control implements PredicateVisitable {
         }
     }
 
-    public void refreshLayout() {
-        for (DynamicRightValuesRowTemplate template : dynamicRowTemplateInstances)
-            template.refreshLayout();
-    }
-    
-    public void refreshUI() {
-        for (DynamicRightValuesRowTemplate template : dynamicRowTemplateInstances)
-            template.refreshUI();
-    }
-
     public void removeDynamicRowTemplateInstance(DynamicRightValuesRowTemplate template) {
         for (DynamicRightValuesRowTemplate t : dynamicRowTemplateInstances) {
             if (t.equals(template)) {
@@ -428,6 +420,27 @@ public class PredicateEditor extends Control implements PredicateVisitable {
                 return;
             }
         }
+    }
+
+    public void addMoneyRowTemplateInstance(MoneyRowTemplate template) {
+        moneyRowTemplateInstances.add(template);    
+    }
+    
+    public void removeMoneyRowTemplateInstance(MoneyRowTemplate template) {
+        moneyRowTemplateInstances.remove(template);
+    }
+    
+    public void refreshLayout() {
+        for (DynamicRightValuesRowTemplate template : dynamicRowTemplateInstances)
+            template.refreshLayout();
+        
+        for (MoneyRowTemplate template : moneyRowTemplateInstances)
+            template.refreshLayout();
+    }
+    
+    public void refreshUI() {
+        for (DynamicRightValuesRowTemplate template : dynamicRowTemplateInstances)
+            template.refreshUI();
     }
     
     private void handlePredicateChanged() {

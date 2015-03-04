@@ -7,10 +7,15 @@ import java.util.regex.Pattern;
 import org.eclipse.swt.*;
 import org.eclipse.swt.internal.*;
 import org.eclipse.swt.internal.cocoa.*;
+import org.eclipse.swt.predicateeditor.MoneyRowTemplate;
+import org.eclipse.swt.widgets.PredicateEditor;
 import org.eclipse.swt.widgets.PredicateEditor.ComparisonPredicateModifier;
 
 public class SWTMoneyRowTemplate extends NSPredicateEditorRowTemplate {
     private static final int TEXTFIELD_WIDTH = 100;
+    private static final int UNITBUTTON_WIDTH = 50;
+    private static final int MIN_OPERATOR_WIDTH = 50;
+    private static final int SEPARATOR_WIDTH = 5;
 
     static final byte[] SWT_OBJECT = {'S', 'W', 'T', '_', 'O', 'B', 'J', 'E', 'C', 'T', '\0'};
     
@@ -34,6 +39,8 @@ public class SWTMoneyRowTemplate extends NSPredicateEditorRowTemplate {
     private Pattern decimalNumberPattern;
 
     private boolean isTextFieldInitialized;
+
+    private PredicateEditor predicateEditor;
     
     static {
         Class<SWTMoneyRowTemplate> clazz = SWTMoneyRowTemplate.class;
@@ -66,12 +73,13 @@ public class SWTMoneyRowTemplate extends NSPredicateEditorRowTemplate {
         OS.objc_registerClassPair(cls);
     }
     
-    public SWTMoneyRowTemplate(HashMap<String, String> keyPathToTitleMap, List<String> currencies) {
+    public SWTMoneyRowTemplate(HashMap<String, String> keyPathToTitleMap, List<String> currencies, PredicateEditor predicateEditor) {
         super(0);
         alloc();
         
         this.keyPathToTitleMap = keyPathToTitleMap;
         this.currencies = currencies;
+        this.predicateEditor = predicateEditor;
         
         jniRef = OS.NewGlobalRef(this);
         if (jniRef == 0) SWT.error(SWT.ERROR_NO_HANDLES);
@@ -140,8 +148,6 @@ public class SWTMoneyRowTemplate extends NSPredicateEditorRowTemplate {
         if (!isTextFieldInitialized)
             initializeTextField(views.objectAtIndex(2).id);
         
-        resizeTextField();
-        
         views.autorelease();
         
         return views.id;
@@ -151,12 +157,15 @@ public class SWTMoneyRowTemplate extends NSPredicateEditorRowTemplate {
         textField = new NSTextField(id);
                 
         textField.setAlignment(OS.NSRightTextAlignment);
+        
+        setTextFieldSize();
+        
         textField.setDelegate(this);
 
         isTextFieldInitialized = true;
     }
     
-    private void resizeTextField() {
+    private void setTextFieldSize() {
         NSSize size = new NSSize();
         size.width = TEXTFIELD_WIDTH;
         size.height = textField.frame().height;
@@ -225,13 +234,15 @@ public class SWTMoneyRowTemplate extends NSPredicateEditorRowTemplate {
     }
 
     long /*int*/ copyWithZoneProc(long /*int*/ arg0) {
-        SWTMoneyRowTemplate newTemplate = new SWTMoneyRowTemplate(keyPathToTitleMap, currencies);
+        SWTMoneyRowTemplate newTemplate = new SWTMoneyRowTemplate(keyPathToTitleMap, currencies, this.predicateEditor);
         
         newTemplate.initWithLeftExpressions(this.leftExpressions(), 
                                             this.rightExpressionAttributeType(), 
                                             this.modifier(), 
                                             this.operators(), 
                                             this.options());
+        
+        predicateEditor.addMoneyRowTemplateInstance(new MoneyRowTemplate(newTemplate));
                 
         return newTemplate.id;
     }
@@ -329,6 +340,8 @@ public class SWTMoneyRowTemplate extends NSPredicateEditorRowTemplate {
     }
     
     long /*int*/ deallocProc() {
+        predicateEditor.removeMoneyRowTemplateInstance(new MoneyRowTemplate(this));
+        
         internal_dispose();
         
         currencyPopUpButton.release();
@@ -353,5 +366,79 @@ public class SWTMoneyRowTemplate extends NSPredicateEditorRowTemplate {
             if (title != null)
                 item.setTitle(NSString.stringWith(title));
         }
+    }
+
+    public void refreshLayout() {
+        resizeControls();
+    }
+    
+    private TreeSet<NSView> getXSortedViews() {
+        if (textField == null) return null;
+        
+        NSArray subviews = textField.superview().subviews();
+        
+        TreeSet<NSView> sortedViews = new TreeSet<NSView>(
+                new Comparator<NSView>() {
+                    public int compare(NSView v1, NSView v2) {
+                        if (v1.frame().x < v2.frame().x)
+                            return -1;
+                        else 
+                            return v1.frame().x > v2.frame().x ? 1 : 0;
+                    }
+                });
+         
+        for (int i = 0; i < subviews.count(); i++) {
+            NSView view = new NSView(subviews.objectAtIndex(i));
+            sortedViews.add(view);
+         }
+        
+        return sortedViews;
+    }
+    
+    private void resizeControls() {
+        if (textField == null) return;
+        
+        TreeSet<NSView> sortedViews = getXSortedViews();
+        if (sortedViews == null) return;
+        
+        sortedViews.pollLast();
+        NSView removeButton = sortedViews.pollLast();
+        NSView unitButton = sortedViews.pollLast();
+        NSView textView = sortedViews.pollLast();
+        NSView operatorView = sortedViews.pollLast();
+        
+        float availableWidth = (float) (removeButton.frame().x - textView.frame().x);
+        float neededWidth = TEXTFIELD_WIDTH + SEPARATOR_WIDTH + UNITBUTTON_WIDTH + SEPARATOR_WIDTH;
+              
+        boolean didAdjustOperatorWidth = false;
+        float adjustWidth = 0;
+
+        // If necessary, shrink the operator button and make the amount text field larger.
+        // (alternative to making the unit button slide to the right, because of (re)layout issues). 
+        if (availableWidth < neededWidth) {
+            float addTextWidth = (float) (TEXTFIELD_WIDTH - textView.frame().width);
+
+            if (addTextWidth > 0) {            
+                NSRect operatorFrame = operatorView.frame();
+                float availableOperatorWidth = (float) (operatorFrame.width - MIN_OPERATOR_WIDTH);
+
+                if (availableOperatorWidth > 0) {
+                    adjustWidth = Math.min(addTextWidth, availableOperatorWidth);
+                    operatorFrame.width -= adjustWidth ;
+                    operatorView.setFrame(operatorFrame);
+                    operatorView.setNeedsDisplay(true); 
+                    didAdjustOperatorWidth = true;
+                }
+            }
+        }
+
+        NSRect textFrame = textView.frame();
+        textFrame.width = unitButton.frame().x - textFrame.x - SEPARATOR_WIDTH ;
+        if (didAdjustOperatorWidth) {
+            textFrame.width += adjustWidth;
+            textFrame.x -= adjustWidth;
+        }
+        textView.setFrame(textFrame);
+        textView.setNeedsDisplay(true);
     }
 }
