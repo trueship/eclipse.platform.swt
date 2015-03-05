@@ -1752,6 +1752,7 @@ public static final long /*int*/ sel_predicateWithFormat_ = sel_registerName("pr
 public static final long /*int*/ sel_predicateWithFormat_argumentArray_ = sel_registerName("predicateWithFormat:argumentArray:");
 public static final long /*int*/ sel_predicateWithFormat_arguments_ = sel_registerName("predicateWithFormat:arguments:");
 public static final long /*int*/ sel_predicateWithSubpredicates_ = sel_registerName("predicateWithSubpredicates:");
+public static final long /*int*/ sel_predicateWithValue_ = sel_registerName("predicateWithValue:");
 public static final long /*int*/ sel_preparedCellAtColumn_row_ = sel_registerName("preparedCellAtColumn:row:");
 public static final long /*int*/ sel_prependTransform_ = sel_registerName("prependTransform:");
 public static final long /*int*/ sel_preventDefault = sel_registerName("preventDefault");

@@ -318,8 +318,41 @@ public class PredicateEditor extends Control implements PredicateVisitable {
         return new Point(width, height);
     }
 
+    // Get the current predicate, 
+    // but modified so that 'NOT (predicate)' becomes 'NOT (predicate OR FALSEPREDICATE)' , 
+    // which allows NSPredicateEditor to restore simple negated predicates.
     public Predicate getPredicate() {
-        return new Predicate(nsPredicateEditor.predicate().id);
+        return new Predicate(exportPredicate(nsPredicateEditor.predicate()).id);
+    }
+    
+    private id exportPredicate(NSPredicate predicate) {
+        if (predicate.isKindOfClass(OS.class_NSComparisonPredicate))
+            return predicate;
+         
+        NSCompoundPredicate nsCompoundPredicate = new NSCompoundPredicate(predicate.id);
+        NSArray subpredicates = nsCompoundPredicate.subpredicates();
+        
+        NSMutableArray updatedSubpredicates = NSMutableArray.arrayWithCapacity(subpredicates.count());
+        for (int i = 0; i < subpredicates.count(); i++)
+            updatedSubpredicates.addObject(exportPredicate(new NSPredicate(subpredicates.objectAtIndex(i))));
+        
+        NSCompoundPredicate newCompoundPredicate = (NSCompoundPredicate) new NSCompoundPredicate().alloc();
+        if (nsCompoundPredicate.compoundPredicateType() != CompoundPredicateType.NSNotPredicateType.value() || updatedSubpredicates.count() > 1) {
+            newCompoundPredicate.initWithType(new NSCompoundPredicate(predicate.id).compoundPredicateType(), updatedSubpredicates);
+            return newCompoundPredicate;
+        }
+
+        NSMutableArray newOrSubpredicates = NSMutableArray.arrayWithCapacity(2);
+        newOrSubpredicates.addObject(updatedSubpredicates.objectAtIndex(0));
+        newOrSubpredicates.addObject(NSPredicate.predicateWithValue(false));        
+
+        NSCompoundPredicate newOrPredicate = (NSCompoundPredicate) new NSCompoundPredicate().alloc();
+        newOrPredicate.initWithType(CompoundPredicateType.NSOrPredicateType.value(), newOrSubpredicates);
+
+        NSCompoundPredicate newNotPredicate = (NSCompoundPredicate) new NSCompoundPredicate().alloc();
+        newNotPredicate.initWithType(CompoundPredicateType.NSNotPredicateType.value(), NSArray.arrayWithObject(newOrPredicate));
+        
+        return newNotPredicate;
     }
     
     public void updatePredicate(String leftExpr, String rightExpr) {        
