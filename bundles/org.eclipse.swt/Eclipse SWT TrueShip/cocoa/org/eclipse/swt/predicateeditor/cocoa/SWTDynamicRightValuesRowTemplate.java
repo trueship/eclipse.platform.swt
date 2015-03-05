@@ -364,9 +364,10 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         
         List<String> currentTokens = Arrays.asList(tokenFieldText.trim().split("\\s*,\\s*"));
         ArrayList<String> newTokens = new ArrayList<String>(displayedTokens);
-        for (int i = 0; i < displayedTokens.size(); i++) {
-            if (!currentTokens.contains(displayedTokens.get(i)))
-                newTokens.remove(i);
+        
+        for (String token : displayedTokens) {
+            if (!currentTokens.contains(token))
+                newTokens.remove(token);
         }
         
         this.displayedTokens = newTokens;
