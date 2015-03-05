@@ -8,4 +8,33 @@ public class MoneyRowTemplate {
     public MoneyRowTemplate(SWTMoneyRowTemplate template) {
         swtTemplate = template;
     }
+
+    public void refreshLayout() {
+        swtTemplate.refreshLayout();
+    }
+    
+    @Override
+    public boolean equals(Object other) {
+        if (other == this)
+            return true;
+        
+        if (!(other instanceof MoneyRowTemplate))
+            return false;
+        
+        MoneyRowTemplate template = (MoneyRowTemplate)other;
+        
+        if (this.swtTemplate.id != template.swtTemplate.id)
+            return false;
+        
+        return true;
+    }
+    
+    @Override
+    public int hashCode() {
+        return swtTemplate.hashCode();
+    }
+    
+    public long /*int*/ id() {
+        return swtTemplate.id; 
+    }
 }

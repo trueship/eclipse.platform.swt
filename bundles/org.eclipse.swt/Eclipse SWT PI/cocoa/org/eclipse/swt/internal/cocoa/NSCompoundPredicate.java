@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2014 IBM Corporation and others.
+ * Copyright (c) 2000, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -50,6 +50,11 @@ public static NSPredicate predicateWithFormat(NSString predicateFormat, NSArray 
 
 public static NSPredicate predicateWithFormat(NSString predicateFormat, long /*int*/ argList) {
 	long /*int*/ result = OS.objc_msgSend(OS.class_NSCompoundPredicate, OS.sel_predicateWithFormat_arguments_, predicateFormat != null ? predicateFormat.id : 0, argList);
+	return result != 0 ? new NSPredicate(result) : null;
+}
+
+public static NSPredicate predicateWithValue(boolean value) {
+	long /*int*/ result = OS.objc_msgSend(OS.class_NSCompoundPredicate, OS.sel_predicateWithValue_, value);
 	return result != 0 ? new NSPredicate(result) : null;
 }
 
