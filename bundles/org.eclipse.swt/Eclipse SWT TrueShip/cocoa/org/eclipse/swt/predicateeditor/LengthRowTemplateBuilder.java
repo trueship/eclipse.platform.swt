@@ -6,17 +6,17 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import org.eclipse.swt.predicateeditor.cocoa.SWTLengthRowTemplate;
+import org.eclipse.swt.widgets.PredicateEditor;
 import org.eclipse.swt.widgets.PredicateEditor.AttributeType;
 import org.eclipse.swt.widgets.PredicateEditor.ComparisonPredicateModifier;
 
 public class LengthRowTemplateBuilder extends ComparisonPredicateEditorRowTemplateBuilder {
     private HashMap<String, String> keyPathToTitleMap;
     private List<String> units;
+    private PredicateEditor predicateEditor;
     
     public ComparisonPredicateEditorRowTemplateBuilder withLeftExpressionsForKeyPathWithTitle(HashMap<String, String> keyPathToTitleMap) {      
-        this.keyPathToTitleMap = new HashMap<String, String>();
-        for (Entry<String, String> entry : keyPathToTitleMap.entrySet())
-            this.keyPathToTitleMap.put(entry.getKey() + ".LENGTH", entry.getValue());
+        this.keyPathToTitleMap = keyPathToTitleMap;
        
         return this.withLeftExpressions(new ArrayList<String>(this.keyPathToTitleMap.keySet()))
                    .withRightExpressionAttributeType(AttributeType.NSDecimalAttributeType)
@@ -25,11 +25,17 @@ public class LengthRowTemplateBuilder extends ComparisonPredicateEditorRowTempla
     
     @Override
     public PredicateEditorRowTemplate build() {
-        return new PredicateEditorRowTemplate(initTemplate(new SWTLengthRowTemplate(keyPathToTitleMap, units)).id);
+        return new PredicateEditorRowTemplate(initTemplate(new SWTLengthRowTemplate(keyPathToTitleMap, units, predicateEditor)).id);
     }
 
     public LengthRowTemplateBuilder withUnits(List<String> units) {
         this.units = units;
+        
+        return this;
+    }
+    
+    public LengthRowTemplateBuilder withPredicateEditor(PredicateEditor predicateEditor) {
+        this.predicateEditor = predicateEditor;
         
         return this;
     }

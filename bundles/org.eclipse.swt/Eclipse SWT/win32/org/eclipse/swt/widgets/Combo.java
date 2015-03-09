@@ -12,6 +12,7 @@ package org.eclipse.swt.widgets;
 
 
 import org.eclipse.swt.internal.*;
+import org.eclipse.swt.internal.cocoa.NSPopUpButton;
 import org.eclipse.swt.internal.win32.*;
 import org.eclipse.swt.*;
 import org.eclipse.swt.graphics.*;
@@ -774,6 +775,11 @@ void createWidget() {
 			visibleCount = Math.max(visibleCount, maxHeight / itemHeight);
 		}
 	}
+}
+
+
+public void setBezelStyle(int bezelStyle) {
+	
 }
 
 /**

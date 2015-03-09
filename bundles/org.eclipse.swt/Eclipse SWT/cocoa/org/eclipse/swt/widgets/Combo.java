@@ -62,7 +62,6 @@ public class Combo extends Composite {
 	boolean ignoreSetObject, ignoreSelection;
 	NSRange selectionRange;
 	boolean listVisible;
-
 	static final int VISIBLE_COUNT = 5;
 
 	/**
@@ -509,6 +508,10 @@ void createHandle () {
 		}
 		view = widget;
 	}
+}
+
+public void setBezelStyle(int bezelStyle) {
+	((NSPopUpButton) view).setBezelStyle(bezelStyle);
 }
 
 NSAttributedString createString(String string) {
