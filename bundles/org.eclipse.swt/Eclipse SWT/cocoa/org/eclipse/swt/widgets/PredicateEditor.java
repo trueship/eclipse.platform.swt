@@ -148,6 +148,8 @@ public class PredicateEditor extends Control implements PredicateVisitable {
     protected HashSet<String> dynamicRightValuesRowsKeyPaths = new HashSet<String>();
     
     protected HashSet<MoneyRowTemplate> moneyRowTemplateInstances = new HashSet<MoneyRowTemplate>();
+    protected HashSet<LengthRowTemplate> lengthRowTemplateInstances = new HashSet<LengthRowTemplate>();
+    protected HashSet<WeightRowTemplate> weightRowTemplateInstances = new HashSet<WeightRowTemplate>();
     
     private boolean enabledNotifications = false;
     protected PredicateEditorNotification notification = new PredicateEditorNotification();
@@ -463,11 +465,33 @@ public class PredicateEditor extends Control implements PredicateVisitable {
         moneyRowTemplateInstances.remove(template);
     }
     
+    public void addLengthRowTemplateInstance(LengthRowTemplate template) {
+        lengthRowTemplateInstances.add(template);    
+    }
+    
+    public void removeLengthRowTemplateInstance(LengthRowTemplate template) {
+    	lengthRowTemplateInstances.remove(template);
+    }
+
+    public void addWeightRowTemplateInstance(WeightRowTemplate template) {
+        weightRowTemplateInstances.add(template);    
+    }
+    
+    public void removeWeightRowTemplateInstance(WeightRowTemplate template) {
+    	weightRowTemplateInstances.remove(template);
+    }
+    
     public void refreshLayout() {
         for (DynamicRightValuesRowTemplate template : dynamicRowTemplateInstances)
             template.refreshLayout();
         
         for (MoneyRowTemplate template : moneyRowTemplateInstances)
+            template.refreshLayout();
+        
+        for (LengthRowTemplate template : lengthRowTemplateInstances)
+            template.refreshLayout();
+        
+        for (WeightRowTemplate template : weightRowTemplateInstances)
             template.refreshLayout();
     }
     
