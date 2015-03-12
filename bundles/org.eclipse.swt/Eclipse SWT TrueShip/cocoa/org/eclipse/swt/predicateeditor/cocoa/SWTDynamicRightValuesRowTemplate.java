@@ -458,7 +458,7 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
                 sb.append(",");
             }
             
-            format = prefix + "%K IN \"" + sb.substring(0, sb.length() - 1) + "\"";
+            format = prefix + "%K IN \"" + escapeSpecialPredicateEditorChars(sb.substring(0, sb.length() - 1)) + "\"";
         }
         
         this.predicate = Predicate.predicateWithFormat(format, Arrays.asList(this.keyPath));
@@ -466,6 +466,13 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         this.predicateEditor.addDynamicRowTemplateInstance(new DynamicRightValuesRowTemplate(this));
                 
         return this.predicate.id();
+    }
+    
+    private String escapeSpecialPredicateEditorChars(String text) {
+        String rv = text.replace("\\", "\\\\");
+        rv = rv.replace("\"", "\\\"");
+
+        return rv;
     }
     
     long /*int*/ unselectTokenFieldTextProc() {
