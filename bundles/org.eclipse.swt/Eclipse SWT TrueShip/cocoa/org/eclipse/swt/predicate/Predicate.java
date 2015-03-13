@@ -52,10 +52,10 @@ public class Predicate {
     }
     
     public ComparisonPredicate getComparisonPredicate() {
-    	if (!isComparisonPredicate()) {
-    		throw new IllegalStateException("Not a comparison predicate!");
-    	}
-    	return new ComparisonPredicate(id());
+        if (!isComparisonPredicate()) {
+            throw new IllegalStateException("Not a comparison predicate!");
+        }
+        return new ComparisonPredicate(id());
     }
     
     public boolean isCompoundPredicate() {
@@ -63,10 +63,10 @@ public class Predicate {
     }
     
     public CompoundPredicate getCompoundPredicate() {
-    	if (!isCompoundPredicate()) {
-    		throw new IllegalStateException("Not a compound predicate!");
-    	}
-    	return new CompoundPredicate(id());
+        if (!isCompoundPredicate()) {
+    	    throw new IllegalStateException("Not a compound predicate!");
+        }
+        return new CompoundPredicate(id());
     }
     
     @Override
