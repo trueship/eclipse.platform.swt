@@ -51,8 +51,22 @@ public class Predicate {
         return nsPredicate.isKindOfClass(OS.class_NSComparisonPredicate);
     }
     
+    public ComparisonPredicate getComparisonPredicate() {
+        if (!isComparisonPredicate()) {
+            throw new IllegalStateException("Not a comparison predicate!");
+        }
+        return new ComparisonPredicate(id());
+    }
+    
     public boolean isCompoundPredicate() {
         return nsPredicate.isKindOfClass(OS.class_NSCompoundPredicate);
+    }
+    
+    public CompoundPredicate getCompoundPredicate() {
+        if (!isCompoundPredicate()) {
+    	    throw new IllegalStateException("Not a compound predicate!");
+        }
+        return new CompoundPredicate(id());
     }
     
     @Override
