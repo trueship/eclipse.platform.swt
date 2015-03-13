@@ -89,4 +89,9 @@ public class Predicate {
     public int hashCode() {
         return nsPredicate.hashCode();
     }
+    
+    @Override
+    public String toString() {
+        return nsPredicate != null ? predicateFormat() : "";
+    }
 }

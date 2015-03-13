@@ -364,9 +364,10 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         
         List<String> currentTokens = Arrays.asList(tokenFieldText.trim().split("\\s*,\\s*"));
         ArrayList<String> newTokens = new ArrayList<String>(displayedTokens);
-        for (int i = 0; i < displayedTokens.size(); i++) {
-            if (!currentTokens.contains(displayedTokens.get(i)))
-                newTokens.remove(i);
+        
+        for (String token : displayedTokens) {
+            if (!currentTokens.contains(token))
+                newTokens.remove(token);
         }
         
         this.displayedTokens = newTokens;
@@ -457,7 +458,7 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
                 sb.append(",");
             }
             
-            format = prefix + "%K IN \"" + sb.substring(0, sb.length() - 1) + "\"";
+            format = prefix + "%K IN \"" + escapeSpecialPredicateEditorChars(sb.substring(0, sb.length() - 1)) + "\"";
         }
         
         this.predicate = Predicate.predicateWithFormat(format, Arrays.asList(this.keyPath));
@@ -465,6 +466,13 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         this.predicateEditor.addDynamicRowTemplateInstance(new DynamicRightValuesRowTemplate(this));
                 
         return this.predicate.id();
+    }
+    
+    private String escapeSpecialPredicateEditorChars(String text) {
+        String rv = text.replace("\\", "\\\\");
+        rv = rv.replace("\"", "\\\"");
+
+        return rv;
     }
     
     long /*int*/ unselectTokenFieldTextProc() {
