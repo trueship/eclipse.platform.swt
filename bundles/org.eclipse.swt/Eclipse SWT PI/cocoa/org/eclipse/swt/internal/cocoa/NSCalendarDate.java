@@ -73,6 +73,11 @@ public static NSDate dateWithTimeIntervalSinceNow(double secs) {
 	return result != 0 ? new NSCalendarDate(result) : null;
 }
 
+public static id dateWithTimeIntervalSinceReferenceDate(double secs) {
+	long /*int*/ result = OS.objc_msgSend(OS.class_NSCalendarDate, OS.sel_dateWithTimeIntervalSinceReferenceDate_, secs);
+	return result != 0 ? new id(result) : null;
+}
+
 public static NSDate distantFuture() {
 	long /*int*/ result = OS.objc_msgSend(OS.class_NSCalendarDate, OS.sel_distantFuture);
 	return result != 0 ? new NSCalendarDate(result) : null;

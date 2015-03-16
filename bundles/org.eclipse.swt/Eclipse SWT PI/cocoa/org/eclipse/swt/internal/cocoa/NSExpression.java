@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2014 IBM Corporation and others.
+ * Copyright (c) 2000, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,9 +39,19 @@ public static NSExpression expressionForConstantValue(id obj) {
 	return result != 0 ? new NSExpression(result) : null;
 }
 
+public static NSExpression expressionForFunction(NSString name, NSArray parameters) {
+	long /*int*/ result = OS.objc_msgSend(OS.class_NSExpression, OS.sel_expressionForFunction_arguments_, name != null ? name.id : 0, parameters != null ? parameters.id : 0);
+	return result != 0 ? new NSExpression(result) : null;
+}
+
 public static NSExpression expressionForKeyPath(NSString keyPath) {
 	long /*int*/ result = OS.objc_msgSend(OS.class_NSExpression, OS.sel_expressionForKeyPath_, keyPath != null ? keyPath.id : 0);
 	return result != 0 ? new NSExpression(result) : null;
+}
+
+public id expressionValueWithObject(id object, NSMutableDictionary context) {
+	long /*int*/ result = OS.objc_msgSend(this.id, OS.sel_expressionValueWithObject_context_, object != null ? object.id : 0, context != null ? context.id : 0);
+	return result != 0 ? new id(result) : null;
 }
 
 public NSString keyPath() {
