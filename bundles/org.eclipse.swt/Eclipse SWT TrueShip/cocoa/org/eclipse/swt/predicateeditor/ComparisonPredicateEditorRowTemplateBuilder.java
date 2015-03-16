@@ -80,7 +80,8 @@ public class ComparisonPredicateEditorRowTemplateBuilder {
                        PredicateOperatorType.NSEndsWithPredicateOperatorType,
                        PredicateOperatorType.NSNotEqualToPredicateOperatorType,
                        PredicateOperatorType.NSBeginsWithPredicateOperatorType,
-                       PredicateOperatorType.NSLikePredicateOperatorType))
+                       PredicateOperatorType.NSLikePredicateOperatorType,
+                       PredicateOperatorType.NSGreaterThanOrEqualToPredicateOperatorType)) // Faking the CONTAINS operator
                    .withOptions(EnumSet.of(
                        ComparisonPredicateOption.NSCaseInsensitivePredicateOption,
                        ComparisonPredicateOption.NSDiacriticInsensitivePredicateOption));

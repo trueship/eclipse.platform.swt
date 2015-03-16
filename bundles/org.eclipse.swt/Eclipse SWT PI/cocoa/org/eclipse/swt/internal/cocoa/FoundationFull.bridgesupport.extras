@@ -328,6 +328,10 @@
 			<arg swt_gen="true"></arg>
 			<retval swt_alloc="true" swt_gen="true" swt_java_type="NSDate"></retval>
 		</method>
+		<method class_method="true" selector="dateWithTimeIntervalSinceReferenceDate:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
 		<method class_method="true" selector="distantFuture" swt_gen="true">
 			<retval swt_alloc="true" swt_gen="true" swt_java_type="NSDate"></retval>
 		</method>
@@ -414,7 +418,17 @@
 			<arg swt_gen="true"></arg>
 			<retval swt_gen="true"></retval>
 		</method>
+		<method class_method="true" selector="expressionForFunction:arguments:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
 		<method class_method="true" selector="expressionForKeyPath:" swt_gen="true">
+			<arg swt_gen="true"></arg>
+			<retval swt_gen="true"></retval>
+		</method>
+		<method selector="expressionValueWithObject:context:" swt_gen="true">
+			<arg swt_gen="true"></arg>
 			<arg swt_gen="true"></arg>
 			<retval swt_gen="true"></retval>
 		</method>
