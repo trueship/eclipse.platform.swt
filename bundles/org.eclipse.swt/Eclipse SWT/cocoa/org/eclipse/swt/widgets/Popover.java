@@ -70,6 +70,7 @@ public class Popover extends Composite {
         this.target = target;
     }
 
+    @Override
     void createHandle () {
         super.createHandle ();
 
@@ -143,6 +144,31 @@ public class Popover extends Composite {
         parent.setVisible(true);
     }
 
+    public void showRelativeToRect(int x, int y, int width, int height) {
+
+        NSViewController controller = (NSViewController) new NSViewController().alloc();
+        controller = (NSViewController)controller.init();
+        controller.setView(view);
+        popover.setContentViewController(controller);
+
+        popover.setContentSize(size);
+
+        popover.setAppearance(appearance.ordinal());
+        popover.setBehavior(behavior.ordinal());
+
+        NSRect rect = new NSRect();
+        rect.x = x;
+        rect.y = y;
+        rect.width = width;
+        rect.height = height;
+
+        popover.showRelativeToRect(rect, target.view, prefferedEdge.ordinal());
+        layout();
+        setVisible(true);
+        ((Shell)parent).setWindow(view.window());
+        parent.setVisible(true);
+    }
+
     public void setFieldsTabList (Text[] list) {
         this.tabList = list;
         parent.tabList = list;
@@ -163,6 +189,7 @@ public class Popover extends Composite {
 
     }
 
+    @Override
     void drawRect (long /*int*/ id, long /*int*/ sel, NSRect rect) {
     //    super.drawRect(id, sel, rect);
     }
@@ -172,6 +199,7 @@ public class Popover extends Composite {
       //  super.drawWidget(id, context, rect);
     }
 
+    @Override
     public void setSize (int width, int height) {
         super.setSize(width, height);
         size.width = width;
@@ -179,6 +207,7 @@ public class Popover extends Composite {
         popover.setContentSize(size);
     }
 
+    @Override
     void register () {
         super.register();
         display.addWidget(popover, this);

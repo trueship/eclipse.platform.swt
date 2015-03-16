@@ -38,6 +38,10 @@ public class Popover extends Composite {
 
     }
 
+    public void showRelativeToRect(int x, int y, int width, int height) {
+        
+    }
+    
     public void close () {
 
     }
