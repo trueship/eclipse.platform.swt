@@ -284,14 +284,18 @@ public class SWTDateTimeRowTemplate extends NSPredicateEditorRowTemplate {
         
         Date javaDate = new Date((long) (nsDate.timeIntervalSince1970() * 1000));
         SimpleDateFormat sdf;
+        String dateText;
         if (hasDateAndTimeRightExpression) {
             sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
             sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+            dateText = addTimeZoneColon(sdf.format(javaDate));
         }
-        else
+        else {
             sdf = new SimpleDateFormat("yyyy-MM-dd");
+            dateText = sdf.format(javaDate);
+        }
         
-        return "DATE('" + sdf.format(javaDate) + "')";
+        return "DATE('" + dateText + "')";
     }
 
     private double dateToNSDate(Date date) {
@@ -302,7 +306,7 @@ public class SWTDateTimeRowTemplate extends NSPredicateEditorRowTemplate {
         int startPos = dateRightExpressionValue.indexOf('(');
         int endPos = dateRightExpressionValue.indexOf(')');
       
-        String dateString = dateRightExpressionValue.substring(startPos + 1, endPos).replace("'", "").trim();
+        String dateString = getFormattedDateString(dateRightExpressionValue.substring(startPos + 1, endPos).replace("'", "").trim());
         
         SimpleDateFormat sdf;
         if (hasDateAndTimeRightExpression) {
@@ -318,6 +322,34 @@ public class SWTDateTimeRowTemplate extends NSPredicateEditorRowTemplate {
         } catch (ParseException e) {
             return null;    
         }
+    }
+    
+    /*
+     * Change an ISO8601 formatted date which has time and timezone info into "yyyy-MM-dd'T'HH:mm:ssZ",
+     * with numeric timezone, and no timezone colon.
+     */
+    private String getFormattedDateString(String dateText) {
+        int tzPos = dateText.indexOf('Z');
+        
+        if (tzPos != -1)
+            return dateText.substring(0, dateText.length() - 1) + "+0000";
+        
+        return stripTimeZoneColon(dateText);
+    }
+    
+    private String addTimeZoneColon(String dateText) {
+        return dateText.substring(0, dateText.length() - 2) + ":" + dateText.substring(dateText.length() - 2);
+    }
+
+    private String stripTimeZoneColon(String dateText) {
+        int tzPos = dateText.indexOf('+');
+        if (tzPos == -1)
+            tzPos = dateText.indexOf('-');
+        
+        if (tzPos == -1)
+            return dateText;
+        
+        return dateText.substring(0,  tzPos) + dateText.substring(tzPos).replace(":", "");
     }
     
     private void updateRowForDateControl(NSArray views) {
