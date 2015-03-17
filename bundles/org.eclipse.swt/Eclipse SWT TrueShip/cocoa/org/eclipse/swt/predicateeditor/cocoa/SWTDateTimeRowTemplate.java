@@ -9,6 +9,7 @@ import org.eclipse.swt.internal.*;
 import org.eclipse.swt.internal.cocoa.*;
 import org.eclipse.swt.widgets.PredicateEditor.AttributeType;
 import org.eclipse.swt.widgets.PredicateEditor.ComparisonPredicateModifier;
+import org.eclipse.swt.widgets.PredicateEditor.PredicateOperatorType;
 
 public class SWTDateTimeRowTemplate extends NSPredicateEditorRowTemplate {
     private static final long NSDATE_REFERENCE_DATE = 978307200000L;
@@ -283,19 +284,37 @@ public class SWTDateTimeRowTemplate extends NSPredicateEditorRowTemplate {
         NSDate nsDate = new NSDate(rightExpression.expressionValueWithObject(null, null));
         
         Date javaDate = new Date((long) (nsDate.timeIntervalSince1970() * 1000));
-        SimpleDateFormat sdf;
         String dateText;
+        
         if (hasDateAndTimeRightExpression) {
-            sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-            dateText = addTimeZoneColon(sdf.format(javaDate));
+            dateText = makeIso8601UTCDateString(javaDate);
         }
         else {
-            sdf = new SimpleDateFormat("yyyy-MM-dd");
-            dateText = sdf.format(javaDate);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(javaDate);
+            
+            long /*int*/ operator = comparisonPredicate.predicateOperatorType();
+            
+            if (operator == PredicateOperatorType.NSLessThanPredicateOperatorType.value() || operator == PredicateOperatorType.NSLessThanOrEqualToPredicateOperatorType.value()) {
+                calendar.set(Calendar.HOUR_OF_DAY, 23);
+                calendar.set(Calendar.MINUTE, 59);
+                calendar.set(Calendar.SECOND, 59);
+            } else {
+                calendar.set(Calendar.HOUR_OF_DAY, 0);
+                calendar.set(Calendar.MINUTE, 0);
+                calendar.set(Calendar.SECOND, 0);
+            }
+            
+            dateText = makeIso8601UTCDateString(calendar.getTime());
         }
         
         return "DATE('" + dateText + "')";
+    }
+    
+    private String makeIso8601UTCDateString(Date date) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return addTimeZoneColon(sdf.format(date));
     }
 
     private double dateToNSDate(Date date) {
