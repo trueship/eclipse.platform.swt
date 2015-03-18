@@ -21,6 +21,16 @@ public class ComparisonPredicate extends Predicate {
 
     public PredicateOperatorType predicateOperatorType() {
         NSComparisonPredicate cp  = new NSComparisonPredicate(id());
-        return PredicateOperatorType.values()[(int) cp.predicateOperatorType()];
+        
+        PredicateOperatorType operator = PredicateOperatorType.NSEqualToPredicateOperatorType;
+        
+        int value = (int) cp.predicateOperatorType();
+        
+        for (PredicateOperatorType op : PredicateOperatorType.values()) {
+            if (op.value() == value)
+                return op;
+        }
+        
+        return operator;
     }
 }
