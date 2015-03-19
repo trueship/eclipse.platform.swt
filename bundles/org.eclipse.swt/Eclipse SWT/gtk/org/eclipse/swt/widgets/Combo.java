@@ -278,6 +278,9 @@ public void addSelectionListener(SelectionListener listener) {
 	addListener (SWT.DefaultSelection,typedListener);
 }
 
+public void setBezelStyle(int bezelStyle) {
+    
+}
 /**
  * Adds the listener to the collection of listeners who will
  * be notified when the receiver's text is verified, by sending

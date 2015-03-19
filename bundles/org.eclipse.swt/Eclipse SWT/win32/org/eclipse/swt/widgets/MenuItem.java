@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.swt.widgets;
 
- 
+
 import org.eclipse.swt.internal.win32.*;
 import org.eclipse.swt.*;
 import org.eclipse.swt.graphics.*;
@@ -18,7 +18,7 @@ import org.eclipse.swt.events.*;
 
 /**
  * Instances of this class represent a selectable user interface object
- * that issues notification when pressed and released. 
+ * that issues notification when pressed and released.
  * <dl>
  * <dt><b>Styles:</b></dt>
  * <dd>CHECK, CASCADE, PUSH, RADIO, SEPARATOR</dd>
@@ -58,7 +58,7 @@ public class MenuItem extends Item {
  * <p>
  * The style value is either one of the style constants defined in
  * class <code>SWT</code> which is applicable to instances of this
- * class, or must be built by <em>bitwise OR</em>'ing together 
+ * class, or must be built by <em>bitwise OR</em>'ing together
  * (that is, using the <code>int</code> "|" operator) two or more
  * of those <code>SWT</code> style constants. The class description
  * lists the style constants that are applicable to the class.
@@ -98,7 +98,7 @@ public MenuItem (Menu parent, int style) {
  * <p>
  * The style value is either one of the style constants defined in
  * class <code>SWT</code> which is applicable to instances of this
- * class, or must be built by <em>bitwise OR</em>'ing together 
+ * class, or must be built by <em>bitwise OR</em>'ing together
  * (that is, using the <code>int</code> "|" operator) two or more
  * of those <code>SWT</code> style constants. The class description
  * lists the style constants that are applicable to the class.
@@ -135,7 +135,7 @@ public MenuItem (Menu parent, int style, int index) {
 MenuItem (Menu parent, Menu menu, int style, int index) {
 	super (parent, checkStyle (style));
 	this.parent = parent;
-	this.menu = menu;	
+	this.menu = menu;
 	if (menu != null) menu.cascade = this;
 	display.addMenuItem (this);
 }
@@ -203,11 +203,11 @@ public void addHelpListener (HelpListener listener) {
  * </p>
  * <p>
  * When the <code>SWT.RADIO</code> style bit is set, the <code>widgetSelected</code> method is
- * also called when the receiver loses selection because another item in the same radio group 
+ * also called when the receiver loses selection because another item in the same radio group
  * was selected by the user. During <code>widgetSelected</code> the application can use
  * <code>getSelection()</code> to determine the current selected state of the receiver.
  * </p>
- * 
+ *
  * @param listener the listener which should be notified when the menu item is selected by the user
  *
  * @exception IllegalArgumentException <ul>
@@ -251,7 +251,7 @@ boolean fillAccel (ACCEL accel) {
 	int key = accelerator & SWT.KEY_MASK;
 	int vKey = Display.untranslateKey (key);
 	if (vKey != 0) {
-		key = vKey;	
+		key = vKey;
 	} else {
 		switch (key) {
 			/*
@@ -323,7 +323,7 @@ public int getAccelerator () {
  *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
- * 
+ *
  * @since 3.1
  */
 /*public*/ Rectangle getBounds () {
@@ -382,7 +382,7 @@ public int getAccelerator () {
  *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
- * 
+ *
  * @see #isEnabled
  */
 public boolean getEnabled () {
@@ -429,7 +429,7 @@ public boolean getEnabled () {
  *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
- * 
+ *
  * @since 3.7
  */
 public int getID () {
@@ -440,7 +440,7 @@ public int getID () {
 /**
  * Returns the receiver's cascade menu if it has one or null
  * if it does not. Only <code>CASCADE</code> menu items can have
- * a pull down menu. The sequence of key strokes, button presses 
+ * a pull down menu. The sequence of key strokes, button presses
  * and/or button releases that are used to request a pull down
  * menu is platform specific.
  *
@@ -515,7 +515,7 @@ public boolean getSelection () {
  *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
- * 
+ *
  * @see #getEnabled
  */
 public boolean isEnabled () {
@@ -621,7 +621,7 @@ public void removeSelectionListener (SelectionListener listener) {
 	if (listener == null) error (SWT.ERROR_NULL_ARGUMENT);
 	if (eventTable == null) return;
 	eventTable.unhook (SWT.Selection, listener);
-	eventTable.unhook (SWT.DefaultSelection,listener);	
+	eventTable.unhook (SWT.DefaultSelection,listener);
 }
 
 
@@ -689,7 +689,7 @@ public void setEnabled (boolean enabled) {
 		OS.SendMessage (hwndCB, OS.TB_GETBUTTONINFO, id, info);
 		info.fsState &= ~OS.TBSTATE_ENABLED;
 		if (enabled) info.fsState |= OS.TBSTATE_ENABLED;
-		OS.SendMessage (hwndCB, OS.TB_SETBUTTONINFO, id, info);		
+		OS.SendMessage (hwndCB, OS.TB_SETBUTTONINFO, id, info);
 	} else {
 		/*
 		* Feature in Windows.  For some reason, when the menu item
@@ -734,7 +734,7 @@ public void setEnabled (boolean enabled) {
 				* returns a fail code when setting the enabled or
 				* selected state of a default item, but sets the
 				* state anyway.  The fix is to ignore the error.
-				* 
+				*
 				* NOTE:  This only happens on Vista.
 				*/
 				if (!OS.IsWinCE && OS.WIN32_VERSION >= OS.VERSION (6, 0)) {
@@ -761,7 +761,7 @@ public void setEnabled (boolean enabled) {
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  *    <li>ERROR_INVALID_ARGUMENT - if called with an negative-valued argument.</li>
  * </ul>
- * 
+ *
  * @since 3.7
  */
 public void setID (int id) {
@@ -873,7 +873,7 @@ void setMenu (Menu menu, boolean dispose) {
 	if (oldMenu != null) oldMenu.cascade = null;
 	this.menu = menu;
 
-	/* Assign the new menu in the OS */		
+	/* Assign the new menu in the OS */
 	if ((OS.IsPPC || OS.IsSP) && parent.hwndCB != 0) {
 		if (OS.IsPPC) {
 			long /*int*/ hwndCB = parent.hwndCB;
@@ -913,7 +913,7 @@ void setMenu (Menu menu, boolean dispose) {
 		info.cch = cch;
 		boolean success = OS.GetMenuItemInfo (hMenu, index, true, info);
 		if (menu != null) {
-			menu.cascade = this; 
+			menu.cascade = this;
 			info.fMask |= OS.MIIM_SUBMENU;
 			info.hSubMenu = menu.handle;
 		}
@@ -1026,7 +1026,7 @@ public void setSelection (boolean selected) {
 			* returns a fail code when setting the enabled or
 			* selected state of a default item, but sets the
 			* state anyway.  The fix is to ignore the error.
-			* 
+			*
 			* NOTE:  This only happens on Vista.
 			*/
 			if (!OS.IsWinCE && OS.WIN32_VERSION >= OS.VERSION (6, 0)) {
@@ -1064,7 +1064,7 @@ public void setSelection (boolean selected) {
  * accelerator key sequence. The accelerator key sequence
  * is installed using #setAccelerator.
  * </p>
- * 
+ *
  * @param string the new text
  *
  * @exception IllegalArgumentException <ul>
@@ -1074,7 +1074,7 @@ public void setSelection (boolean selected) {
  *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
- * 
+ *
  * @see #setAccelerator
  */
 public void setText (String string) {
@@ -1091,7 +1091,7 @@ public void setText (String string) {
 		* Bug in WinCE PPC.  Tool items on the menubar don't resize
 		* correctly when the character '&' is used (even when it
 		* is a sequence '&&').  The fix is to remove all '&' from
-		* the string. 
+		* the string.
 		*/
 		if (string.indexOf ('&') != -1) {
 			int length = string.length ();
@@ -1107,7 +1107,7 @@ public void setText (String string) {
 		TCHAR buffer = new TCHAR (0, string, true);
 		int byteCount = buffer.length () * TCHAR.sizeof;
 		pszText = OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
-		OS.MoveMemory (pszText, buffer, byteCount);	
+		OS.MoveMemory (pszText, buffer, byteCount);
 		long /*int*/ hwndCB = parent.hwndCB;
 		TBBUTTONINFO info2 = new TBBUTTONINFO ();
 		info2.cbSize = TBBUTTONINFO.sizeof;
@@ -1118,12 +1118,12 @@ public void setText (String string) {
 		MENUITEMINFO info = new MENUITEMINFO ();
 		info.cbSize = MENUITEMINFO.sizeof;
 		long /*int*/ hMenu = parent.handle;
-		
+
 		/* Use the character encoding for the default locale */
 		TCHAR buffer = new TCHAR (0, string, true);
 		int byteCount = buffer.length () * TCHAR.sizeof;
 		pszText = OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
-		OS.MoveMemory (pszText, buffer, byteCount);	
+		OS.MoveMemory (pszText, buffer, byteCount);
 		/*
 		* Bug in Windows 2000.  For some reason, when MIIM_TYPE is set
 		* on a menu item that also has MIIM_BITMAP, the MIIM_TYPE clears
@@ -1232,7 +1232,7 @@ LRESULT wmMeasureChild (long /*int*/ wParam, long /*int*/ lParam) {
 				MenuItem item = items [i];
 				if (item.image != null) {
 					Rectangle rect = item.image.getBounds ();
-					width = Math.max (width, rect.width); 
+					width = Math.max (width, rect.width);
 				}
 			}
 		}
@@ -1250,7 +1250,7 @@ public void setAlternate (boolean isAlternate) {
 }
 
 public boolean isAlternate() {
-
+    return false;
 }
 
 }
