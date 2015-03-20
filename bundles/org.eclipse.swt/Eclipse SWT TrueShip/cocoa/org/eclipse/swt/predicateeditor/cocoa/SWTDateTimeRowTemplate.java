@@ -9,6 +9,7 @@ import org.eclipse.swt.internal.*;
 import org.eclipse.swt.internal.cocoa.*;
 import org.eclipse.swt.widgets.PredicateEditor.AttributeType;
 import org.eclipse.swt.widgets.PredicateEditor.ComparisonPredicateModifier;
+import org.eclipse.swt.widgets.PredicateEditor.PredicateOperatorType;
 
 public class SWTDateTimeRowTemplate extends NSPredicateEditorRowTemplate {
     private static final long NSDATE_REFERENCE_DATE = 978307200000L;
@@ -283,15 +284,37 @@ public class SWTDateTimeRowTemplate extends NSPredicateEditorRowTemplate {
         NSDate nsDate = new NSDate(rightExpression.expressionValueWithObject(null, null));
         
         Date javaDate = new Date((long) (nsDate.timeIntervalSince1970() * 1000));
-        SimpleDateFormat sdf;
-        if (hasDateAndTimeRightExpression) {
-            sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-        }
-        else
-            sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String dateText;
         
-        return "DATE('" + sdf.format(javaDate) + "')";
+        if (hasDateAndTimeRightExpression) {
+            dateText = makeIso8601UTCDateString(javaDate);
+        }
+        else {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(javaDate);
+            
+            long /*int*/ operator = comparisonPredicate.predicateOperatorType();
+            
+            if (operator == PredicateOperatorType.NSLessThanOrEqualToPredicateOperatorType.value() || operator == PredicateOperatorType.NSGreaterThanPredicateOperatorType.value()) {
+                calendar.set(Calendar.HOUR_OF_DAY, 23);
+                calendar.set(Calendar.MINUTE, 59);
+                calendar.set(Calendar.SECOND, 59);
+            } else if (operator == PredicateOperatorType.NSLessThanPredicateOperatorType.value() || operator == PredicateOperatorType.NSGreaterThanOrEqualToPredicateOperatorType.value()) {
+                calendar.set(Calendar.HOUR_OF_DAY, 0);
+                calendar.set(Calendar.MINUTE, 0);
+                calendar.set(Calendar.SECOND, 0);
+            }
+            
+            dateText = makeIso8601UTCDateString(calendar.getTime());
+        }
+        
+        return "DATE('" + dateText + "')";
+    }
+    
+    private String makeIso8601UTCDateString(Date date) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return addTimeZoneColon(sdf.format(date));
     }
 
     private double dateToNSDate(Date date) {
@@ -302,7 +325,7 @@ public class SWTDateTimeRowTemplate extends NSPredicateEditorRowTemplate {
         int startPos = dateRightExpressionValue.indexOf('(');
         int endPos = dateRightExpressionValue.indexOf(')');
       
-        String dateString = dateRightExpressionValue.substring(startPos + 1, endPos).replace("'", "").trim();
+        String dateString = getFormattedDateString(dateRightExpressionValue.substring(startPos + 1, endPos).replace("'", "").trim());
         
         SimpleDateFormat sdf;
         if (hasDateAndTimeRightExpression) {
@@ -318,6 +341,34 @@ public class SWTDateTimeRowTemplate extends NSPredicateEditorRowTemplate {
         } catch (ParseException e) {
             return null;    
         }
+    }
+    
+    /*
+     * Change an ISO8601 formatted date which has time and timezone info into "yyyy-MM-dd'T'HH:mm:ssZ",
+     * with numeric timezone, and no timezone colon.
+     */
+    private String getFormattedDateString(String dateText) {
+        int tzPos = dateText.indexOf('Z');
+        
+        if (tzPos != -1)
+            return dateText.substring(0, dateText.length() - 1) + "+0000";
+        
+        return stripTimeZoneColon(dateText);
+    }
+    
+    private String addTimeZoneColon(String dateText) {
+        return dateText.substring(0, dateText.length() - 2) + ":" + dateText.substring(dateText.length() - 2);
+    }
+
+    private String stripTimeZoneColon(String dateText) {
+        int tzPos = dateText.indexOf('+');
+        if (tzPos == -1)
+            tzPos = dateText.indexOf('-');
+        
+        if (tzPos == -1)
+            return dateText;
+        
+        return dateText.substring(0,  tzPos) + dateText.substring(tzPos).replace(":", "");
     }
     
     private void updateRowForDateControl(NSArray views) {

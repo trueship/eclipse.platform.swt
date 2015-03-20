@@ -179,8 +179,6 @@ public class SWTKeyPathWithTitleRowTemplate extends NSPredicateEditorRowTemplate
         else if (isDateTypeRow()) {
             makeDateTimePredicateOperators(new NSView(views.objectAtIndex(1)));
             adjustDateTimeControl(new NSView(views.objectAtIndex(2)));
-        } else if (isStringTypeRow()) {
-            makeFakeContainsPredicateOperator(new NSView(views.objectAtIndex(1)));
         }
         
         updatedRow = true;
@@ -233,10 +231,6 @@ public class SWTKeyPathWithTitleRowTemplate extends NSPredicateEditorRowTemplate
     private boolean isDateTypeRow() {
         return (initWithAttributeType && attributeType == AttributeType.NSDateAttributeType.value());
     }
-    
-    private boolean isStringTypeRow() {
-        return (initWithAttributeType && attributeType == AttributeType.NSStringAttributeType.value());
-    }
 
     private void makeDateTimePredicateOperators(NSView view) {
         NSPopUpButton operatorButton = new NSPopUpButton(view);
@@ -247,20 +241,6 @@ public class SWTKeyPathWithTitleRowTemplate extends NSPredicateEditorRowTemplate
             String newTitle = numericToDateOperatorsTitleMap.get(item.title().getString());
             if (newTitle != null)
                 item.setTitle(NSString.stringWith(newTitle));
-        }
-    }
-    
-    private void makeFakeContainsPredicateOperator(NSView view) {
-       NSPopUpButton operatorButton = new NSPopUpButton(view);
-        
-        NSArray items = operatorButton.itemArray();
-        for (int i = 0; i < items.count(); i++) {
-            NSMenuItem item = new NSMenuItem(items.objectAtIndex(i).id);
-            String itemTitle = item.title().getString();
-            if ("is greater than or equal to".equalsIgnoreCase(itemTitle)) {
-                item.setTitle(NSString.stringWith("contains"));
-                break;
-            }
         }
     }
     

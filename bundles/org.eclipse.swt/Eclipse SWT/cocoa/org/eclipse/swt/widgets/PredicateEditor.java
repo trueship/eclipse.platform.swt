@@ -18,23 +18,29 @@ import org.eclipse.swt.widgets.Composite;
 public class PredicateEditor extends Control implements PredicateVisitable {
     
     public enum PredicateOperatorType {
-        NSLessThanPredicateOperatorType,
-        NSLessThanOrEqualToPredicateOperatorType,
-        NSGreaterThanPredicateOperatorType,
-        NSGreaterThanOrEqualToPredicateOperatorType,
-        NSEqualToPredicateOperatorType,
-        NSNotEqualToPredicateOperatorType,
-        NSMatchesPredicateOperatorType,
-        NSLikePredicateOperatorType,
-        NSBeginsWithPredicateOperatorType,
-        NSEndsWithPredicateOperatorType,
-        NSInPredicateOperatorType,
-        NSCustomSelectorPredicateOperatorType, 
-        NSContainsPredicateOperatorType,  // OSX 10.5 and later
-        NSBetweenPredicateOperatorType;   // OSX 10.5 and later
+        NSLessThanPredicateOperatorType(0),
+        NSLessThanOrEqualToPredicateOperatorType(1),
+        NSGreaterThanPredicateOperatorType(2),
+        NSGreaterThanOrEqualToPredicateOperatorType(3),
+        NSEqualToPredicateOperatorType(4),
+        NSNotEqualToPredicateOperatorType(5),
+        NSMatchesPredicateOperatorType(6),
+        NSLikePredicateOperatorType(7),
+        NSBeginsWithPredicateOperatorType(8),
+        NSEndsWithPredicateOperatorType(9),
+        NSInPredicateOperatorType(10),
+        NSCustomSelectorPredicateOperatorType(11), 
+        NSContainsPredicateOperatorType(99),  // OSX 10.5 and later
+        NSBetweenPredicateOperatorType(100);   // OSX 10.5 and later
 
+        private int value;
+        
+        private PredicateOperatorType(int value) {
+            this.value = value;
+        }
+        
         public int value() {
-            return this.ordinal();
+            return value;
         }
     }
     
