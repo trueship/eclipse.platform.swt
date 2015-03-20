@@ -295,11 +295,11 @@ public class SWTDateTimeRowTemplate extends NSPredicateEditorRowTemplate {
             
             long /*int*/ operator = comparisonPredicate.predicateOperatorType();
             
-            if (operator == PredicateOperatorType.NSLessThanPredicateOperatorType.value() || operator == PredicateOperatorType.NSLessThanOrEqualToPredicateOperatorType.value()) {
+            if (operator == PredicateOperatorType.NSLessThanOrEqualToPredicateOperatorType.value() || operator == PredicateOperatorType.NSGreaterThanPredicateOperatorType.value()) {
                 calendar.set(Calendar.HOUR_OF_DAY, 23);
                 calendar.set(Calendar.MINUTE, 59);
                 calendar.set(Calendar.SECOND, 59);
-            } else {
+            } else if (operator == PredicateOperatorType.NSLessThanPredicateOperatorType.value() || operator == PredicateOperatorType.NSGreaterThanOrEqualToPredicateOperatorType.value()) {
                 calendar.set(Calendar.HOUR_OF_DAY, 0);
                 calendar.set(Calendar.MINUTE, 0);
                 calendar.set(Calendar.SECOND, 0);
