@@ -316,6 +316,14 @@ public class PredicateEditor extends Control implements PredicateVisitable {
         int width = (int) nsPredicateEditor.frame().width;
         int height = (int) nsPredicateEditor.frame().height;
         
+        int maxDynRowWidth = 0;
+        GC gc = new GC(this);
+        for (DynamicRightValuesRowTemplate template : dynamicRowTemplateInstances) {
+             maxDynRowWidth = Math.max(maxDynRowWidth, template.preferredWidth(gc, width));
+        }
+        
+        width = Math.max(width, maxDynRowWidth);
+        
         if (wHint != SWT.DEFAULT) 
             width = wHint;
         

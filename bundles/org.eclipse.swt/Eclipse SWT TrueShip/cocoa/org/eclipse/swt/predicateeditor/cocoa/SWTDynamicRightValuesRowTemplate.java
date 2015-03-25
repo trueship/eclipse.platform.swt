@@ -156,6 +156,16 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         return released;
     }
     
+    public int getCurrentTokenFieldWidth() {
+        if (isReleased() || tokenField == null) return 0;
+        
+        return (int) tokenField.frame().width;
+    }
+
+    public List<String> getDisplayedTokens() {
+        return new ArrayList<String>(displayedTokens);
+    }
+    
     void internal_dispose() {
         if (jniRef != 0) OS.DeleteGlobalRef(jniRef);
         jniRef = 0;
