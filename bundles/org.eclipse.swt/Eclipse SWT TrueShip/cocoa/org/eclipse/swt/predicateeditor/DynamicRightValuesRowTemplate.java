@@ -1,5 +1,9 @@
 package org.eclipse.swt.predicateeditor;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.predicate.Predicate;
 import org.eclipse.swt.predicateeditor.cocoa.*;
 
@@ -56,5 +60,31 @@ public class DynamicRightValuesRowTemplate {
 
     public String getKeyPath() {
         return swtTemplate.getKeyPath();
+    }
+
+    public int preferredWidth(GC gc, int currentWidth) {
+        if (swtTemplate.isReleased())
+            return 0;
+        
+        List<String> tokens = swtTemplate.getDisplayedTokens();
+        
+        if (tokens.size() == 0)
+            return currentWidth;
+        
+        StringBuilder sb = new StringBuilder();
+        for (String token : tokens) {
+            sb.append(token);
+            sb.append("          "); // account for aprox. 10 spaces around a token.
+        }
+        
+        int neededTokenFieldWidth = gc.textExtent(sb.toString()).x;
+        int currentTokenFieldWidth = swtTemplate.getCurrentTokenFieldWidth();
+        
+        int diffWidth = neededTokenFieldWidth - currentTokenFieldWidth;
+        
+        if (diffWidth < 0)
+            return currentWidth;
+        
+        return currentWidth + diffWidth;
     }
 }
