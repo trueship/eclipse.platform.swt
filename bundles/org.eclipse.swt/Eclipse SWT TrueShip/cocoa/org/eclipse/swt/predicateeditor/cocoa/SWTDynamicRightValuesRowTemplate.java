@@ -375,12 +375,19 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         List<String> currentTokens = Arrays.asList(tokenFieldText.trim().split("\\s*,\\s*"));
         ArrayList<String> newTokens = new ArrayList<String>(displayedTokens);
         
+        boolean changed = false;
+        
         for (String token : displayedTokens) {
-            if (!currentTokens.contains(token))
+            if (!currentTokens.contains(token)) {
                 newTokens.remove(token);
+                changed = true;
+            }
         }
         
         this.displayedTokens = newTokens;
+        
+        if (changed)
+            predicateEditor.setDirty();
         
         return 0;
     }
@@ -399,6 +406,8 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         
         NSArray objectsToAdd = new NSArray(arg1);
         
+        boolean changed = false;
+        
         NSMutableArray newTokens = NSMutableArray.arrayWithCapacity(objectsToAdd.count());
         for (int i = 0; i < objectsToAdd.count(); i++) {
             String token = new NSObject(objectsToAdd.objectAtIndex(i).id).description().getString();
@@ -406,9 +415,13 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
                 if (template.isTokenValid(token)) {
                     template.displayedTokens.add(token);
                     newTokens.addObject(objectsToAdd.objectAtIndex(i));
+                    changed = true;
                 }
             }
         }
+        
+        if (changed)
+            template.predicateEditor.setDirty();
         
         return newTokens.id;
     }

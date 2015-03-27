@@ -161,6 +161,8 @@ public class PredicateEditor extends Control implements PredicateVisitable {
     protected PredicateEditorNotification notification = new PredicateEditorNotification();
     SWTKeyValueCodingDecorator kvNotification;
     private long lastNumberOfRows;
+
+    private boolean dirty = false;
     
     public PredicateEditor(Composite parent, int style) {
         super(parent, style);
@@ -182,11 +184,15 @@ public class PredicateEditor extends Control implements PredicateVisitable {
     }
     
     public void enableNotifications() {
-        this.enabledNotifications = true;
+        enableNotifications(true);
     }
     
     public void disableNotifications() {
-        this.enabledNotifications = false;
+        enableNotifications(false);
+    }
+    
+    public void enableNotifications(boolean enable) {
+        this.enabledNotifications = enable;
     }
     
     public void removeSelectionListener(SelectionListener listener) {
@@ -338,9 +344,24 @@ public class PredicateEditor extends Control implements PredicateVisitable {
     // but modified so that 'NOT (predicate)' becomes 'NOT (predicate OR FALSEPREDICATE)' , 
     // which allows NSPredicateEditor to restore simple negated predicates.
     public Predicate getPredicate() {
+        if (dirty) {
+            reloadPredicate();
+            dirty = false;
+        }
         return new Predicate(exportPredicate(nsPredicateEditor.predicate()).id);
     }
     
+    public void setDirty() {
+        this.dirty = true;
+    }
+    
+    public void reloadPredicate() {
+        boolean oldEnabledNotifications = enabledNotifications;
+        disableNotifications();
+        nsPredicateEditor.reloadPredicate();
+        enableNotifications(oldEnabledNotifications);
+    }
+
     private id exportPredicate(NSPredicate predicate) {
         if (predicate.isKindOfClass(OS.class_NSComparisonPredicate))
             return predicate;
