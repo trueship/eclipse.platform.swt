@@ -1,23 +1,15 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.internal.C;
 import org.eclipse.swt.internal.Callback;
-import org.eclipse.swt.internal.cocoa.NSButton;
-import org.eclipse.swt.internal.cocoa.NSButtonCell;
 import org.eclipse.swt.internal.cocoa.NSGraphicsContext;
-import org.eclipse.swt.internal.cocoa.NSNotification;
 import org.eclipse.swt.internal.cocoa.NSPopover;
 import org.eclipse.swt.internal.cocoa.NSRect;
 import org.eclipse.swt.internal.cocoa.NSSize;
-import org.eclipse.swt.internal.cocoa.NSText;
-import org.eclipse.swt.internal.cocoa.NSView;
 import org.eclipse.swt.internal.cocoa.NSViewController;
-import org.eclipse.swt.internal.cocoa.NSWindow;
 import org.eclipse.swt.internal.cocoa.OS;
 import org.eclipse.swt.internal.cocoa.SWTPopoverDelegate;
-import org.eclipse.swt.internal.cocoa.id;
 import org.eclipse.swt.widgets.Text;
 
 /**
@@ -95,6 +87,7 @@ public class Popover extends Composite {
 
             OS.class_addIvar(delegateClass, SWT_OBJECT, size, (byte)align, types);
             OS.class_addMethod(delegateClass, OS.sel_popoverDidShow_, proc3, "@:@");
+            OS.class_addMethod(delegateClass, OS.sel_popoverWillClose_, proc3, "@:@");
             OS.objc_registerClassPair(delegateClass);
         }
 
@@ -110,19 +103,37 @@ public class Popover extends Composite {
 
     static long /*int*/ delegateMethod3 (long /*int*/ id, long /*int*/ sel, long /*int*/ arg0) {
         if (sel == OS.sel_popoverDidShow_) {
-            Widget widget = Display.LookupWidget(id, sel);
-            if (widget == null || !(widget instanceof Popover)) {
-                return 0;
-            }
-
-            Popover popover = (Popover) widget;
-            if (popover.getFirstResponder() != null) {
-                popover.getFirstResponder().forceFocus();
-            }
-
+            handleDidShow(id);
+        } else if (sel == OS.sel_popoverWillClose_) {
+            handleWillClose(id);
         }
 
         return 0;
+    }
+    
+    private static void handleDidShow(long /*int*/ id) {
+        Popover popover = getThis(id, OS.sel_popoverDidShow_);
+        if (popover == null)
+            return;
+        
+        Text firstResponder = popover.getFirstResponder();
+        if (firstResponder != null)
+            firstResponder.forceFocus();
+    }
+    
+    private static void handleWillClose(long /*int*/ id) {
+        Popover popover = getThis(id, OS.sel_popoverWillClose_);
+        if (popover != null)
+            popover.sendEvent(SWT.Close, new Event ());
+    }
+
+    static Popover getThis(long /*int*/ id, long /*int*/ sel) {
+        Widget widget = Display.LookupWidget(id, sel);
+        if (widget == null || !(widget instanceof Popover)) {
+            return null;
+        }
+
+        return (Popover) widget;
     }
 
     public void show() {
