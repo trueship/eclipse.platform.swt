@@ -188,8 +188,8 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         NSArray currentTokens = new NSArray(tokenField.objectValue().id); 
         if (currentTokens.count() == 0) return;
         
-        // Keep the tokens if in 'free tokens' mode (i.e. not criterion was set).
-        if (criterion != null) {
+        // Keep the tokens if in 'free tokens' mode.
+        if (criterion != null || !haveValidTokens()) {
             displayedTokens.clear();
             
             for (int i = 0; i < currentTokens.count(); i++) {
@@ -427,9 +427,13 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
     }
     
     boolean isTokenValid(String token) {
-       if (criterion == null || validTokens == null) return true;
+       if (criterion == null || !haveValidTokens()) return true;
        
        return validTokens.contains(token);
+    }
+    
+    boolean haveValidTokens() {
+        return validTokens != null && validTokens.size() > 0;
     }
     
     static long /*int*/ tokenFieldCompletionProc(long /*int*/ id, long /*int*/ sel, long /*int*/ arg0, long /*int*/ arg1, long /*int*/ arg2, long /*int*/ arg3) {
