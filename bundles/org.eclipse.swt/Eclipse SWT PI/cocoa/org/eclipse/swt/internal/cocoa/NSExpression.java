@@ -49,6 +49,10 @@ public static NSExpression expressionForKeyPath(NSString keyPath) {
 	return result != 0 ? new NSExpression(result) : null;
 }
 
+public long /*int*/ expressionType() {
+	return OS.objc_msgSend(this.id, OS.sel_expressionType);
+}
+
 public id expressionValueWithObject(id object, NSMutableDictionary context) {
 	long /*int*/ result = OS.objc_msgSend(this.id, OS.sel_expressionValueWithObject_context_, object != null ? object.id : 0, context != null ? context.id : 0);
 	return result != 0 ? new id(result) : null;
