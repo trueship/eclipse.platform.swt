@@ -163,6 +163,8 @@ public class PredicateEditor extends Control implements PredicateVisitable {
     private long lastNumberOfRows;
 
     private boolean dirty = false;
+
+    private int totalSelectionListeners = 0;
     
     public PredicateEditor(Composite parent, int style) {
         super(parent, style);
@@ -179,6 +181,8 @@ public class PredicateEditor extends Control implements PredicateVisitable {
         TypedListener typedListener = new TypedListener(listener);
         addListener (SWT.Selection,typedListener);
         addListener (SWT.DefaultSelection,typedListener);
+        
+        totalSelectionListeners++;
         
         enableNotifications();
     }
@@ -204,6 +208,12 @@ public class PredicateEditor extends Control implements PredicateVisitable {
         
         eventTable.unhook (SWT.Selection, listener);
         eventTable.unhook (SWT.DefaultSelection, listener);
+        
+        if (totalSelectionListeners > 0)
+            totalSelectionListeners--;
+        
+        if (totalSelectionListeners == 0)
+            disableNotifications();
     }
     
     public void setRowTemplates(List<NSPredicateEditorRowTemplate> rowTemplates) {                
