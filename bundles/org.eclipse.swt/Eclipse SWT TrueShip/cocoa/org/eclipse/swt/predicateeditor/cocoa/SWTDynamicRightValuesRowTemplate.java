@@ -392,9 +392,32 @@ public class SWTDynamicRightValuesRowTemplate extends NSPredicateEditorRowTempla
         return 0;
     }
     
-    // Clears the tokenfield of any residual editing value when moving the focus in the middle of an edit session.
+    // Clears the tokenfield of any residual editing value when moving the focus in the middle of an edit session 
+    // when the token is not valid, otherwise will save it.
     long /*int*/ controlTextDidEndEditing(long /*int*/ notification) {
+        String tokenFieldText = tokenField.stringValue().getString();
+        List<String> currentTokenFieldTokens = Arrays.asList(tokenFieldText.trim().split("\\s*,\\s*"));
+        
+        boolean haveNewToken = false;
+        
+        ArrayList<String> newTokens = new ArrayList<String>();
+        
+        for (String token : currentTokenFieldTokens) {
+            if (isTokenValid(token))
+                newTokens.add(token);
+        
+            if (!displayedTokens.contains(token))
+                haveNewToken = true;
+        }
+        
+        if (haveNewToken) {
+            this.displayedTokens = newTokens;
+            predicateEditor.setDirty();
+        }
+
         tokenField.setStringValue(NSString.stringWith(makeTokenFieldValue()));
+        
+        refreshUI();
         
         return 0;
     }
