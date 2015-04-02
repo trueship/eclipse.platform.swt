@@ -358,7 +358,7 @@ public class PredicateEditor extends Control implements PredicateVisitable {
             reloadPredicate();
             dirty = false;
         }
-        return new Predicate(exportPredicate(nsPredicateEditor.predicate()).id);
+        return new Predicate(normalizePredicate(nsPredicateEditor.predicate()).id);
     }
     
     public void setDirty() {
@@ -371,37 +371,66 @@ public class PredicateEditor extends Control implements PredicateVisitable {
         nsPredicateEditor.reloadPredicate();
         enableNotifications(oldEnabledNotifications);
     }
-
-    private id exportPredicate(NSPredicate predicate) {
+    
+    /*
+     * Replace one leg compound predicates to equivalent ones with 2 subpredicates.
+     * Ex. 'AND KEY_PATH > 5' will change to 'KEY_PATH > 5 AND TRUEPREDICATE',
+     *     'OR  KEY_PATH > 5' will change to 'KEY_PATH > 5 OR FALSEPREDICATE',
+     *     'NOT (KEY_PATH > 5)' will change to 'NOT (KEY_PATH > 5 OR FALSEPREDICATE)'.
+     */
+    private id normalizePredicate(NSPredicate predicate) {
         if (predicate.isKindOfClass(OS.class_NSComparisonPredicate))
             return predicate;
          
         NSCompoundPredicate nsCompoundPredicate = new NSCompoundPredicate(predicate.id);
-        NSArray subpredicates = nsCompoundPredicate.subpredicates();
         
-        NSMutableArray updatedSubpredicates = NSMutableArray.arrayWithCapacity(subpredicates.count());
-        for (int i = 0; i < subpredicates.count(); i++)
-            updatedSubpredicates.addObject(exportPredicate(new NSPredicate(subpredicates.objectAtIndex(i))));
+        NSMutableArray normalizedSubpredicates = normalizeSubpredicates(nsCompoundPredicate);
         
-        NSCompoundPredicate newCompoundPredicate = (NSCompoundPredicate) new NSCompoundPredicate().alloc();
-        if (nsCompoundPredicate.compoundPredicateType() != CompoundPredicateType.NSNotPredicateType.value() || updatedSubpredicates.count() > 1) {
-            newCompoundPredicate.initWithType(new NSCompoundPredicate(predicate.id).compoundPredicateType(), updatedSubpredicates);
-            return newCompoundPredicate;
-        }
-
-        NSMutableArray newOrSubpredicates = NSMutableArray.arrayWithCapacity(2);
-        newOrSubpredicates.addObject(updatedSubpredicates.objectAtIndex(0));
-        newOrSubpredicates.addObject(NSPredicate.predicateWithValue(false));        
-
-        NSCompoundPredicate newOrPredicate = (NSCompoundPredicate) new NSCompoundPredicate().alloc();
-        newOrPredicate.initWithType(CompoundPredicateType.NSOrPredicateType.value(), newOrSubpredicates);
-
-        NSCompoundPredicate newNotPredicate = (NSCompoundPredicate) new NSCompoundPredicate().alloc();
-        newNotPredicate.initWithType(CompoundPredicateType.NSNotPredicateType.value(), NSArray.arrayWithObject(newOrPredicate));
+        long compoundPredicateType = nsCompoundPredicate.compoundPredicateType();
         
-        return newNotPredicate;
+        if (compoundPredicateType == CompoundPredicateType.NSNotPredicateType.value() || normalizedSubpredicates.count() > 1)
+            return createCompoundPredicate(new NSCompoundPredicate(predicate.id).compoundPredicateType(), normalizedSubpredicates);
+        else if (compoundPredicateType == CompoundPredicateType.NSAndPredicateType.value())
+            return createCompoundAndPredicateFromSinglePredicate(normalizedSubpredicates.objectAtIndex(0));
+        else if (compoundPredicateType == CompoundPredicateType.NSOrPredicateType.value())
+            return createCompoundOrPredicateFromSinglePredicate(normalizedSubpredicates.objectAtIndex(0));
+        else
+            return predicate;
     }
     
+    private NSMutableArray normalizeSubpredicates(NSCompoundPredicate nsCompoundPredicate) {
+        NSArray subpredicates = nsCompoundPredicate.subpredicates();
+        
+        NSMutableArray normalizedSubpredicates = NSMutableArray.arrayWithCapacity(subpredicates.count());
+        for (int i = 0; i < subpredicates.count(); i++)
+            normalizedSubpredicates.addObject(normalizePredicate(new NSPredicate(subpredicates.objectAtIndex(i))));
+        
+        return normalizedSubpredicates;
+    }
+
+    private id createCompoundOrPredicateFromSinglePredicate(id predicate) {
+        NSMutableArray subpredicates = NSMutableArray.arrayWithCapacity(2);
+        subpredicates.addObject(predicate);
+        subpredicates.addObject(NSPredicate.predicateWithValue(false));
+        
+        return createCompoundPredicate(CompoundPredicateType.NSOrPredicateType.value(), subpredicates);
+    }
+
+    private id createCompoundAndPredicateFromSinglePredicate(id predicate) {
+        NSMutableArray subpredicates = NSMutableArray.arrayWithCapacity(2);
+        subpredicates.addObject(predicate);
+        subpredicates.addObject(NSPredicate.predicateWithValue(true));
+        
+        return createCompoundPredicate(CompoundPredicateType.NSAndPredicateType.value(), subpredicates);
+    }
+    
+    private id createCompoundPredicate(long /*int*/ compoundPredicateType, NSMutableArray subpredicates) {
+      NSCompoundPredicate predicate = (NSCompoundPredicate) new NSCompoundPredicate().alloc();
+      predicate.initWithType(compoundPredicateType, subpredicates);
+      
+      return predicate;
+    }
+
     public void updatePredicate(String leftExpr, String rightExpr) {        
         NSPredicate newPredicate = new NSPredicate(updatePredicate(nsPredicateEditor.predicate(), leftExpr, rightExpr));
         
