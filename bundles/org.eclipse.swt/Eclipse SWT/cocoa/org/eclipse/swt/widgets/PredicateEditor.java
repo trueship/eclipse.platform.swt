@@ -166,6 +166,8 @@ public class PredicateEditor extends Control implements PredicateVisitable {
 
     private int totalSelectionListeners = 0;
     
+    private boolean enabledDragAndDrop = true;
+    
     public PredicateEditor(Composite parent, int style) {
         super(parent, style);
         
@@ -197,6 +199,22 @@ public class PredicateEditor extends Control implements PredicateVisitable {
     
     public void enableNotifications(boolean enable) {
         this.enabledNotifications = enable;
+    }
+    
+    public void enableDragAndDrop() {
+        enableDragAndDrop(true);
+    }
+    
+    public void disableDragAndDrop() {
+        enableDragAndDrop(false);
+    }
+    
+    public void enableDragAndDrop(boolean enable) {
+        this.enabledDragAndDrop = enable;
+    }
+    
+    public boolean isDragAndDropEnabled() {
+        return this.enabledDragAndDrop;
     }
     
     public void removeSelectionListener(SelectionListener listener) {
@@ -314,7 +332,7 @@ public class PredicateEditor extends Control implements PredicateVisitable {
     void createHandle () {
         super.createHandle ();
         
-        nsPredicateEditor = (NSPredicateEditor) new NSPredicateEditor().alloc();
+        nsPredicateEditor = (NSPredicateEditor) new SWTPredicateEditor().alloc();
         nsPredicateEditor = (NSPredicateEditor) nsPredicateEditor.init();
         
         nsPredicateEditor.setAutoresizingMask(AutoresizingMaskOptions.NSViewWidthSizable.value() |
@@ -348,6 +366,17 @@ public class PredicateEditor extends Control implements PredicateVisitable {
         }
 
         return new Point(width, height);
+    }
+    
+    @Override
+    long /*int*/ hitTest (long /*int*/ id, long /*int*/ sel, NSPoint point) {
+        long /*int*/ viewId = super.hitTest(id, sel, point);
+        
+        if (viewId == 0 || nsPredicateEditor == null || isDragAndDropEnabled())
+            return viewId;
+        
+        // Disable NSPredicateEditor DnD by hiding mouse-down events, except those destined to its subviews.
+        return nsPredicateEditor.frame().width == new NSView(viewId).frame().width ? 0 : viewId;
     }
 
     // Get the current predicate, 

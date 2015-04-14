@@ -2469,6 +2469,12 @@ void initClasses () {
 	addAccessibilityMethods(cls, proc2, proc3, proc4, accessibilityHitTestProc);
 	OS.objc_registerClassPair(cls);
 	
+    className = "SWTPredicateEditor";
+	cls = OS.objc_allocateClassPair(OS.class_NSPredicateEditor, className, 0);
+	OS.class_addIvar(cls, SWT_OBJECT, size, (byte)align, types);
+	addEventMethods(cls, 0, 0, 0, hitTestProc, 0);
+	OS.objc_registerClassPair(cls);
+	
 	className = "SWTButton";
 	cls = OS.objc_allocateClassPair(OS.class_NSButton, className, 0);
 	OS.class_addIvar(cls, SWT_OBJECT, size, (byte)align, types);
