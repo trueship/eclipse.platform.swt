@@ -5287,6 +5287,7 @@
 	<enum name="NSSquareLineCapStyle" swt_gen="true"></enum>
 	<enum name="NSSquareStatusItemLength" swt_gen="true"></enum>
 	<enum name="NSStatusWindowLevel" swt_gen="true"></enum>
+	<enum name="NSStringDrawingUsesFontLeading" swt_gen="true"></enum>
 	<enum name="NSStringDrawingUsesLineFragmentOrigin" swt_gen="true"></enum>
 	<enum name="NSSubmenuWindowLevel" swt_gen="true"></enum>
 	<enum name="NSSwitchButton" swt_gen="true"></enum>
