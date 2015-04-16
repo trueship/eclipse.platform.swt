@@ -5,13 +5,15 @@ import java.util.*;
 import org.eclipse.swt.*;
 import org.eclipse.swt.internal.*;
 import org.eclipse.swt.internal.cocoa.*;
+import org.eclipse.swt.util.GuiUtil;
 import org.eclipse.swt.widgets.PredicateEditor.ComparisonPredicateModifier;
 
 public class SWTReadOnlyAlternativeRowTemplate extends NSPredicateEditorRowTemplate {
     static final byte[] SWT_OBJECT = {'S', 'W', 'T', '_', 'O', 'B', 'J', 'E', 'C', 'T', '\0'};
     
     private static final int TEXTFIELD_WIDTH = 150;
-    private static final int TEXTFIELD_HEIGHT = 22;
+    private static final int TEXTFIELD_HEIGHT = 20;
+    private static final int SMALL_CONTROL_EXTRA_HEIGHT = 4;
     
     static Callback proc2Callback;
     static long /*int*/ proc2CallbackAddress;
@@ -104,11 +106,7 @@ public class SWTReadOnlyAlternativeRowTemplate extends NSPredicateEditorRowTempl
     NSTextField otherTextField() {
         if (otherTextField == null) {
             otherTextField = (NSTextField) new NSTextField().alloc();
-            
-            NSRect rect = new NSRect();
-            rect.width = TEXTFIELD_WIDTH;
-            rect.height = TEXTFIELD_HEIGHT;
-            otherTextField.initWithFrame(rect);
+            GuiUtil.initTextField(otherTextField, TEXTFIELD_WIDTH, TEXTFIELD_HEIGHT, SMALL_CONTROL_EXTRA_HEIGHT);
         }
         
         return otherTextField;

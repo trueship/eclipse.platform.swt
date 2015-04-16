@@ -2616,6 +2616,7 @@ public static final int NSSmallControlSize = 1;
 public static final int NSSquareLineCapStyle = 2;
 public static final int NSSquareStatusItemLength = -2;
 public static final int NSStatusWindowLevel = 25;
+public static final int NSStringDrawingUsesFontLeading = 2;
 public static final int NSStringDrawingUsesLineFragmentOrigin = 1;
 public static final int NSSubmenuWindowLevel = 3;
 public static final int NSSwitchButton = 3;
