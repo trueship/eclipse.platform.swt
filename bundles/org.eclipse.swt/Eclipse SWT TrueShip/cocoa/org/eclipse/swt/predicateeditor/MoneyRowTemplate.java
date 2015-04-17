@@ -10,7 +10,8 @@ public class MoneyRowTemplate {
     }
 
     public void refreshLayout() {
-        swtTemplate.refreshLayout();
+        if (!swtTemplate.isReleased())
+            swtTemplate.refreshLayout();
     }
     
     @Override

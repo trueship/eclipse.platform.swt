@@ -42,6 +42,8 @@ public class SWTMoneyRowTemplate extends NSPredicateEditorRowTemplate {
 
     private PredicateEditor predicateEditor;
     
+    private boolean released = false;
+    
     static {
         Class<SWTMoneyRowTemplate> clazz = SWTMoneyRowTemplate.class;
         
@@ -344,6 +346,8 @@ public class SWTMoneyRowTemplate extends NSPredicateEditorRowTemplate {
         
         internal_dispose();
         
+        released = true;
+        
         currencyPopUpButton.release();
         
         return superDeallocProc();
@@ -369,13 +373,24 @@ public class SWTMoneyRowTemplate extends NSPredicateEditorRowTemplate {
     }
 
     public void refreshLayout() {
+        if (isReleased())
+            return;
+        
         resizeControls();
+    }
+    
+    public boolean isReleased() {
+        return released;
     }
     
     private TreeSet<NSView> getXSortedViews() {
         if (textField == null) return null;
         
-        NSArray subviews = textField.superview().subviews();
+        NSView superview = textField.superview();
+        if (superview == null) return null;
+        
+        NSArray subviews = superview.subviews();
+        if (subviews == null) return null;
         
         TreeSet<NSView> sortedViews = new TreeSet<NSView>(
                 new Comparator<NSView>() {
