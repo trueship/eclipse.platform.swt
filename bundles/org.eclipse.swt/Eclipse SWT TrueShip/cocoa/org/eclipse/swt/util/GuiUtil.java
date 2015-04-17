@@ -1,12 +1,16 @@
 package org.eclipse.swt.util;
 
+import java.util.Map;
+import org.eclipse.swt.internal.cocoa.NSArray;
 import org.eclipse.swt.internal.cocoa.NSAttributedString;
+import org.eclipse.swt.internal.cocoa.NSExpression;
 import org.eclipse.swt.internal.cocoa.NSFont;
+import org.eclipse.swt.internal.cocoa.NSMenuItem;
+import org.eclipse.swt.internal.cocoa.NSPopUpButton;
 import org.eclipse.swt.internal.cocoa.NSRect;
 import org.eclipse.swt.internal.cocoa.NSSize;
 import org.eclipse.swt.internal.cocoa.NSString;
 import org.eclipse.swt.internal.cocoa.NSTextField;
-import org.eclipse.swt.internal.cocoa.NSTokenField;
 import org.eclipse.swt.internal.cocoa.OS;
 
 public class GuiUtil {
@@ -51,6 +55,17 @@ public class GuiUtil {
             rect.width = width;
             rect.height = height;
             textField.initWithFrame(rect);
+        }
+    }
+    
+    public static void replaceKeyPathWithTitle(NSPopUpButton button, Map<String, String> keyPathToTitleMap) {
+        NSArray items = button.itemArray();
+        for (int i = 0; i < items.count(); i++) {
+            NSMenuItem item = new NSMenuItem(items.objectAtIndex(i).id);
+            NSExpression keyPathExpression = new NSExpression(item.representedObject());
+            String title = keyPathToTitleMap.get(keyPathExpression.keyPath().getString());
+            if (title != null)
+                item.setTitle(NSString.stringWith(title));
         }
     }
 }
