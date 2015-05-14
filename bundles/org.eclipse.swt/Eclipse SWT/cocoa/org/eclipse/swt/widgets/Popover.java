@@ -51,7 +51,7 @@ public class Popover extends Composite {
         MaxYEdge  // Specifies the top edge of the input rectangle.
     }
 
-    public Popover(Shell parent, Composite target, int style) {
+    public Popover(Composite parent, Composite target, int style) {
         super(parent, style);
         //this.display = target.getDisplay();
       //  createWidget();
@@ -88,6 +88,7 @@ public class Popover extends Composite {
             OS.class_addIvar(delegateClass, SWT_OBJECT, size, (byte)align, types);
             OS.class_addMethod(delegateClass, OS.sel_popoverDidShow_, proc3, "@:@");
             OS.class_addMethod(delegateClass, OS.sel_popoverWillClose_, proc3, "@:@");
+            OS.class_addMethod(delegateClass, OS.sel_popoverDidClose_, proc3, "@:@");
             OS.objc_registerClassPair(delegateClass);
         }
 
@@ -106,25 +107,31 @@ public class Popover extends Composite {
             handleDidShow(id);
         } else if (sel == OS.sel_popoverWillClose_) {
             handleWillClose(id);
+        } else if (sel == OS.sel_popoverDidClose_) {
+            handleDidClose(id);
         }
-
         return 0;
     }
-    
+
     private static void handleDidShow(long /*int*/ id) {
         Popover popover = getThis(id, OS.sel_popoverDidShow_);
         if (popover == null)
             return;
-        
+
         Text firstResponder = popover.getFirstResponder();
         if (firstResponder != null)
             firstResponder.forceFocus();
     }
-    
+
     private static void handleWillClose(long /*int*/ id) {
         Popover popover = getThis(id, OS.sel_popoverWillClose_);
         if (popover != null)
             popover.sendEvent(SWT.Close, new Event ());
+    }
+
+    private static void handleDidClose(long /*int*/ id) {
+        Popover popover = getThis(id, OS.sel_popoverDidClose_);
+        popover.getShell().dispose();
     }
 
     static Popover getThis(long /*int*/ id, long /*int*/ sel) {
@@ -151,7 +158,6 @@ public class Popover extends Composite {
         popover.showRelativeToRect(target.contentView().frame(), target.getParent().view, prefferedEdge.ordinal());
         layout();
         setVisible(true);
-        ((Shell)parent).setWindow(view.window());
         parent.setVisible(true);
     }
 
