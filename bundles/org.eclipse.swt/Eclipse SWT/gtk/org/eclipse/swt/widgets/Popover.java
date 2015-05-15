@@ -28,7 +28,7 @@ public class Popover extends Composite {
         MaxYEdge  // Specifies the top edge of the input rectangle.
     }
 
-    public Popover(Shell parent, Composite target, int style) {
+    public Popover(Composite parent, Composite target, int style) {
         super(parent, style);
     }
 

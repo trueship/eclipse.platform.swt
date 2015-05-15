@@ -30,7 +30,7 @@ public class Popover extends Composite {
         MaxYEdge  // Specifies the top edge of the input rectangle.
     }
 
-    public Popover (Shell parent, Composite target, int style) {
+    public Popover (Popover parent, Composite target, int style) {
         super(parent, style);
     }
 
@@ -39,17 +39,19 @@ public class Popover extends Composite {
     }
 
     public void showRelativeToRect(int x, int y, int width, int height) {
-        
+
     }
-    
+
     public void close () {
 
     }
 
+    @Override
     public Composite getParent () {
         return this.parent;
     }
 
+    @Override
     public void setSize (int w, int h) {
 
     }
@@ -89,7 +91,7 @@ public class Popover extends Composite {
     public void setAnimates (boolean animates) {
         this.animates = animates;
     }
-    
+
     public Text getFirstResponder () {
         return null;
     }
