@@ -131,7 +131,8 @@ public class Popover extends Composite {
 
     private static void handleDidClose(long /*int*/ id) {
         Popover popover = getThis(id, OS.sel_popoverDidClose_);
-        popover.getShell().dispose();
+        if (popover != null)
+            popover.sendEvent(SWT.Dispose, new Event ());
     }
 
     static Popover getThis(long /*int*/ id, long /*int*/ sel) {
