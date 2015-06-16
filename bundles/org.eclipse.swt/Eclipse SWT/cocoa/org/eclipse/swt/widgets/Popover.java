@@ -232,6 +232,7 @@ public class Popover extends Composite {
     }
 
     public void close () {
+        super.dispose();
         popover.setDelegate(null);
         popover.close();
     }
