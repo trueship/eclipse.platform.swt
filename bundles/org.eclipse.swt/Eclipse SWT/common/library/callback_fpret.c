@@ -61,7 +61,7 @@ static unsigned char *callbackCode = NULL;
 
 
 /* Function name from index and number of arguments */
-#define FN(index, args) fn##index##_##args
+#define FN(index, args) fnfp##index##_##args
 
 /**
  * Functions templates
@@ -963,7 +963,7 @@ FN_BLOCK(12)
 #error Invalid MAX_CALLBACKS
 #endif /* MAX_CALLBACKS == 16 */
 
-jintLong fnx_array[MAX_ARGS+1][MAX_CALLBACKS] = { 
+jintLong fnxfp_array[MAX_ARGS+1][MAX_CALLBACKS] = {
 	FN_A_BLOCK(0)    
 	FN_A_BLOCK(1)    
 	FN_A_BLOCK(2)    
@@ -1019,7 +1019,7 @@ JNIEXPORT jintLong JNICALL CALLBACK_NATIVE(bind)
 			callbackData[i].errorResult = errorResult;
 			callbackData[i].methodID = mid;
 #ifndef USE_ASSEMBLER
-			return (jintLong) fnx_array[argCount][i];
+			return (jintLong) fnxfp_array[argCount][i];
 #else
 			{
 			int j = 0, k;
